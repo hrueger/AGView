@@ -10,26 +10,7 @@ export class NavbarComponent {
   public isMaximized: boolean = true;
   public showSettingsDropdown = false;
 
-  public menuItems: any[] = [
-    {
-      name: "Heads",
-      url: "heads",
-    },
-    {
-      seperator: true,
-    },
-    {
-      name: "Config",
-      url: "configureShow",
-    },
-    {
-      seperator: true,
-    },
-    {
-      name: "Show",
-      url: "show",
-    },
-  ];
+  public menuItems: any[] = [];
   private win: any;
 
   public ngOnInit() {
