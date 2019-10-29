@@ -1,0 +1,19 @@
+.fullheight {
+    height: calc( 100vh - 30px );
+}
+::ng-deep {
+    .as-split-gutter, .as-split-gutter * {
+        background-color: rgb(77, 77, 77);
+        flex-basis: 10px !important;
+        cursor: col-resize;
+    }
+}
+
+.video-progressbar {
+    z-index: 5;
+    position: absolute;
+    height: 20px;
+    width: calc(100% - 20px);
+    opacity: 0.7;
+    margin: -30px 10px 0 10px;
+}

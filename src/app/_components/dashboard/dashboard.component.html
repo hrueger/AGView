@@ -1,2 +1,31 @@
 <app-navbar></app-navbar>
-My cool content
+<div class="fullheight">
+  <as-split direction="horizontal">
+    <as-split-area size="30" class="p-2">
+      <div id="drop-files-here" (onDrop)="ondrop($event)">
+        Drop your videos, images or audios here!
+      </div>
+    </as-split-area>
+    <as-split-area class="p-4" size="70">
+
+      <div class="cardholder clearfix">
+        <div class="card float-left" *ngFor="let slide of slides; let idx = index">
+          <div class="slide" (mouseenter)="slide.showProgressbar = true" (mouseleave)="mouseLeave($event, idx)"  *ngIf="slide.type == 'video'">
+            <video (mousemove)="mouseOverVideo($event, idx)" width="400" [src]="'file:///' + slide.path"></video>
+            <div class="progress video-progressbar" [hidden]="!slide.showProgressbar">
+                <div class="progress-bar" [style.width]="slide.percent + '%'">
+              </div>
+            </div> 
+          </div>
+        </div>
+      </div>
+     
+
+      <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)">
+        <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+          Drop your video, audio or image files here or <button class="btn btn-primary ml-4" type="button" (click)="openFileSelector()">Choose</button>
+        </ng-template>
+      </ngx-file-drop>
+    </as-split-area>
+  </as-split>
+</div>

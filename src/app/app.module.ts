@@ -2,6 +2,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
+import { AngularSplitModule } from "angular-split";
+import { NgxFileDropModule } from "ngx-file-drop";
 import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface,
   PerfectScrollbarModule } from "ngx-perfect-scrollbar";
 import { DashboardComponent } from "./_components/dashboard/dashboard.component";
@@ -26,6 +28,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
+    AngularSplitModule.forRoot(),
+    NgxFileDropModule,
   ],
   providers: [
     {
