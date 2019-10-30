@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild } from "@angular/core";
 import { SplitComponent } from "angular-split";
 import { FileSystemFileEntry, NgxFileDropEntry } from "ngx-file-drop";
+import * as VideoContext from "videocontext";
 import { Slide } from "../../_entities/slide";
 
 @Component({
@@ -13,19 +14,34 @@ export class DashboardComponent {
   public currentSlide: Slide;
   public nextSlide: Slide;
   public readonly thumbnailTime: number = 10;
+  private readonly crossfadeDuration: number = 1;
 
   @ViewChild("preview", {static: false}) private previewCanvasRef: ElementRef;
   @ViewChild("sidebar", {static: false}) private sidebar: ElementRef;
   @ViewChild("split", {static: false}) private split: SplitComponent;
   private previewCanvas: HTMLCanvasElement;
-  private previewContext: CanvasRenderingContext2D;
+  private videoCtx: VideoContext;
+  private currentVideoNode: any;
+  private nextVideoNode: any;
 
   public ngAfterViewInit() {
     this.previewCanvas = this.previewCanvasRef.nativeElement;
-    this.previewContext = this.previewCanvas.getContext("2d");
     this.split.dragProgress$.subscribe(() => {
       this.sizeCanvas();
     });
+    this.videoCtx = new VideoContext(this.previewCanvas);
+    // tslint:disable-next-line: max-line-length
+    this.currentVideoNode = this.videoCtx.video("C:\\Users\\Hannes\\Desktop\\fertig\\Schule\\Allgaeu-Robotics_Trailer.mp4");
+    this.currentVideoNode.start(0);
+
+    const crossFade = this.videoCtx.transition(VideoContext.DEFINITIONS.CROSSFADE);
+    crossFade.transition(0, 0, 0.0, 1.0, "mix");
+
+    this.currentVideoNode.connect(crossFade);
+    this.currentVideoNode.connect(crossFade);
+    crossFade.connect(this.videoCtx.destination);
+
+    this.videoCtx.play();
   }
 
   public dropped(files: NgxFileDropEntry[]) {
@@ -41,48 +57,26 @@ export class DashboardComponent {
 
   public setCurrentSlide(event, slideIdx: number) {
     this.currentSlide = this.slides[slideIdx];
-    this.currentSlide.video = document.createElement("video");
-    this.currentSlide.video.src = "file:///" + this.currentSlide.path;
-    this.currentSlide.video.width = 1920;
-    this.currentSlide.video.height = 1080;
-    this.sizeCanvas();
-    this.currentSlide.video.play();
-    this.renderFrame();
+
+    this.nextVideoNode = this.videoCtx.video("C:\\Users\\Hannes\\Desktop\\fertig\\Schule\\multimediaAG-presents.mp4");
+    this.nextVideoNode.start(0);
+
+    const crossFade = this.videoCtx.transition(VideoContext.DEFINITIONS.CROSSFADE);
+    crossFade.transition(this.videoCtx.currentTime,
+      this.videoCtx.currentTime + this.crossfadeDuration, 0.0, 1.0, "mix");
+
+    this.currentVideoNode.connect(crossFade);
+    this.nextVideoNode.connect(crossFade);
+    crossFade.connect(this.videoCtx.destination);
+
+    // this.sizeCanvas();
   }
 
   public sizeCanvas() {
     const parentWidth = this.sidebar.nativeElement.getClientRects()[0].width + 10;
     this.previewCanvas.width = parentWidth;
-    this.previewCanvas.height = parentWidth * this.currentSlide.video.height / this.currentSlide.video.width;
-  }
-
-  public renderFrame() {
-    if (this.currentSlide.video.paused || this.currentSlide.video.ended) {
-      return;
-    }
-
-    this.previewContext.canvas.height = this.previewCanvas.height;
-    this.previewContext.canvas.width = this.previewCanvas.width;
-
-    const cw = this.previewCanvas.getClientRects()[0].width;
-    const ch = this.previewCanvas.getClientRects()[0].height;
-
-    this.previewContext.drawImage(this.currentSlide.video, 0, 0, 1920, 1080, 10, 10, cw, ch);
-    const frame = this.previewContext.getImageData(0, 0, cw, ch);
-
-    /* const l = frame.data.length / 4;
-    for (let i = 0; i < l; i++) {
-      const grey = (frame.data[i * 4 + 0] + frame.data[i * 4 + 1] + frame.data[i * 4 + 2]) / 3;
-      frame.data[i * 4 + 0] = grey;
-      frame.data[i * 4 + 1] = grey;
-      frame.data[i * 4 + 2] = grey;
-    } */
-
-    this.previewContext.putImageData(frame, 0, 0);
-
-    setTimeout(() => {
-      this.renderFrame();
-    }, 16);
+    this.previewCanvas.height = parentWidth * 1080 / 1920;
+    // console.log("Canvas sized to", this.previewCanvas.width, this.previewCanvas.height);
   }
 
   public mouseOverVideo(event, slideIdx) {
