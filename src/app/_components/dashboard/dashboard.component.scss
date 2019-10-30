@@ -7,6 +7,16 @@
         flex-basis: 10px !important;
         cursor: col-resize;
     }
+
+    .ngx-file-drop__drop-zone {
+        min-height: 100px;
+        height: unset !important;
+    }
+    .ngx-file-drop__content {
+        min-height: 100px;
+        height: unset !important;
+        padding: 10px;
+    }
 }
 
 .video-progressbar {
