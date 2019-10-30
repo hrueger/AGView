@@ -4,6 +4,7 @@ class Slide {
     public order?: number;
     public percent?: number = 0;
     public showProgressbar?: boolean = false;
+    public video?;
 
     constructor(type, path, order?) {
         this.type = type;

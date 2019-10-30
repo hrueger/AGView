@@ -1,16 +1,14 @@
 <app-navbar></app-navbar>
 <div class="fullheight">
-  <as-split direction="horizontal">
-    <as-split-area size="30" class="p-2">
-      <div id="drop-files-here" (onDrop)="ondrop($event)">
-        Drop your videos, images or audios here!
-      </div>
+  <as-split direction="horizontal" #split>
+    <as-split-area #sidebar size="60" class="p-2">
+      <canvas #preview class="preview-canvas"></canvas>
     </as-split-area>
-    <as-split-area class="p-4" size="70">
+    <as-split-area class="p-4" size="40">
 
       <div class="cardholder clearfix">
         <div class="card float-left" *ngFor="let slide of slides; let idx = index">
-          <div class="slide" (mouseenter)="slide.showProgressbar = true" (mouseleave)="mouseLeave($event, idx)"  *ngIf="slide.type == 'video'">
+          <div class="slide" (dblclick)="setCurrentSlide($event, idx)" (mouseenter)="slide.showProgressbar = true" (mouseleave)="mouseLeave($event, idx)"  *ngIf="slide.type == 'video'">
             <video (mousemove)="mouseOverVideo($event, idx)" width="400" [src]="'file:///' + slide.path"></video>
             <div class="progress video-progressbar" [hidden]="!slide.showProgressbar">
                 <div class="progress-bar" [style.width]="slide.percent + '%'">
