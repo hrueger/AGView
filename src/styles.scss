@@ -242,3 +242,12 @@ pre {
 .btn-round {
   border-radius: 1000px;
 }
+
+select {
+  color: #aaa;
+  text-shadow: 0 1px black;
+  background: #444;
+  &:focus {
+    outline: none;
+  }
+}

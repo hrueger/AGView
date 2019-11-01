@@ -13,7 +13,9 @@ export class DashboardComponent {
   public slides: Slide[] = [];
   public currentSlide: Slide;
   public nextSlide: Slide;
-  public readonly thumbnailTime: number = 10;
+  public readonly transitions: string[] = ["CROSSFADE", "DREAMFADE", "HORIZONTAL_WIPE", "RANDOM_DISSOLVE",
+  "STAR_WIPE", "STATIC_DISSOLVE", "TO_COLOR_AND_BLACK"];
+  public readonly thumbnailPercent: number = 8;
   private readonly crossfadeDuration: number = 1;
 
   @ViewChild("preview", {static: false}) private previewCanvasRef: ElementRef;
@@ -21,25 +23,20 @@ export class DashboardComponent {
   @ViewChild("split", {static: false}) private split: SplitComponent;
   private previewCanvas: HTMLCanvasElement;
   private videoCtx: VideoContext;
-  private currentVideoNode: any;
-  private nextVideoNode: any;
+  private currentNode: any;
 
   public ngAfterViewInit() {
+
     this.previewCanvas = this.previewCanvasRef.nativeElement;
     this.split.dragProgress$.subscribe(() => {
       this.sizeCanvas();
     });
     this.videoCtx = new VideoContext(this.previewCanvas);
     // tslint:disable-next-line: max-line-length
-    this.currentVideoNode = this.videoCtx.video("C:\\Users\\Hannes\\Desktop\\fertig\\Schule\\Allgaeu-Robotics_Trailer.mp4");
-    this.currentVideoNode.start(0);
+    this.currentNode = this.videoCtx.image("assets/test.gif");
+    this.currentNode.start(0);
 
-    const crossFade = this.videoCtx.transition(VideoContext.DEFINITIONS.CROSSFADE);
-    crossFade.transition(0, 0, 0.0, 1.0, "mix");
-
-    this.currentVideoNode.connect(crossFade);
-    this.currentVideoNode.connect(crossFade);
-    crossFade.connect(this.videoCtx.destination);
+    this.currentNode.connect(this.videoCtx.destination);
 
     this.videoCtx.play();
   }
@@ -49,25 +46,32 @@ export class DashboardComponent {
       if (droppedFile.fileEntry.isFile) {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
         fileEntry.file((file: File) => {
-          this.slides.push(new Slide("video", file.path, 1));
+          this.slides.push(new Slide("video", file.path, "CROSSFADE", 1));
         });
       }
     }
   }
 
   public setCurrentSlide(event, slideIdx: number) {
+
     this.currentSlide = this.slides[slideIdx];
 
-    this.nextVideoNode = this.videoCtx.video("C:\\Users\\Hannes\\Desktop\\fertig\\Schule\\multimediaAG-presents.mp4");
-    this.nextVideoNode.start(0);
+    const newNode = this.videoCtx.video(this.currentSlide.path);
+    newNode.start(0);
 
-    const crossFade = this.videoCtx.transition(VideoContext.DEFINITIONS.CROSSFADE);
+    const crossFade = this.videoCtx.transition(VideoContext.DEFINITIONS[this.currentSlide.transition]);
     crossFade.transition(this.videoCtx.currentTime,
       this.videoCtx.currentTime + this.crossfadeDuration, 0.0, 1.0, "mix");
 
-    this.currentVideoNode.connect(crossFade);
-    this.nextVideoNode.connect(crossFade);
+    this.currentNode.connect(crossFade);
+    newNode.connect(crossFade);
     crossFade.connect(this.videoCtx.destination);
+
+    setTimeout(() => {
+      /* console.log(this.videoCtx);
+      this.currentNode.disconnect(); */
+      this.currentNode = newNode;
+    }, (this.crossfadeDuration + 1) * 1000);
 
     // this.sizeCanvas();
   }
@@ -89,7 +93,11 @@ export class DashboardComponent {
   public mouseLeave(event, slideIdx) {
     this.slides[slideIdx].showProgressbar = false;
     const video = event.target.querySelector("video");
-    this.slides[slideIdx].percent = this.thumbnailTime / video.duration * 100;
-    video.currentTime = this.thumbnailTime;
+    this.seekToThumbnail(slideIdx, video);
+  }
+
+  private seekToThumbnail(slideIdx: any, video: any) {
+    this.slides[slideIdx].percent = this.thumbnailPercent / video.duration;
+    video.currentTime = this.thumbnailPercent / 100 * video.duration;
   }
 }
