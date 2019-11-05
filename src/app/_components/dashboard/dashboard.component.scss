@@ -21,7 +21,7 @@
 
 .video-progressbar {
     z-index: 5;
-    position: absolute;
+    position: relative;
     height: 20px;
     width: calc(100% - 20px);
     opacity: 0.7;

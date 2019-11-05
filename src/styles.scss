@@ -232,6 +232,9 @@ thead tr td {
       overflow-y: auto !important;
       max-height: 70vh !important;
     }
+    progress::-webkit-progress-value {
+      background: #3379c4;
+    }
   }
   
 }

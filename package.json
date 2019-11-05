@@ -32,6 +32,7 @@
     "@fortawesome/fontawesome-free": "^5.11.2",
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
     "angular-split": "^3.0.2",
+    "avconv": "^3.1.0",
     "bootstrap": "^4.3.1",
     "jquery": "^3.4.1",
     "ngx-file-drop": "^8.0.8",
