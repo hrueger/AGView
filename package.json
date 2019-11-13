@@ -11,6 +11,7 @@
     "ToDo"
   ],
   "scripts": {
+    "lint": "ng lint",
     "build": "npm run postinstall:electron && npm run electron:tsc && ng build",
     "build:dev": "npm run build -- -c dev",
     "build:prod": "npm run build -- -c production",
