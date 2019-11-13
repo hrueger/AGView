@@ -6,6 +6,7 @@ import * as fs from "fs";
 import { FileSystemFileEntry, NgxFileDropEntry } from "ngx-file-drop";
 import * as path from "path";
 import * as smalltalk from "smalltalk";
+import { Stream } from "stream";
 import * as VideoContext from "videocontext";
 import { Slide } from "../../_entities/slide";
 
@@ -68,7 +69,9 @@ export class DashboardComponent {
         if (filename.endsWith("encoded")) {
           encodedFiles.push(`${filename}.${extension}`);
         } else if (fs.existsSync(`${filename}.encoded.${extension}`)) {
-          encodedFiles.push(`${filename}.encoded.${extension}`);
+          const src = `${filename}.encoded.${extension}`;
+          encodedFiles.push(src);
+          this.addVideoSlide(src);
         } else {
           unencodedFiles.push(`${filename}.${extension}`);
         }
@@ -79,39 +82,62 @@ export class DashboardComponent {
       performance.\
       Press 'Ok' to encode them now.<br>If you already encoded them , please make sure that the files are called\
       'path/to/file/filename.encoded.ext'!")
-      .then(() => {
+      .then(async () => {
         for (let index = 0; index < unencodedFiles.length; index++) {
-          const file = unencodedFiles[index];
-          const filename = file.replace(/\.[^/.]+$/, "");
-          const extension = file.split(".").pop();
-          const fileoutput = `${filename}.encoded.${extension}`;
-          const params = [
-            "-i", file,
-            "-tune", "fastdecode",
-            "-strict", "experimental",
-            fileoutput,
-          ];
-          const os = "windows";
-          const binfile = "avconv.exe";
-          const stream = avconv(params, path.join(remote.app.getAppPath(), "bin", "avconv", os, binfile));
-          const progress =
-            smalltalk.progress("Encoding files", `Encoding file ${index + 1} of ${unencodedFiles.length}`);
-          stream.on("message", (data: any) => {
-              // console.log("message: ", data);
-          });
-          stream.on("progress", (p: any) => {
-            this.zone.run(() => {
-              progress.setProgress(Math.round(p * 100)).catch(() => {
-                stream.kill();
-              });
+          try {
+            await new Promise(async (resolve, reject) => {
+              const inputFile = unencodedFiles[index];
+              const filename = inputFile.replace(/\.[^/.]+$/, "");
+              const extension = inputFile.split(".").pop();
+              const outputFile = `${filename}.encoded.${extension}`;
+              const params = [
+                "-i", inputFile,
+                "-tune", "fastdecode",
+                "-strict", "experimental",
+                outputFile,
+              ];
+              const os = "windows";
+              const binfile = "avconv.exe";
+              const stream = avconv(params, path.join(remote.app.getAppPath(), "bin", "avconv", os, binfile));
+              try {
+                const progressDialog =
+                  smalltalk.progress("Encoding files", `Encoding file ${index + 1} of ${unencodedFiles.length}`);
+                stream.on("message", (data: any) => {
+                  // console.log("message: ", data);
+                });
+                stream.on("progress", (p: any) => {
+                  this.zone.run(() => {
+                    progressDialog.setProgress(Math.round(p * 100));
+                  });
+                });
+                stream.once("exit", (exitCode, signal, metadata) => {
+                  this.zone.run(() => {
+                    progressDialog.remove();
+                    if (exitCode == 0) {
+                      this.addVideoSlide(outputFile);
+                      resolve();
+                    } else if (exitCode == 127) {
+                      smalltalk.alert("Error occured", "The aconv encoding executable was not found. Error code 127.");
+                      reject();
+                    } else {
+                      smalltalk.alert(`Error occured", "An unknown error occured. Error code ${exitCode}.`);
+                      reject();
+                    }
+                  });
+                });
+              } catch {
+                if (stream) {
+                  stream.kill();
+                  resolve();
+                }
+              }
             });
-          });
-          // end when finished
+          } catch {
+            break;
+          }
         }
-      })
-      .catch(() => undefined);
+      }).catch(() => undefined);
     }
-    // this.slides.push(new Slide("video", file.path, "CROSSFADE", 1));
   }
 
   public setCurrentSlide(event: any, slideIdx: number) {
@@ -125,6 +151,7 @@ export class DashboardComponent {
     crossFade.transition(this.videoCtx.currentTime,
       this.videoCtx.currentTime + this.crossfadeDuration, 0.0, 1.0, "mix");
 
+    this.currentNode.stop(this.videoCtx.currentTime + this.crossfadeDuration);
     this.currentNode.connect(crossFade);
     newNode.connect(crossFade);
     crossFade.connect(this.videoCtx.destination);
@@ -156,6 +183,10 @@ export class DashboardComponent {
     this.slides[slideIdx].showProgressbar = false;
     const video = event.target.querySelector("video");
     this.seekToThumbnail(slideIdx, video);
+  }
+
+  private addVideoSlide(outputFile: string) {
+    this.slides.push(new Slide("video", outputFile, "CROSSFADE", 1));
   }
 
   private seekToThumbnail(slideIdx: any, video: any) {
