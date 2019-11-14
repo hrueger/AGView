@@ -1,5 +1,7 @@
 # AGView
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/hrueger/AGView.svg)](https://greenkeeper.io/)
+
 ![Travis ](https://img.shields.io/travis/hrueger/AGView)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 ![GitHub last commit](https://img.shields.io/github/last-commit/hrueger/AGView?color=brightgreen)
