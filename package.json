@@ -47,7 +47,7 @@
     "popper.js": "^1.16.0",
     "reflect-metadata": "^0.1.13",
     "smalltalk": "^4.0.2",
-    "sqlite3": "4.1.0",
+    "sqlite3": "4.1.1",
     "typeorm": "0.2.20",
     "videocontext": "^0.54.0"
   },
