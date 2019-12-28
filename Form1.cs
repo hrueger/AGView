@@ -6,16 +6,18 @@ using System.Windows.Forms;
 using System.IO;
 using VisioForge.Controls.UI.WinForms;
 using VisioForge.Types;
+using System.Linq;
 
 namespace AGView
 {
     public partial class MainWindow : Form
     {
-        private readonly List<PIPInfo> _pipInfos;
+        // private readonly List<PIPInfo> _pipInfos;
         private readonly ImageList _imageList;
 
         private readonly int _thumbWidth = 256;
         private readonly int _thumbHeight = 144;
+        private int _currentPIPIndex = -1;
 
         private int _lastZOrder = 8;
 
@@ -23,13 +25,14 @@ namespace AGView
         {
             InitializeComponent();
 
-            _pipInfos = new List<PIPInfo>();
+            // _pipInfos = new List<PIPInfo>();
             _imageList = new ImageList();
             _imageList.ImageSize = new Size(_thumbWidth, _thumbHeight);
             _imageList.ColorDepth = ColorDepth.Depth32Bit;
 
             lvFiles.SmallImageList = _imageList;
             lvFiles.LargeImageList = _imageList;
+
         }
 
         private void btSelectFile_Click(object sender, EventArgs e)
@@ -70,7 +73,7 @@ namespace AGView
         private void btStart_Click(object sender, EventArgs e)
         {
             MediaPlayer1.Debug_Mode = false;
-            MediaPlayer1.Info_UseLibMediaInfo = true;
+            MediaPlayer1.Info_UseLibMediaInfo = false;
 
             MediaPlayer1.Video_Renderer.Zoom_Ratio = 0;
             MediaPlayer1.Video_Renderer.Zoom_ShiftX = 0;
@@ -79,16 +82,18 @@ namespace AGView
             MediaPlayer1.Video_Renderer.Video_Renderer = VFVideoRenderer.VMR9;
             MediaPlayer1.Source_Mode = VFMediaPlayerSource.LAV;
 
+            MediaPlayer1.FilenamesOrURL.Add("C:\\Users\\Hannes\\Downloads\\adventskranz.jpg");
+
             MediaPlayer1.Play();
 
-            MediaPlayer1.PIP_Sources_SetSourcePosition(0, _pipInfos[0].Rect, 1.0f);
+            // MediaPlayer1.PIP_Sources_SetSourcePosition(0, _pipInfos[0].Rect, 1.0f);
             
             timer1.Start();
         }
 
         private void MediaPlayer1_OnError(object sender, ErrorsEventArgs e)
         {
-            MessageBox.Show(e.ToString() + ": " + e.Message, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(e.ToString() + ": " + e.Message + "\n\n\n" + e.StackTrace, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void btStop_Click(object sender, EventArgs e)
@@ -97,7 +102,7 @@ namespace AGView
             
             MediaPlayer1.Stop();
 
-            _pipInfos.Clear();
+            // _pipInfos.Clear();
             MediaPlayer1.PIP_Sources_Clear();
             lvFiles.Items.Clear();
         }
@@ -116,15 +121,6 @@ namespace AGView
         {
         }
 
-        private void lbSourceFiles_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (lvFiles.SelectedIndices[0] >= 0)
-            {
-                var pip = _pipInfos[lvFiles.SelectedIndices[0]];
-                tbStreamTransparency.Value = (int)(pip.Alpha * 100);
-            }
-        }
-
         private void btUpdateRect_Click(object sender, EventArgs e)
         {
             int index = lvFiles.SelectedIndices[0];
@@ -134,22 +130,22 @@ namespace AGView
                 int top = Convert.ToInt32(0);
                 int width = Convert.ToInt32(0);
                 int height = Convert.ToInt32(0);
-                _pipInfos[index].Rect = new Rectangle(left, top, width, height);
+                // _pipInfos[index].Rect = new Rectangle(left, top, width, height);
 
-                _pipInfos[index].ZOrder = Convert.ToInt32(5); // ToDo
-                _pipInfos[index].Alpha = tbStreamTransparency.Value / 100.0f;
+                // _pipInfos[index].ZOrder = Convert.ToInt32(5); // ToDo
+                // _pipInfos[index].Alpha = tbStreamTransparency.Value / 100.0f;
 
                 if (left == 0 && top == 0 && width == 0 && height == 0)
                 {
-                    lvFiles.Items[lvFiles.SelectedIndices[0]].Text = $@"{_pipInfos[index].Filename} (entire screen)";
+                    // lvFiles.Items[lvFiles.SelectedIndices[0]].Text = $@"{_pipInfos[index].Filename} (entire screen)";
                 }
                 else
                 {
-                    lvFiles.Items[lvFiles.SelectedIndices[0]].Text = $@"{_pipInfos[index].Filename} ({left}.{top}px, width: {width}px, height: {height}px)";
+                    /// lvFiles.Items[lvFiles.SelectedIndices[0]].Text = $@"{_pipInfos[index].Filename} ({left}.{top}px, width: {width}px, height: {height}px)";
                 }
 
-                MediaPlayer1.PIP_Sources_SetSourcePosition(index, _pipInfos[index].Rect, tbStreamTransparency.Value / 100.0f);
-                MediaPlayer1.PIP_Sources_SetSourceOrder(index, _pipInfos[index].ZOrder);
+                // MediaPlayer1.PIP_Sources_SetSourcePosition(index, _pipInfos[index].Rect, tbStreamTransparency.Value / 100.0f);
+                // MediaPlayer1.PIP_Sources_SetSourceOrder(index, _pipInfos[index].ZOrder);
             }
         }
 
@@ -231,24 +227,60 @@ namespace AGView
             string[] filenames = (string[]) e.Data.GetData(DataFormats.FileDrop);
             foreach (var filename in filenames)
             {
-                var info = new PIPInfo();
+                // var info = new PIPInfo();
 
                 var f = Path.GetFileNameWithoutExtension(filename);
                 _imageList.Images.Add(f, GetThumbnail(filename, Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "AGLightThumbnails", f + ".png")));
-                MediaPlayer1.PIP_Sources_Add(filename, 0, 0, 0, 0);
-                lvFiles.Items.Add(f, f);
-                info.Rect = new Rectangle(0, 0, 0, 0);
+                // MediaPlayer1.PIP_Sources_Add(filename, 0, 0, 0, 0);
+                lvFiles.Items.Add(filename, f);
+                // info.Rect = new Rectangle(0, 0, 0, 0);
 
-                info.Alpha = tbStreamTransparency.Value / 100.0f;
+                // info.Alpha = tbStreamTransparency.Value / 100.0f;
            
 
-                info.Filename = filename;
-                info.ZOrder = _lastZOrder--;
+                // info.Filename = filename;
+                // info.ZOrder = _lastZOrder--;
 
-                _pipInfos.Add(info);
+                // _pipInfos.Add(info);
 
                 //lbSourceFiles.SelectedIndex = _pipInfos.Count - 1;
             }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            lvFiles.View = View.SmallIcon;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            lvFiles.View = View.List;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            lvFiles.View = View.LargeIcon;
+        }
+
+        private void lvFiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.lvFiles.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
+            var item = this.lvFiles.SelectedItems[0];
+            MediaPlayer1.PIP_Sources_Add(item.Text, 0, 0, 50, 50);
+            _currentPIPIndex++;
+            MediaPlayer1.PIP_Sources_SetSourceOrder(_currentPIPIndex, _currentPIPIndex + 10);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            // _imageList.ImageSize = new Size(_imageList.ImageSize.Width - 16, _imageList.ImageSize.Height - 9);
+            // lvFiles.RedrawItems(0, lvFiles.Items.Count - 1, true);
+            // lvFiles.Refresh();
+            // lvFiles.Update();
         }
     }
 }
