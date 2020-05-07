@@ -38,6 +38,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2",
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
+    "@streamlabs/obs-studio-node": "https://obsstudionodes3.streamlabs.com/obs-studio-node-0.5.137-iojs-v6.0.3-release.tar.gz",
     "angular-split": "^3.0.2",
     "avconv": "^3.1.0",
     "bootstrap": "^4.3.1",
