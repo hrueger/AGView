@@ -7,7 +7,6 @@ import { NgxFileDropModule } from "ngx-file-drop";
 import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface,
   PerfectScrollbarModule } from "ngx-perfect-scrollbar";
 import { DashboardComponent } from "./_components/dashboard/dashboard.component";
-import { NavbarComponent } from "./_components/navbar/navbar.component";
 import { PathToSlideNamePipe } from "./_pipes/path-to-slide-name.pipe";
 import { PrettyTransitionNamePipe } from "./_pipes/pretty-transition-name.pipe";
 import { AppRoutingModule } from "./app-routing.module";
@@ -22,7 +21,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   declarations: [
     AppComponent,
     DashboardComponent,
-    NavbarComponent,
     PathToSlideNamePipe,
     PrettyTransitionNamePipe,
   ],
