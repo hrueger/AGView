@@ -38,7 +38,7 @@ src/**/*.js
 npm-debug.log
 testem.log
 /typings
-*.gypi
+package-lock.json
 
 # e2e
 /e2e/*.js

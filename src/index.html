@@ -4,24 +4,21 @@
 <head>
     <meta charset="utf-8">
     <title>AGView</title>
-    <base href="">
+    <base href="/">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
 </head>
 
 <body>
-    <app-root>
-        <h4 style="text-align: center; margin-top: 50vh">Loading...</h4>
-    </app-root>
+    <app-root>Loading...</app-root>
+    <script>
+        const customTitlebar = require('custom-electron-titlebar');
+
+        new customTitlebar.Titlebar({
+            backgroundColor: customTitlebar.Color.fromHex('#444')
+        });
+    </script>
 </body>
-
-<script>
-    const customTitlebar = require('custom-electron-titlebar');
-
-    new customTitlebar.Titlebar({
-        backgroundColor: customTitlebar.Color.fromHex('#444')
-    });
-</script>
 
 </html>

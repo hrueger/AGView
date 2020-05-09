@@ -1,11 +1,11 @@
 {
-  "productName": "AGView",
+  "productName": "angular-electron",
   "directories": {
-    "output": "app-builds"
+    "output": "release/"
   },
     "files": [
         "**/*",
-        "!*.ts",
+        "!**/*.ts",
         "!*.code-workspace",
         "!LICENSE.md",
         "!package.json",
@@ -13,7 +13,7 @@
         "!src/",
         "!e2e/",
         "!hooks/",
-        "!.angular-cli.json",
+        "!angular.json",
         "!_config.yml",
         "!karma.conf.js",
         "!tsconfig.json",
@@ -26,13 +26,13 @@
     ]
   },
   "mac": {
-    "icon": "dist",
+    "icon": "dist/assets/icons",
     "target": [
       "dmg"
     ]
   },
   "linux": {
-    "icon": "dist",
+    "icon": "dist/assets/icons",
     "target": [
       "AppImage"
     ]

@@ -1,43 +1,41 @@
-import { HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
-import { AngularSplitModule } from "angular-split";
-import { NgxFileDropModule } from "ngx-file-drop";
-import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface,
-  PerfectScrollbarModule } from "ngx-perfect-scrollbar";
-import { DashboardComponent } from "./_components/dashboard/dashboard.component";
-import { PathToSlideNamePipe } from "./_pipes/path-to-slide-name.pipe";
-import { PrettyTransitionNamePipe } from "./_pipes/pretty-transition-name.pipe";
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
+import 'reflect-metadata';
+import '../polyfills';
 
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true,
-};
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+
+import { AppRoutingModule } from './app-routing.module';
+
+// NG Translate
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+
+import { AppComponent } from './app.component';
+
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
-  bootstrap: [AppComponent],
-  declarations: [
-    AppComponent,
-    DashboardComponent,
-    PathToSlideNamePipe,
-    PrettyTransitionNamePipe,
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
-    PerfectScrollbarModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    AngularSplitModule.forRoot(),
-    NgxFileDropModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
-  providers: [
-    {
-      provide: PERFECT_SCROLLBAR_CONFIG,
-      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
-    },
-  ],
+  providers: [],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

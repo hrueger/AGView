@@ -1,25 +1,17 @@
-import { Component } from "@angular/core";
-import { AppConfig } from "../environments/environment";
-import { ElectronService } from "./_services/electron.service";
+import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { AppConfig } from '../environments/environment';
 
 @Component({
-  selector: "app-root",
-  styleUrls: ["./app.component.scss"],
-  templateUrl: "./app.component.html",
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   constructor(
-    public electronService: ElectronService,
+    private translate: TranslateService
   ) {
-    // console.log("AppConfig", AppConfig);
+    translate.setDefaultLang('en');
 
-    if (electronService.isElectron) {
-      // console.log(process.env);
-      // console.log("Mode electron");
-      // console.log("Electron ipcRenderer", electronService.ipcRenderer);
-      // console.log("NodeJS childProcess", electronService.childProcess);
-    } else {
-      // console.log("Mode web");
-    }
   }
 }
