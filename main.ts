@@ -53,7 +53,7 @@ function createWindow(): BrowserWindow {
 
 try {
 
-  app.allowRendererProcessReuse = true;
+  app.allowRendererProcessReuse = false;
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.

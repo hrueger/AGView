@@ -4,9 +4,14 @@
     "outDir": "../out-tsc/app",
     "module": "es2015",
     "baseUrl": "",
-    "types": []
+    "types": [
+      "node"
+    ]
   },
   "exclude": [
     "**/*.spec.ts"
+  ],
+  "include": [
+    "../node_modules/@streamlabs/obs-studio-node/*.ts"
   ]
 }
