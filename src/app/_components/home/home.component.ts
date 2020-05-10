@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { OBS } from '../../_helpers/obs';
+import { remote, ipcRenderer, ipcMain, app } from "electron";
 
 @Component({
   selector: 'app-home',
@@ -8,12 +8,14 @@ import { OBS } from '../../_helpers/obs';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  obs: OBS;
 
   constructor(private router: Router) { }
 
   ngOnInit(): void {
-    this.obs = new OBS();
-   }
+    remote.ipcMain.emit("obs-action", "initialize", "test", "cool");
+    /*.on("performanceStatistics", (d) => {
+      console.log(d);
+    })*/
+  }
 
 }

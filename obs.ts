@@ -1,16 +1,20 @@
-
-import * as osn from "@streamlabs/obs-studio-node";
+import * as osn from "obs-studio-node";
 import { BrowserWindow } from "electron";
 import { Subject } from "rxjs";
 import { first } from "rxjs/operators"
 import * as path from "path";
 
 export class OBS {
-    private obsInitialized = false;
-    private signals = new Subject();
+    private obsInitialized: boolean = false;
+    private signals: Subject<any> = new Subject();
+    public previewWindow: BrowserWindow;
+
+    constructor(parentWindow: BrowserWindow) {
+        this.initialize(parentWindow);
+    }
 
     // Init the library, launch OBS Studio instance, configure it, set up sources and scene
-    private initialize(win) {
+    private initialize(win: BrowserWindow) {
         if (this.obsInitialized) {
             console.warn("OBS is already initialized, skipping initialization.");
             return;
@@ -74,7 +78,7 @@ export class OBS {
         console.debug('OBS Configured');
     }
 
-    private setupSources(sceneName) {
+    private setupSources(sceneName: string) {
         const videoSource = osn.InputFactory.create('monitor_capture', 'desktop-video');
         const audioSource = osn.InputFactory.create('wasapi_output_capture', 'desktop-audio');
         const micSource = osn.InputFactory.create('wasapi_input_capture', 'mic-audio');
@@ -111,23 +115,29 @@ export class OBS {
         osn.Global.setOutputSource(3, micSource);
     }
 
-    private setupPreviewWindow(parentWindow, sceneName) {
+    private setupPreviewWindow(parentWindow: BrowserWindow, sceneName: string) {
         const displayId = 'display1';
         const displayWidth = 960;
         const displayHeight = 540;
 
-        var cameraWindow = new BrowserWindow({
+        this.previewWindow = new BrowserWindow({
             width: displayWidth,
             height: displayHeight,
             parent: parentWindow,
+            x: 2000,
+            y: 50,
+        });
+        this.previewWindow.on("resize", () => {
+            const [width, height] = this.previewWindow.getSize();
+            osn.NodeObs.OBS_content_resizeDisplay(displayId, width, height);
         });
 
         osn.NodeObs.OBS_content_createSourcePreviewDisplay(
-            cameraWindow.getNativeWindowHandle(),
+            this.previewWindow.getNativeWindowHandle(),
             sceneName, // or use camera source Id here
             displayId,
         );
-        osn.NodeObs.OBS_content_setShouldDrawUI(displayId, false);
+        osn.NodeObs.OBS_content_setShouldDrawUI(displayId, true);
         osn.NodeObs.OBS_content_resizeDisplay(displayId, displayWidth, displayHeight);
     }
 
@@ -171,7 +181,7 @@ export class OBS {
         console.debug('Stopped!');
     }
 
-    private shutdown() {
+    public shutdown() {
         if (!this.obsInitialized) {
             console.debug('OBS is already shut down!');
             return false;
@@ -189,6 +199,9 @@ export class OBS {
 
         console.debug('OBS shutdown successfully');
 
+        if (this.previewWindow) {
+            this.previewWindow.close();
+        }
         return true;
     }
 

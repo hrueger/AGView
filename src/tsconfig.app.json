@@ -12,6 +12,6 @@
     "**/*.spec.ts"
   ],
   "include": [
-    "../node_modules/@streamlabs/obs-studio-node/*.ts"
+    "../node_modules/obs-studio-node/*.ts"
   ]
 }

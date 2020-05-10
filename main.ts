@@ -1,8 +1,10 @@
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, screen, ipcRenderer, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import { OBS } from "./obs";
 
 let win: BrowserWindow = null;
+let obs: OBS = null;
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
 
@@ -39,6 +41,20 @@ function createWindow(): BrowserWindow {
       slashes: true
     }));
   }
+
+  ipcMain.on("obs-action", (action: any, ...data) => {
+    switch (action) {
+      case "initialize":
+        if (obs) {
+          obs.shutdown();
+          obs = undefined;
+        }
+        obs = new OBS(win);
+        break;
+      default:
+        console.log("unknown event:", action, data)
+    }
+  });
 
   // Emitted when the window is closed.
   win.on('closed', () => {

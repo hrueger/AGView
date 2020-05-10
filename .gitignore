@@ -7,6 +7,7 @@
 /app-builds
 /release
 main.js
+obs.js
 src/**/*.js
 !src/karma.conf.js
 *.js.map
@@ -38,7 +39,7 @@ src/**/*.js
 npm-debug.log
 testem.log
 /typings
-package-lock.json
+/osn-data
 
 # e2e
 /e2e/*.js
