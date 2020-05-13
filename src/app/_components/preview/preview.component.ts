@@ -19,7 +19,10 @@ export class PreviewComponent {
     remote.ipcMain.on("preview-height", (h: any) => {
       this.container.nativeElement.style.height = `${h.height}px`;
     });
-    this.resizePreview(this.container.nativeElement)();
+    
+    const { width, height, x, y } = this.container.nativeElement.getBoundingClientRect();
+    remote.ipcMain.emit("preview-init", { width, height, x, y });
+    
   }
 
   private resizePreview(container) {

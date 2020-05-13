@@ -14,9 +14,12 @@
     <app-root>Loading...</app-root>
     <script>
         const customTitlebar = require("custom-electron-titlebar");
+        const path = require("path");
 
         new customTitlebar.Titlebar({
-            backgroundColor: customTitlebar.Color.fromHex("#444")
+            backgroundColor: customTitlebar.Color.fromHex("#444"),
+            icon: "assets/icons/logo.png",
+            enableMnemonics: true,
         });
     </script>
 </body>

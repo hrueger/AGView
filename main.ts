@@ -17,6 +17,7 @@ function createWindow(): BrowserWindow {
   win = new BrowserWindow({
     width: size.width * 0.5,
     height: size.height * 0.5,
+    icon: path.join(__dirname, "src/assets/icons/logo.png"),
     webPreferences: {
       nodeIntegration: true,
       allowRunningInsecureContent: (serve) ? true : false,
