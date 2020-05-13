@@ -11,6 +11,7 @@ import { AppRoutingModule } from "./app-routing.module";
 // NG Translate
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { AngularSplitModule } from 'angular-split';
 
 
 import { AppComponent } from "./app.component";
@@ -29,6 +30,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
+    AngularSplitModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

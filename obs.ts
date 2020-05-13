@@ -267,7 +267,7 @@ export class OBS {
     public resizePreview(bounds) {
         const { aspectRatio, scaleFactor } = this.displayInfo();
         const displayWidth = Math.floor(bounds.width);
-        const displayHeight = Math.round(displayWidth / aspectRatio);
+        const displayHeight = Math.round(bounds.height);
         const displayX = Math.floor(bounds.x);
         const displayY = Math.floor(bounds.y);
 

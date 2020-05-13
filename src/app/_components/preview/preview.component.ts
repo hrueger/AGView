@@ -17,7 +17,7 @@ export class PreviewComponent {
     console.log(this.container);
     document.addEventListener("scroll", this.resizePreview(this.container));
     remote.ipcMain.on("preview-height", (h: any) => {
-      this.container.nativeElement.style.height = `${h.height}px`;
+      //this.container.nativeElement.style.height = `${h.height}px`;
     });
     
     const { width, height, x, y } = this.container.nativeElement.getBoundingClientRect();
@@ -30,6 +30,10 @@ export class PreviewComponent {
       const { width, height, x, y } = container.nativeElement.getBoundingClientRect();
       remote.ipcMain.emit("preview-bounds", { width, height, x, y });
     }
+  }
+
+  public onResized(event) {
+    this.resizePreview(this.container)();
   }
 
 }

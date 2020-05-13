@@ -1,4 +1,15 @@
-<h1 class="title">
-    AGView
-</h1>
-<preview></preview>
+<as-split unit="pixel" #mainSplit="asSplit">
+    <as-split-area>
+        <h1>AGView</h1>
+    </as-split-area>
+    <as-split-area>
+        <as-split unit="pixel" direction="vertical" #rightSplit="asSplit">
+            <as-split-area size="30">
+                <preview #preview></preview>
+            </as-split-area>
+            <as-split-area size="70">
+                <h1>Settings</h1>
+            </as-split-area>
+        </as-split>
+    </as-split-area>
+</as-split>
