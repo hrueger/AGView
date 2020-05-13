@@ -116,29 +116,6 @@ export class OBS {
     }
 
     public setupPreview(parentWindow: BrowserWindow, bounds) {
-        /*const displayId = "display1";
-        const displayWidth = 960;
-        const displayHeight = 540;
-
-        this.previewWindow = new BrowserWindow({
-            width: displayWidth,
-            height: displayHeight,
-            parent: parentWindow,
-            x: 2000,
-            y: 50,
-        });
-        this.previewWindow.on("resize", () => {
-            const [width, height] = this.previewWindow.getSize();
-            osn.NodeObs.OBS_content_resizeDisplay(displayId, width, height);
-        });
-
-        osn.NodeObs.OBS_content_createSourcePreviewDisplay(
-            this.previewWindow.getNativeWindowHandle(),
-            sceneName, // or use camera source Id here
-            displayId,
-        );
-        osn.NodeObs.OBS_content_setShouldDrawUI(displayId, true);
-        osn.NodeObs.OBS_content_resizeDisplay(displayId, displayWidth, displayHeight);*/
         osn.NodeObs.OBS_content_createSourcePreviewDisplay(
             parentWindow.getNativeWindowHandle(),
             "", // or use camera source Id here
@@ -147,6 +124,34 @@ export class OBS {
         osn.NodeObs.OBS_content_setShouldDrawUI("previewDisplay", false);
 
         return this.resizePreview(bounds);
+    }
+
+    public setupProjector(parentWindow) {
+        const displayId = "projector";
+        const displayWidth = 960;
+        const displayHeight = 540;
+
+        this.previewWindow = new BrowserWindow({
+            width: displayWidth,
+            height: displayHeight,
+            parent: parentWindow,
+        });
+        this.previewWindow.on("resize", () => {
+            const [width, height] = this.previewWindow.getSize();
+            osn.NodeObs.OBS_content_resizeDisplay(displayId, width, height);
+        });
+
+        osn.NodeObs.OBS_content_createSourcePreviewDisplay(
+            this.previewWindow.getNativeWindowHandle(),
+            "", // or use camera source Id here
+            displayId,
+        );
+        osn.NodeObs.OBS_content_setShouldDrawUI(displayId, true);
+        osn.NodeObs.OBS_content_resizeDisplay(displayId, displayWidth, displayHeight);
+    }
+
+    public endProjector(win) {
+        win.close();
     }
 
     private async start() {

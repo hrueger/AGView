@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { Component, ViewChild, ElementRef } from "@angular/core";
 import { remote } from "electron";
-import ResizeObserver from "resize-observer-polyfill";
 
 @Component({
   selector: "preview",
@@ -16,13 +15,8 @@ export class PreviewComponent {
     remote.getCurrentWindow().on("resize", this.resizePreview(this.container));
     console.log(this.container);
     document.addEventListener("scroll", this.resizePreview(this.container));
-    remote.ipcMain.on("preview-height", (h: any) => {
-      //this.container.nativeElement.style.height = `${h.height}px`;
-    });
-    
     const { width, height, x, y } = this.container.nativeElement.getBoundingClientRect();
     remote.ipcMain.emit("preview-init", { width, height, x, y });
-    
   }
 
   private resizePreview(container) {

@@ -76,13 +76,19 @@ function createWindow(): BrowserWindow {
                 console.log("unknown event:", action, data)
         }
     });
-
+    let projector;
     ipcMain.on("preview-init", (bounds) => {
         ipcMain.emit("preview-height", obs.setupPreview(win, bounds));
     });
 
     ipcMain.on("preview-bounds", (bounds) => {
         ipcMain.emit("preview-height", obs.resizePreview(bounds));
+    });
+    ipcMain.on("projector-init", () => {
+        projector = obs.setupProjector(win);
+    });
+    ipcMain.on("projector-end", () => {
+        obs.endProjector(projector);
     });
 
     // Emitted when the window is closed.

@@ -17,6 +17,7 @@ import { AngularSplitModule } from "angular-split";
 import { AppComponent } from "./app.component";
 import { HomeComponent } from "./_components/home/home.component";
 import { PreviewComponent } from "./_components/preview/preview.component";
+import { SettingsComponent } from './_components/settings/settings.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -24,7 +25,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, PreviewComponent],
+  declarations: [AppComponent, HomeComponent, PreviewComponent, SettingsComponent],
   imports: [
     BrowserModule,
     FormsModule,
