@@ -1,8 +1,11 @@
 import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from "@angular/core";
 import { Router } from "@angular/router";
-import { remote, ipcRenderer, ipcMain, app } from "electron";
+import { remote } from "electron";
 import { PreviewComponent } from "../preview/preview.component";
-import { SplitComponent } from 'angular-split';
+import { SettingsService } from "../../_services/settings.service";
+import { SplitComponent } from "angular-split";
+import * as path from "path";
+import { ShowService } from "../../_services/show.service";
 
 @Component({
   selector: "app-home",
@@ -15,7 +18,7 @@ export class HomeComponent {
   @ViewChild("preview") private preview: PreviewComponent;
   @ViewChild("mainSplit") public mainSplit: SplitComponent;
   @ViewChild("rightSplit") public rightSplit: SplitComponent;
-  constructor(private router: Router) { }
+  constructor(private settingsService: SettingsService, private showService: ShowService) { }
 
   ngOnInit() {
     
@@ -33,4 +36,18 @@ export class HomeComponent {
     })*/
   }
 
+  public addVideos() {
+    const videos = remote.dialog.showOpenDialogSync({
+      title: "Add video files",
+      filters: [
+        { name: "Movies", extensions: ["mkv", "avi", "mp4"] },
+      ],
+      defaultPath: this.settingsService.store.get("openVideosDefaultPath"),
+    });
+    if (!videos || videos.length == 0) {
+      return;
+    }
+    this.settingsService.store.set("openVideosDefaultPath", path.basename(videos[0]));
+    this.showService.addVideos(videos);
+  }
 }

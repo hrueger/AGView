@@ -1,13 +1,13 @@
 <as-split unit="pixel" #mainSplit="asSplit">
-    <as-split-area>
-        <h1>AGView</h1>
+    <as-split-area class="p-5">
+        <button class="btn btn-outline-primary btn-block" (click)="addVideos()">Add videos</button>
     </as-split-area>
     <as-split-area>
         <as-split unit="pixel" direction="vertical" #rightSplit="asSplit">
-            <as-split-area size="30">
+            <as-split-area>
                 <preview #preview></preview>
             </as-split-area>
-            <as-split-area size="70">
+            <as-split-area>
                 <h1>Settings</h1>
             </as-split-area>
         </as-split>

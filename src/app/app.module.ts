@@ -3,7 +3,7 @@ import "../polyfills";
 
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule, HttpClient } from "@angular/common/http";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -11,7 +11,7 @@ import { AppRoutingModule } from "./app-routing.module";
 // NG Translate
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { AngularSplitModule } from 'angular-split';
+import { AngularSplitModule } from "angular-split";
 
 
 import { AppComponent } from "./app.component";
