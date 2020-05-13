@@ -22,9 +22,9 @@ export class OBS {
 
         this.initOBS();
         this.configureOBS();
-        const sceneName = 'test-scene';
+        const sceneName = "test-scene";
         this.setupSources(sceneName);
-        this.setupPreviewWindow(win, sceneName);
+        this.setupPreview(win, sceneName);
         this.obsInitialized = true;
 
         setInterval(() => {
@@ -35,23 +35,23 @@ export class OBS {
     }
 
     private initOBS() {
-        console.debug('Initializing OBS...');
-        osn.NodeObs.IPC.host('obs-studio-node-example'); // Usually some UUIDs go there
-        osn.NodeObs.SetWorkingDirectory(path.join(__dirname, 'node_modules', 'obs-studio-node'));
+        console.debug("Initializing OBS...");
+        osn.NodeObs.IPC.host("obs-studio-node-example"); // Usually some UUIDs go there
+        osn.NodeObs.SetWorkingDirectory(path.join(__dirname, "node_modules", "obs-studio-node"));
 
-        const obsDataPath = path.join(__dirname, 'osn-data'); // OBS Studio configs and logs
+        const obsDataPath = path.join(__dirname, "osn-data"); // OBS Studio configs and logs
         // Arguments: locale, path to directory where configuration and logs will be stored, your application version
-        const initResult = osn.NodeObs.OBS_API_initAPI('en-US', obsDataPath, '1.0.0');
+        const initResult = osn.NodeObs.OBS_API_initAPI("en-US", obsDataPath, "1.0.0");
 
         if (initResult !== 0) {
             const errorReasons = {
-                '-2': 'DirectX could not be found on your system. Please install the latest version of DirectX for your machine here <https://www.microsoft.com/en-us/download/details.aspx?id=35?> and try again.',
-                '-5': 'Failed to initialize OBS. Your video drivers may be out of date, or Streamlabs OBS may not be supported on your system.',
+                "-2": "DirectX could not be found on your system. Please install the latest version of DirectX for your machine here <https://www.microsoft.com/en-us/download/details.aspx?id=35?> and try again.",
+                "-5": "Failed to initialize OBS. Your video drivers may be out of date, or Streamlabs OBS may not be supported on your system.",
             }
 
             const errorMessage = errorReasons[initResult.toString()] || `An unknown error #${initResult} was encountered while initializing OBS.`;
 
-            console.error('OBS init failure', errorMessage);
+            console.error("OBS init failure", errorMessage);
 
             this.shutdown();
 
@@ -62,29 +62,29 @@ export class OBS {
             this.signals.next(signalInfo);
         });
 
-        console.debug('OBS initialized');
+        console.debug("OBS initialized");
     }
 
     private configureOBS() {
-        console.debug('Configuring OBS');
-        this.setSetting('Output', 'Mode', 'Simple');
-        const availableEncoders = this.getAvailableValues('Output', 'Recording', 'RecEncoder');
-        this.setSetting('Output', 'RecEncoder', availableEncoders.slice(-1)[0] || 'x264');
-        this.setSetting('Output', 'FilePath', path.join(__dirname, 'videos'));
-        this.setSetting('Output', 'RecFormat', 'mkv');
-        this.setSetting('Output', 'VBitrate', 10000); // 10 Mbps
-        this.setSetting('Video', 'FPSCommon', 60);
+        console.debug("Configuring OBS");
+        this.setSetting("Output", "Mode", "Simple");
+        const availableEncoders = this.getAvailableValues("Output", "Recording", "RecEncoder");
+        this.setSetting("Output", "RecEncoder", availableEncoders.slice(-1)[0] || "x264");
+        this.setSetting("Output", "FilePath", path.join(__dirname, "videos"));
+        this.setSetting("Output", "RecFormat", "mkv");
+        this.setSetting("Output", "VBitrate", 10000); // 10 Mbps
+        this.setSetting("Video", "FPSCommon", 60);
 
-        console.debug('OBS Configured');
+        console.debug("OBS Configured");
     }
 
     private setupSources(sceneName: string) {
-        const videoSource = osn.InputFactory.create('monitor_capture', 'desktop-video');
-        const audioSource = osn.InputFactory.create('wasapi_output_capture', 'desktop-audio');
-        const micSource = osn.InputFactory.create('wasapi_input_capture', 'mic-audio');
+        const videoSource = osn.InputFactory.create("monitor_capture", "desktop-video");
+        const audioSource = osn.InputFactory.create("wasapi_output_capture", "desktop-audio");
+        const micSource = osn.InputFactory.create("wasapi_input_capture", "mic-audio");
 
         // Get information about prinary display
-        const { screen } = require('electron');
+        const { screen } = require("electron");
         const primaryDisplay = screen.getPrimaryDisplay();
         const realDisplayWidth = primaryDisplay.size.width * primaryDisplay.scaleFactor;
         const realDisplayHeight = primaryDisplay.size.height * primaryDisplay.scaleFactor;
@@ -92,16 +92,16 @@ export class OBS {
 
         // Update source settings:
         let settings = videoSource.settings;
-        settings['width'] = realDisplayWidth;
-        settings['height'] = realDisplayHeight;
+        settings["width"] = realDisplayWidth;
+        settings["height"] = realDisplayHeight;
         videoSource.update(settings);
         videoSource.save();
 
         // Set output video size to 1920x1080
         const outputWidth = 1920;
         const outputHeight = Math.round(outputWidth / aspectRatio);
-        this.setSetting('Video', 'Base', `${outputWidth}x${outputHeight}`);
-        this.setSetting('Video', 'Output', `${outputWidth}x${outputHeight}`);
+        this.setSetting("Video", "Base", `${outputWidth}x${outputHeight}`);
+        this.setSetting("Video", "Output", `${outputWidth}x${outputHeight}`);
         const videoScaleFactor = realDisplayWidth / outputWidth;
 
         // A scene is necessary here to properly scale captured screen size to output video size
@@ -115,8 +115,8 @@ export class OBS {
         osn.Global.setOutputSource(3, micSource);
     }
 
-    private setupPreviewWindow(parentWindow: BrowserWindow, sceneName: string) {
-        const displayId = 'display1';
+    public setupPreview(parentWindow: BrowserWindow, bounds) {
+        /*const displayId = "display1";
         const displayWidth = 960;
         const displayHeight = 540;
 
@@ -138,7 +138,15 @@ export class OBS {
             displayId,
         );
         osn.NodeObs.OBS_content_setShouldDrawUI(displayId, true);
-        osn.NodeObs.OBS_content_resizeDisplay(displayId, displayWidth, displayHeight);
+        osn.NodeObs.OBS_content_resizeDisplay(displayId, displayWidth, displayHeight);*/
+        osn.NodeObs.OBS_content_createSourcePreviewDisplay(
+            parentWindow.getNativeWindowHandle(),
+            "", // or use camera source Id here
+            "previewDisplay",
+        );
+        osn.NodeObs.OBS_content_setShouldDrawUI("previewDisplay", false);
+
+        return this.resizePreview(bounds);
     }
 
     private async start() {
@@ -146,58 +154,58 @@ export class OBS {
 
         let signalInfo;
 
-        console.debug('Starting recording...');
+        console.debug("Starting recording...");
         osn.NodeObs.OBS_service_startRecording();
 
-        console.debug('Started?');
+        console.debug("Started?");
         signalInfo = await this.getNextSignalInfo();
 
-        if (signalInfo.signal === 'Stop') {
+        if (signalInfo.signal === "Stop") {
             throw Error(signalInfo.error);
         }
 
-        console.debug('Started signalInfo.type:', signalInfo.type, '(expected: "recording")');
-        console.debug('Started signalInfo.signal:', signalInfo.signal, '(expected: "start")');
-        console.debug('Started!');
+        console.debug("Started signalInfo.type:", signalInfo.type, "(expected: \"recording\")");
+        console.debug("Started signalInfo.signal:", signalInfo.signal, "(expected: \"start\")");
+        console.debug("Started!");
     }
 
     private async stop() {
         let signalInfo;
 
-        console.debug('Stopping recording...');
+        console.debug("Stopping recording...");
         osn.NodeObs.OBS_service_stopRecording();
-        console.debug('Stopped?');
+        console.debug("Stopped?");
 
         signalInfo = await this.getNextSignalInfo();
 
-        console.debug('On stop signalInfo.type:', signalInfo.type, '(expected: "recording")');
-        console.debug('On stop signalInfo.signal:', signalInfo.signal, '(expected: "stopping")');
+        console.debug("On stop signalInfo.type:", signalInfo.type, "(expected: \"recording\")");
+        console.debug("On stop signalInfo.signal:", signalInfo.signal, "(expected: \"stopping\")");
 
         signalInfo = await this.getNextSignalInfo();
 
-        console.debug('After stop signalInfo.type:', signalInfo.type, '(expected: "recording")');
-        console.debug('After stop signalInfo.signal:', signalInfo.signal, '(expected: "stop")');
+        console.debug("After stop signalInfo.type:", signalInfo.type, "(expected: \"recording\")");
+        console.debug("After stop signalInfo.signal:", signalInfo.signal, "(expected: \"stop\")");
 
-        console.debug('Stopped!');
+        console.debug("Stopped!");
     }
 
     public shutdown() {
         if (!this.obsInitialized) {
-            console.debug('OBS is already shut down!');
+            console.debug("OBS is already shut down!");
             return false;
         }
 
-        console.debug('Shutting down OBS...');
+        console.debug("Shutting down OBS...");
 
         try {
             osn.NodeObs.OBS_service_removeCallback();
             osn.NodeObs.IPC.disconnect();
             this.obsInitialized = false;
         } catch (e) {
-            throw Error('Exception when shutting down OBS process' + e);
+            throw Error("Exception when shutting down OBS process" + e);
         }
 
-        console.debug('OBS shutdown successfully');
+        console.debug("OBS shutdown successfully");
 
         if (this.previewWindow) {
             this.previewWindow.close();
@@ -251,7 +259,37 @@ export class OBS {
     private getNextSignalInfo() {
         return new Promise((resolve, reject) => {
             this.signals.pipe(first()).subscribe(signalInfo => resolve(signalInfo));
-            setTimeout(() => reject('Output signal timeout'), 30000);
+            setTimeout(() => reject("Output signal timeout"), 30000);
         });
     }
+
+
+    public resizePreview(bounds) {
+        const { aspectRatio, scaleFactor } = this.displayInfo();
+        const displayWidth = Math.floor(bounds.width);
+        const displayHeight = Math.round(displayWidth / aspectRatio);
+        const displayX = Math.floor(bounds.x);
+        const displayY = Math.floor(bounds.y);
+
+        osn.NodeObs.OBS_content_resizeDisplay("previewDisplay", displayWidth * scaleFactor, displayHeight * scaleFactor);
+        osn.NodeObs.OBS_content_moveDisplay("previewDisplay", displayX * scaleFactor, displayY * scaleFactor);
+
+        return { height: displayHeight }
+    }
+
+    private displayInfo() {
+        const { screen } = require("electron");
+        const primaryDisplay = screen.getPrimaryDisplay();
+        const { width, height } = primaryDisplay.size;
+        const { scaleFactor } = primaryDisplay;
+        return {
+            width,
+            height,
+            scaleFactor: scaleFactor,
+            aspectRatio: width / height,
+            physicalWidth: width * scaleFactor,
+            physicalHeight: height * scaleFactor,
+        }
+    }
+
 }

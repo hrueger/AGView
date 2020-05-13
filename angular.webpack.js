@@ -3,17 +3,17 @@
  */
 
 module.exports = (config, options) => {
-    config.target = 'electron-renderer';
+    config.target = "electron-renderer";
     if (options.customWebpackConfig.target) {
         config.target = options.customWebpackConfig.target;
     } else if (options.fileReplacements) {
         for (let fileReplacement of options.fileReplacements) {
-            if (fileReplacement.replace !== 'src/environments/environment.ts') {
+            if (fileReplacement.replace !== "src/environments/environment.ts") {
                 continue;
             }
 
-            let fileReplacementParts = fileReplacement['with'].split('.');
-            if (['dev', 'prod', 'test', 'electron-renderer'].indexOf(fileReplacementParts[1]) < 0) {
+            let fileReplacementParts = fileReplacement["with"].split(".");
+            if (["dev", "prod", "test", "electron-renderer"].indexOf(fileReplacementParts[1]) < 0) {
                 config.target = fileReplacementParts[1];
             }
             break;
@@ -21,7 +21,7 @@ module.exports = (config, options) => {
     }
     config.module.rules.push({
         test: /\.node$/,
-        use: 'node-loader'
+        use: "node-loader"
     });
     return config;
 }

@@ -30,10 +30,10 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.13.0",
-        "obs-studio-node": "https://obsstudionodes3.streamlabs.com/obs-studio-node-0.5.137-iojs-v6.0.3-release.tar.gz",
         "bootstrap": "4.4.1",
         "custom-electron-titlebar": "3.2.2-hotfix62",
-        "ngx-perfect-scrollbar": "^9.0.0"
+        "ngx-perfect-scrollbar": "^9.0.0",
+        "obs-studio-node": "https://obsstudionodes3.streamlabs.com/obs-studio-node-0.5.137-iojs-v6.0.3-release.tar.gz"
     },
     "devDependencies": {
         "@angular-builders/custom-webpack": "9.1.0",
