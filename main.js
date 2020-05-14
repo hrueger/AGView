@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var electron_1 = require("electron");
 var path = require("path");
 var url = require("url");
-var obs_1 = require("./obs");
+var obs_1 = require("./src/worker/obs");
 var store_1 = require("./src/app/_helpers/store");
 var win = null;
 var obs = null;
@@ -87,6 +87,9 @@ function createWindow() {
     });
     electron_1.ipcMain.on("projector-end", function () {
         obs.endProjector(projector);
+    });
+    electron_1.ipcMain.on("add-videos", function (videos) {
+        obs.addFile(videos[0]);
     });
     // Emitted when the window is closed.
     win.on("closed", function () {

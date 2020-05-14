@@ -3,11 +3,17 @@ import { BrowserWindow } from "electron";
 import { Subject } from "rxjs";
 import { first } from "rxjs/operators"
 import * as path from "path";
+import * as fs from "fs";
+import * as uuid from "uuid/v4";
+import { IInput, IScene } from "obs-studio-node";
 
 export class OBS {
     private obsInitialized: boolean = false;
     private signals: Subject<any> = new Subject();
     public previewWindow: BrowserWindow;
+    private sources: IInput[] = [];
+    private scenes: IScene[] = [];
+    videoScaleFactor: number;
 
     constructor(parentWindow: BrowserWindow) {
         this.initialize(parentWindow);
@@ -37,9 +43,9 @@ export class OBS {
     private initOBS() {
         console.debug("Initializing OBS...");
         osn.NodeObs.IPC.host("obs-studio-node-example"); // Usually some UUIDs go there
-        osn.NodeObs.SetWorkingDirectory(path.join(__dirname, "node_modules", "obs-studio-node"));
+        osn.NodeObs.SetWorkingDirectory(path.join(__dirname, "../../node_modules/obs-studio-node"));
 
-        const obsDataPath = path.join(__dirname, "osn-data"); // OBS Studio configs and logs
+        const obsDataPath = path.join(__dirname, "../../osn-data"); // OBS Studio configs and logs
         // Arguments: locale, path to directory where configuration and logs will be stored, your application version
         const initResult = osn.NodeObs.OBS_API_initAPI("en-US", obsDataPath, "1.0.0");
 
@@ -70,7 +76,7 @@ export class OBS {
         this.setSetting("Output", "Mode", "Simple");
         const availableEncoders = this.getAvailableValues("Output", "Recording", "RecEncoder");
         this.setSetting("Output", "RecEncoder", availableEncoders.slice(-1)[0] || "x264");
-        this.setSetting("Output", "FilePath", path.join(__dirname, "videos"));
+        this.setSetting("Output", "FilePath", path.join(__dirname, "../videos"));
         this.setSetting("Output", "RecFormat", "mkv");
         this.setSetting("Output", "VBitrate", 10000); // 10 Mbps
         this.setSetting("Video", "FPSCommon", 60);
@@ -80,8 +86,6 @@ export class OBS {
 
     private setupSources(sceneName: string) {
         const videoSource = osn.InputFactory.create("monitor_capture", "desktop-video");
-        const audioSource = osn.InputFactory.create("wasapi_output_capture", "desktop-audio");
-        const micSource = osn.InputFactory.create("wasapi_input_capture", "mic-audio");
 
         // Get information about prinary display
         const { screen } = require("electron");
@@ -102,17 +106,15 @@ export class OBS {
         const outputHeight = Math.round(outputWidth / aspectRatio);
         this.setSetting("Video", "Base", `${outputWidth}x${outputHeight}`);
         this.setSetting("Video", "Output", `${outputWidth}x${outputHeight}`);
-        const videoScaleFactor = realDisplayWidth / outputWidth;
+        this.videoScaleFactor = realDisplayWidth / outputWidth;
 
         // A scene is necessary here to properly scale captured screen size to output video size
-        const scene = osn.SceneFactory.create(sceneName);
-        const sceneItem = scene.add(videoSource);
-        sceneItem.scale = { x: 1.0 / videoScaleFactor, y: 1.0 / videoScaleFactor };
+        this.scenes[0] = osn.SceneFactory.create(sceneName);
+        const sceneItem = this.scenes[0].add(videoSource);
+        sceneItem.scale = { x: 1.0 / this.videoScaleFactor, y: 1.0 / this.videoScaleFactor };
 
         // Tell recorder to use this source (I'm not sure if this is the correct way to use the first argument `channel`)
-        osn.Global.setOutputSource(1, scene);
-        osn.Global.setOutputSource(2, audioSource);
-        osn.Global.setOutputSource(3, micSource);
+        osn.Global.setOutputSource(1, this.scenes[0]);
     }
 
     public setupPreview(parentWindow: BrowserWindow, bounds) {
@@ -154,44 +156,76 @@ export class OBS {
         win.close();
     }
 
-    private async start() {
-        if (!this.obsInitialized) this.initialize(undefined);
+    public addFile(path: string) {
+        console.log("add", path)
+        const realpath = fs.realpathSync(path);
+        const SUPPORTED_EXT = {
+            image_source: ['png', 'jpg', 'jpeg', 'tga', 'bmp'],
+            ffmpeg_source: [
+                'mp4',
+                'ts',
+                'mov',
+                'flv',
+                'mkv',
+                'avi',
+                'mp3',
+                'ogg',
+                'aac',
+                'wav',
+                'gif',
+                'webm',
+            ],
+            browser_source: ['html'],
+            text_gdiplus: ['txt'],
+        };
+        let ext = realpath.split('.').splice(-1)[0];
+        if (!ext) return null;
+        ext = ext.toLowerCase();
+        const filename = path.split('\\').splice(-1)[0];
 
-        let signalInfo;
-
-        console.debug("Starting recording...");
-        osn.NodeObs.OBS_service_startRecording();
-
-        console.debug("Started?");
-        signalInfo = await this.getNextSignalInfo();
-
-        if (signalInfo.signal === "Stop") {
-            throw Error(signalInfo.error);
+        const types = Object.keys(SUPPORTED_EXT);
+        for (const type of types) {
+            if (!SUPPORTED_EXT[type].includes(ext)) continue;
+            let settings = null;
+            if (type === 'image_source') {
+                settings = { file: path };
+            } else if (type === 'browser_source') {
+                settings = {
+                    is_local_file: true,
+                    local_file: path,
+                };
+            } else if (type === 'ffmpeg_source') {
+                settings = {
+                    is_local_file: true,
+                    local_file: path,
+                    looping: true,
+                };
+            } else if (type === 'text_gdiplus') {
+                settings = {
+                    read_from_file: true,
+                    file: path,
+                };
+            }
+            if (settings) {
+                const s = this.createSource(filename, type, settings)
+                const sceneItem = this.scenes[0].add(s);
+                sceneItem.scale = { x: 1.0 / this.videoScaleFactor, y: 1.0 / this.videoScaleFactor };
+                return s;
+            };
         }
-
-        console.debug("Started signalInfo.type:", signalInfo.type, "(expected: \"recording\")");
-        console.debug("Started signalInfo.signal:", signalInfo.signal, "(expected: \"start\")");
-        console.debug("Started!");
+        return null;
     }
 
-    private async stop() {
-        let signalInfo;
-
-        console.debug("Stopping recording...");
-        osn.NodeObs.OBS_service_stopRecording();
-        console.debug("Stopped?");
-
-        signalInfo = await this.getNextSignalInfo();
-
-        console.debug("On stop signalInfo.type:", signalInfo.type, "(expected: \"recording\")");
-        console.debug("On stop signalInfo.signal:", signalInfo.signal, "(expected: \"stopping\")");
-
-        signalInfo = await this.getNextSignalInfo();
-
-        console.debug("After stop signalInfo.type:", signalInfo.type, "(expected: \"recording\")");
-        console.debug("After stop signalInfo.signal:", signalInfo.signal, "(expected: \"stop\")");
-
-        console.debug("Stopped!");
+    private createSource(
+        name: string,
+        type,
+        settings: any = {},
+        options: any = {},
+    ) {
+        const id: string = options.sourceId || `${type}_${uuid()}`;
+        const obsInputSettings = settings;
+        const obsInput = osn.InputFactory.create(type, id, obsInputSettings);
+        return obsInput;
     }
 
     public shutdown() {
@@ -261,16 +295,8 @@ export class OBS {
         return parameterSettings.values.map(value => Object.values(value)[0]);
     }
 
-    private getNextSignalInfo() {
-        return new Promise((resolve, reject) => {
-            this.signals.pipe(first()).subscribe(signalInfo => resolve(signalInfo));
-            setTimeout(() => reject("Output signal timeout"), 30000);
-        });
-    }
-
-
     public resizePreview(bounds) {
-        const { aspectRatio, scaleFactor } = this.displayInfo();
+        const { scaleFactor } = this.displayInfo();
         const displayWidth = Math.floor(bounds.width);
         const displayHeight = Math.round(bounds.height);
         const displayX = Math.floor(bounds.x);

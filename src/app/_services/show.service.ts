@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
 import { TitleService } from "./title.service";
+import { remote } from "electron";
 
 @Injectable({
   providedIn: "root"
 })
 export class ShowService {
-  addVideos(videos: string[]) {
-    throw new Error("Method not implemented.");
+  public addVideos(videos: string[]) {
+    remote.ipcMain.emit("add-videos", videos);
   }
   private currentShowFile: string;
   private showLoaded: boolean = false;

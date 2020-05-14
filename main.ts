@@ -90,6 +90,9 @@ function createWindow(): BrowserWindow {
     ipcMain.on("projector-end", () => {
         obs.endProjector(projector);
     });
+    ipcMain.on("add-videos", (videos) => {
+        obs.addFile(videos[0]);
+    });
 
     // Emitted when the window is closed.
     win.on("closed", () => {
