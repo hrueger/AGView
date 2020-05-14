@@ -153,6 +153,7 @@ export class OBS {
     }
 
     public endProjector() {
+        osn.NodeObs.OBS_content_destroyDisplay("projector");
         this.previewWindow.close();
     }
 
