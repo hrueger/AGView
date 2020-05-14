@@ -32,6 +32,7 @@ function createWindow(): BrowserWindow {
         icon: path.join(__dirname, "src/assets/icons/favicon.png"),
         webPreferences: {
             nodeIntegration: true,
+            webSecurity: false,
             allowRunningInsecureContent: (serve) ? true : false,
         },
         frame: false,
