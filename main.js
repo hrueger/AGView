@@ -34,6 +34,7 @@ function createWindow() {
             allowRunningInsecureContent: (serve) ? true : false,
         },
         frame: false,
+        backgroundColor: "#1E1E1E",
     });
     if (isMaximized) {
         win.maximize();
