@@ -14,11 +14,15 @@ import { ShowService } from "../../_services/show.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-
+  public mainSplitSize: number;
+  public previewSplitSize: number;
   @ViewChild("preview") private preview: PreviewComponent;
   @ViewChild("mainSplit") public mainSplit: SplitComponent;
   @ViewChild("rightSplit") public rightSplit: SplitComponent;
-  constructor(private settingsService: SettingsService, private showService: ShowService) { }
+  constructor(private settingsService: SettingsService, private showService: ShowService) {
+    this.mainSplitSize =  this.settingsService.store.get("mainSplitSize");;
+    this.previewSplitSize =  this.settingsService.store.get("previewSplitSize");;
+  }
 
   ngOnInit() {
     
@@ -26,14 +30,21 @@ export class HomeComponent {
   }
   ngAfterViewInit(): void {
     this.mainSplit.dragProgress$.subscribe((e) => {
+      this.storeSplitSizes();
       this.preview.onResized(e);
     });
     this.rightSplit.dragProgress$.subscribe((e) => {
+      this.storeSplitSizes();
       this.preview.onResized(e);
     });
     /*.on("performanceStatistics", (d) => {
       console.log(d);
     })*/
+  }
+
+  private storeSplitSizes() {
+    this.settingsService.store.set("mainSplitSize", this.mainSplit.displayedAreas[1].size);
+    this.settingsService.store.set("previewSplitSize", this.rightSplit.displayedAreas[1].size);
   }
 
   public addVideos() {

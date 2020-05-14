@@ -11,6 +11,8 @@ export class SettingsService {
         configName: "user-preferences",
         defaults: {
             openVideosDefaultPath: remote.app.getPath("home"),
+            previewSplitSize: undefined,
+            mainSplitSize: undefined,
         },
     });
 }

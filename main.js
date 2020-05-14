@@ -11,7 +11,7 @@ var args = process.argv.slice(1), serve = args.some(function (val) { return val 
 function createWindow() {
     var size = electron_1.screen.getPrimaryDisplay().workAreaSize;
     var store = new store_1.Store({
-        configName: "user-preferences",
+        configName: "window-state",
         defaults: {
             windowBounds: {
                 width: size.width / 2,

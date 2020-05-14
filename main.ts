@@ -12,7 +12,7 @@ const args = process.argv.slice(1),
 function createWindow(): BrowserWindow {
     const size = screen.getPrimaryDisplay().workAreaSize;
     const store = new Store({
-        configName: "user-preferences",
+        configName: "window-state",
         defaults: {
             windowBounds: {
                 width: size.width / 2,
