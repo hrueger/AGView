@@ -137,6 +137,7 @@ export class OBS {
             width: displayWidth,
             height: displayHeight,
             parent: parentWindow,
+            useContentSize: true,
         });
         this.previewWindow.on("resize", () => {
             const [width, height] = this.previewWindow.getSize();
