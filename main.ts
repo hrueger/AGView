@@ -29,7 +29,7 @@ function createWindow(): BrowserWindow {
         height,
         x,
         y,
-        icon: path.join(__dirname, "src/assets/icons/icon.png"),
+        icon: path.join(__dirname, "src/assets/icons/favicon.png"),
         webPreferences: {
             nodeIntegration: true,
             allowRunningInsecureContent: (serve) ? true : false,
