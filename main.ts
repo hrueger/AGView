@@ -40,9 +40,10 @@ function createWindow(): BrowserWindow {
         win.maximize();
     }
     win.on("resize", () => {
-        const { width, height, x, y } = win.getBounds();
-        const isMaximized = win.isMaximized();
-        store.set("windowBounds", { width, height, x, y, isMaximized });
+        storeWindowState(store);
+    });
+    win.on("move", () => {
+        storeWindowState(store);
     });
 
     if (serve) {
@@ -136,3 +137,10 @@ try {
     // Catch Error
     // throw e;
 }
+
+function storeWindowState(store: Store) {
+    const { width, height, x, y } = win.getBounds();
+    const isMaximized = win.isMaximized();
+    store.set("windowBounds", { width, height, x, y, isMaximized });
+}
+

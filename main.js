@@ -39,9 +39,10 @@ function createWindow() {
         win.maximize();
     }
     win.on("resize", function () {
-        var _a = win.getBounds(), width = _a.width, height = _a.height, x = _a.x, y = _a.y;
-        var isMaximized = win.isMaximized();
-        store.set("windowBounds", { width: width, height: height, x: x, y: y, isMaximized: isMaximized });
+        storeWindowState(store);
+    });
+    win.on("move", function () {
+        storeWindowState(store);
     });
     if (serve) {
         require("devtron").install();
@@ -126,5 +127,10 @@ try {
 catch (e) {
     // Catch Error
     // throw e;
+}
+function storeWindowState(store) {
+    var _a = win.getBounds(), width = _a.width, height = _a.height, x = _a.x, y = _a.y;
+    var isMaximized = win.isMaximized();
+    store.set("windowBounds", { width: width, height: height, x: x, y: y, isMaximized: isMaximized });
 }
 //# sourceMappingURL=main.js.map
