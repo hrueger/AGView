@@ -85,10 +85,10 @@ function createWindow(): BrowserWindow {
         ipcMain.emit("preview-height", obs.resizePreview(bounds));
     });
     ipcMain.on("projector-init", () => {
-        projector = obs.setupProjector(win);
+        obs.setupProjector(win);
     });
     ipcMain.on("projector-end", () => {
-        obs.endProjector(projector);
+        obs.endProjector();
     });
     ipcMain.on("add-videos", (videos) => {
         obs.addFile(videos[0]);

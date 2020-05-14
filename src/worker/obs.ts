@@ -152,8 +152,8 @@ export class OBS {
         osn.NodeObs.OBS_content_resizeDisplay(displayId, displayWidth, displayHeight);
     }
 
-    public endProjector(win) {
-        win.close();
+    public endProjector() {
+        this.previewWindow.close();
     }
 
     public addFile(path: string) {

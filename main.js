@@ -83,10 +83,10 @@ function createWindow() {
         electron_1.ipcMain.emit("preview-height", obs.resizePreview(bounds));
     });
     electron_1.ipcMain.on("projector-init", function () {
-        projector = obs.setupProjector(win);
+        obs.setupProjector(win);
     });
     electron_1.ipcMain.on("projector-end", function () {
-        obs.endProjector(projector);
+        obs.endProjector();
     });
     electron_1.ipcMain.on("add-videos", function (videos) {
         obs.addFile(videos[0]);
