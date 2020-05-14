@@ -40,7 +40,7 @@ function createWindow() {
     }
     win.on("resize", function () {
         var _a = win.getBounds(), width = _a.width, height = _a.height, x = _a.x, y = _a.y;
-        var isMaximized = win.isMaximized;
+        var isMaximized = win.isMaximized();
         store.set("windowBounds", { width: width, height: height, x: x, y: y, isMaximized: isMaximized });
     });
     if (serve) {

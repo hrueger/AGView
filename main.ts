@@ -41,7 +41,7 @@ function createWindow(): BrowserWindow {
     }
     win.on("resize", () => {
         const { width, height, x, y } = win.getBounds();
-        const isMaximized = win.isMaximized;
+        const isMaximized = win.isMaximized();
         store.set("windowBounds", { width, height, x, y, isMaximized });
     });
 
