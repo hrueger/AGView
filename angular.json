@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "angular-electron": {
+        "agview": {
             "root": "",
             "sourceRoot": "src",
             "projectType": "application",
@@ -78,24 +78,24 @@
                 "serve": {
                     "builder": "@angular-builders/custom-webpack:dev-server",
                     "options": {
-                        "browserTarget": "angular-electron:build"
+                        "browserTarget": "agview:build"
                     },
                     "configurations": {
                         "dev": {
-                            "browserTarget": "angular-electron:build:dev"
+                            "browserTarget": "agview:build:dev"
                         },
                         "web": {
-                            "browserTarget": "angular-electron:build:web"
+                            "browserTarget": "agview:build:web"
                         },
                         "production": {
-                            "browserTarget": "angular-electron:build:production"
+                            "browserTarget": "agview:build:production"
                         }
                     }
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "angular-electron:build"
+                        "browserTarget": "agview:build"
                     }
                 },
                 "lint": {
@@ -114,7 +114,7 @@
             }
         }
     },
-    "defaultProject": "angular-electron",
+    "defaultProject": "agview",
     "schematics": {
         "@schematics/angular:component": {
             "prefix": "app",
