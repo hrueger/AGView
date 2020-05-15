@@ -80,6 +80,6 @@ export class HomeComponent {
             });
             this.slides.push(s);
         }
-        // this.showService.addVideos(videos);
+        this.showService.setData("slides", this.slides);
     }
 }

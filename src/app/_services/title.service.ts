@@ -10,8 +10,8 @@ export class TitleService {
       this.updateTitle();
   }
 
-  public setTitle(t) {
-      this.title = `${t ? `${t} - ` : ""}AGView`;
+  public setTitle(t, hasUnsavedChanges = false) {
+      this.title = `${hasUnsavedChanges ? "● " : ""}${t ? `${t} - ` : ""}AGView`;
       this.updateTitle();
   }
 
