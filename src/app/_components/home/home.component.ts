@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild, ChangeDetectionStrategy, NgZone, ChangeDetectorRef } from "@angular/core";
-import { Router } from "@angular/router";
+import {
+    Component, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef,
+} from "@angular/core";
 import { remote } from "electron";
-import { PreviewComponent } from "../preview/preview.component";
-import { SettingsService } from "../../_services/settings.service";
 import { SplitComponent } from "angular-split";
 import * as path from "path";
+import { PreviewComponent } from "../preview/preview.component";
+import { SettingsService } from "../../_services/settings.service";
 import { ShowService } from "../../_services/show.service";
 import { ThumbnailService } from "../../_services/thumbnail.service";
 import { Slide } from "../../_classes/slide";
@@ -24,27 +25,31 @@ export class HomeComponent {
     @ViewChild("rightSplit") public rightSplit: SplitComponent;
 
 
-    constructor(private settingsService: SettingsService, private showService: ShowService, private thumbnailService: ThumbnailService, private cdr: ChangeDetectorRef) {
-        this.mainSplitSize = this.settingsService.store.get("mainSplitSize");;
-        this.previewSplitSize = this.settingsService.store.get("previewSplitSize");;
+    constructor(
+        private settingsService: SettingsService,
+        private showService: ShowService,
+        private thumbnailService: ThumbnailService,
+        private cdr: ChangeDetectorRef,
+    ) {
+        this.mainSplitSize = this.settingsService.store.get("mainSplitSize");
+        this.previewSplitSize = this.settingsService.store.get("previewSplitSize");
     }
 
     ngOnInit() {
-
         remote.ipcMain.emit("obs-action", "initialize", "test", "cool");
     }
     ngAfterViewInit(): void {
-        this.mainSplit.dragProgress$.subscribe((e) => {
+        this.mainSplit.dragProgress$.subscribe(() => {
             this.storeSplitSizes();
-            this.preview.onResized(e);
+            this.preview.onResized();
         });
-        this.rightSplit.dragProgress$.subscribe((e) => {
+        this.rightSplit.dragProgress$.subscribe(() => {
             this.storeSplitSizes();
-            this.preview.onResized(e);
+            this.preview.onResized();
         });
-        /*.on("performanceStatistics", (d) => {
+        /* .on("performanceStatistics", (d) => {
           console.log(d);
-        })*/
+        }) */
     }
 
     private storeSplitSizes() {
@@ -65,13 +70,11 @@ export class HomeComponent {
         }
         this.settingsService.store.set("openVideosDefaultPath", path.dirname(videos[0]));
         for (const video of videos) {
-            console.log(video);
             const s = new Slide();
             s.filePath = path.normalize(video);
             s.name = path.dirname(video);
             s.type = "video";
             this.thumbnailService.ensureThumbnail(s.filePath).then((t) => {
-                console.log(t);
                 s.thumbnail = t;
                 this.cdr.detectChanges();
             });

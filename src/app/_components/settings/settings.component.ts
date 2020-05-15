@@ -1,13 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { remote } from "electron";
 
 @Component({
     selector: "settings",
     templateUrl: "./settings.component.html",
-    styleUrls: ["./settings.component.scss"]
+    styleUrls: ["./settings.component.scss"],
 })
 export class SettingsComponent {
-    public projector: boolean = false;
+    public projector = false;
 
     public toggleProjector() {
         if (this.projector) {
@@ -17,5 +17,4 @@ export class SettingsComponent {
         }
         this.projector = !this.projector;
     }
-
 }

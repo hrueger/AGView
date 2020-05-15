@@ -1,10 +1,9 @@
 import { Injectable } from "@angular/core";
-import { TitleService } from "./title.service";
-import { Store } from "../_helpers/store";
 import { remote } from "electron";
+import { Store } from "../_helpers/store";
 
 @Injectable({
-    providedIn: "root"
+    providedIn: "root",
 })
 export class SettingsService {
     public store = new Store({
