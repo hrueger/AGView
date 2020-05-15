@@ -38,7 +38,10 @@ export class ShowService {
         if (!this.currentShowFile) {
             this.currentShowFile = remote.dialog.showSaveDialogSync({
                 title: "Save as",
-                message: "Test message",
+                filters: [{
+                    name: "AGView Show File",
+                    extensions: ["agvshow"],
+                }],
             });
             if (!this.currentShowFile) {
                 return false;
