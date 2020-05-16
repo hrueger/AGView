@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { remote } from "electron";
 import * as fs from "fs";
 import { TitleService } from "./title.service";
+import { hasDecorator } from "../_helpers/hasDecorator";
 
 @Injectable({
     providedIn: "root",
@@ -30,8 +31,29 @@ export class ShowService {
     }
 
     public setData(key, data) {
+        if (Array.isArray(data)) {
+            data = data.map((d) => {
+                if (typeof d === "object") {
+                    return this.filterSaveProperties(d);
+                }
+                return d;
+            })
+        } else if (typeof data === "object") {
+            data = this.filterSaveProperties(data);
+        }
         this.data[key] = data;
         this.setHasUnsavedChanges(true);
+    }
+
+    private filterSaveProperties(data: any): any {
+        // @ts-ignore
+        return Object.fromEntries(
+            Object.entries(data).filter(
+                ([key, val]) => {
+                    return hasDecorator(data, key, "save");
+                }
+            )
+        );
     }
 
     public save(): boolean {
