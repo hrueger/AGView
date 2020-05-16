@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
 import { remote } from "electron";
+import { TitlebarService } from "./titlebar.service";
 
 @Injectable({
     providedIn: "root",
 })
 export class TitleService {
   private title = "";
-  constructor() {
+  constructor(private titlebarService: TitlebarService) {
       this.updateTitle();
   }
 
@@ -19,10 +20,6 @@ export class TitleService {
       for (const win of remote.BrowserWindow.getAllWindows()) {
           win.setTitle(this.title);
       }
-      /* setTimeout(() => {
-      //@ts-ignore
-      console.log(window);
-      window.titlebar.setTitle(this.title);
-    }, 5000); */
+      this.titlebarService.setTitle(this.title);
   }
 }
