@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { remote } from "electron";
 import { ShowService } from "./_services/show.service";
+import { TitlebarService } from "./_services/titlebar.service";
 
 @Component({
     selector: "app-root",
@@ -11,6 +12,7 @@ import { ShowService } from "./_services/show.service";
 export class AppComponent {
     constructor(
         private translate: TranslateService,
+        private titlebarService: TitlebarService,
         private showService: ShowService,
     ) {
         translate.setDefaultLang("en");
