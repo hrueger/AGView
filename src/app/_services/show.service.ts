@@ -73,6 +73,17 @@ export class ShowService {
         return true;
     }
 
+    
+    new() {
+        //
+    }
+    open() {
+        //
+    }
+    saveAs() {
+        //
+    }
+
     private writeShowFile() {
         fs.writeFileSync(this.currentShowFile, JSON.stringify(this.data));
         this.setHasUnsavedChanges(false);

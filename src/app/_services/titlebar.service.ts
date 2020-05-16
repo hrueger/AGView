@@ -1,13 +1,16 @@
 import { Injectable } from "@angular/core";
 import * as customTitlebar from "custom-electron-titlebar";
 import { remote, shell, app } from "electron";
+import { ShowService } from "./show.service";
 
 @Injectable({
     providedIn: "root"
 })
 export class TitlebarService {
     titlebar: customTitlebar.Titlebar;
-    constructor() {
+    constructor(
+        private showService: ShowService,
+    ) {
         const isMac = process.platform === "darwin"
         const menuTemplate: any[] = [
             {
@@ -16,6 +19,7 @@ export class TitlebarService {
                     {
                         label: "New file",
                         accelerator: "Ctrl+N",
+                        click: () => this.showService.new(),
                     },
                     {
                         type: "separator"
@@ -23,6 +27,7 @@ export class TitlebarService {
                     {
                         label: "Open file",
                         accelerator: "Ctrl+O",
+                        click: () => this.showService.open(),
                     },
                     {
                         label: "Open recent",
@@ -41,10 +46,12 @@ export class TitlebarService {
                     {
                         label: "Save",
                         accelerator: "Ctrl+S",
+                        click: () => this.showService.save(),
                     },
                     {
                         label: "Save as...",
                         accelerator: "Ctrl+Shift+S",
+                        click: () => this.showService.saveAs(),
                     },
                     {
                         type: "separator",
@@ -83,6 +90,7 @@ export class TitlebarService {
                     },
                     {
                         label: "About",
+                        click: () => this.about(),
                     }
                 ]
             }
@@ -100,5 +108,9 @@ export class TitlebarService {
 
     public setTitle(t: string) {
         this.titlebar.updateTitle(t);
+    }
+
+    private about() {
+        //
     }
 }
