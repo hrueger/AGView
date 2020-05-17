@@ -37,6 +37,15 @@ export class HomeComponent {
 
     ngOnInit() {
         remote.ipcMain.emit("obs-action", "initialize", "test", "cool");
+        this.showService.data.subscribe((data) => {
+            if (data && data.slides) {
+                this.slides = data.slides;
+                this.ensureThumbnails();
+            } else {
+                this.slides = [];
+            }
+            this.cdr.detectChanges();
+        });
     }
     ngAfterViewInit(): void {
         this.mainSplit.dragProgress$.subscribe(() => {
@@ -74,12 +83,18 @@ export class HomeComponent {
             s.filePath = path.normalize(video);
             s.name = path.dirname(video);
             s.type = "video";
+            this.slides.push(s);
+        }
+        this.ensureThumbnails();
+        this.showService.setData("slides", this.slides);
+    }
+
+    private ensureThumbnails() {
+        for (const s of this.slides) {
             this.thumbnailService.ensureThumbnail(s.filePath).then((t) => {
                 s.thumbnail = t;
                 this.cdr.detectChanges();
             });
-            this.slides.push(s);
         }
-        this.showService.setData("slides", this.slides);
     }
 }

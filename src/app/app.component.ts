@@ -19,21 +19,11 @@ export class AppComponent {
     ) {
         translate.setDefaultLang("en");
         const win = remote.getCurrentWindow();
-        win.on("close", (e) => {
+        win.on("close", () => {
             if (!this.showService.hasUnsavedChanges) {
                 return;
             }
-            const choice = remote.dialog.showMessageBoxSync(win,
-                {
-                    type: "question",
-                    buttons: ["Save", "Don't save"],
-                    title: "AGView",
-                    message: `Do you want to save your changes to "${this.showService.showTitle}"?\n\nIf you press "No", your changes will be discarded.`,
-                });
-            if (choice == 0) {
-                e.preventDefault();
-                this.showService.save();
-            }
+            this.showService.askToSaveChanges(win);
         });
     }
 }
