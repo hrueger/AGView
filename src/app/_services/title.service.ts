@@ -11,14 +11,15 @@ export class TitleService {
     constructor(private titlebarService: TitlebarService, private showService: ShowService) {
         this.updateTitle();
         this.showService.titleData.subscribe((d) => {
-            this.setTitle(d.title, d.hasUnsavedChanges)
+            this.setTitle(d.title, d.hasUnsavedChanges);
         });
-        console.log("subscribed");
-        this.setTitle(this.showService.titleData.value.title, this.showService.titleData.value.hasUnsavedChanges)
+        this.setTitle(
+            this.showService.titleData.value.title,
+            this.showService.titleData.value.hasUnsavedChanges,
+        );
     }
 
     public setTitle(t, hasUnsavedChanges = false) {
-        console.log("SET TITLE!");
         this.title = `${hasUnsavedChanges ? "● " : ""}${t ? `${t} - ` : ""}AGView`;
         this.updateTitle();
     }

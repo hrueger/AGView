@@ -1,9 +1,8 @@
 import { Injectable } from "@angular/core";
 import { remote } from "electron";
 import * as fs from "fs";
-import { TitleService } from "./title.service";
-import { hasDecorator } from "../_helpers/hasDecorator";
 import { BehaviorSubject } from "rxjs";
+import { hasDecorator } from "../_helpers/hasDecorator";
 
 @Injectable({
     providedIn: "root",
@@ -19,7 +18,7 @@ export class ShowService {
 
     private data: any = {};
 
-    public titleData: BehaviorSubject<{title: string, hasUnsavedChanges: boolean}> = new BehaviorSubject({title: "", hasUnsavedChanges: false});
+    public titleData: BehaviorSubject<{title: string; hasUnsavedChanges: boolean}> = new BehaviorSubject({ title: "", hasUnsavedChanges: false });
 
     constructor() {
         this.updateTitle();
@@ -40,7 +39,7 @@ export class ShowService {
                     return this.filterSaveProperties(d);
                 }
                 return d;
-            })
+            });
         } else if (typeof data === "object") {
             data = this.filterSaveProperties(data);
         }
@@ -52,10 +51,8 @@ export class ShowService {
         // @ts-ignore
         return Object.fromEntries(
             Object.entries(data).filter(
-                ([key, val]) => {
-                    return hasDecorator(data, key, "save");
-                }
-            )
+                ([key]) => hasDecorator(data, key, "save"),
+            ),
         );
     }
 
@@ -76,7 +73,7 @@ export class ShowService {
         return true;
     }
 
-    
+
     new() {
         //
     }
@@ -98,7 +95,6 @@ export class ShowService {
     }
 
     private updateTitle() {
-        console.log("title updated");
         this.titleData.next({
             title: this.pshowTitle,
             hasUnsavedChanges: this.hasUnsavedChanges,
