@@ -27,7 +27,8 @@ export class RecentShowsService {
     public add(path) {
         if (fs.existsSync(path)) {
             remote.app.addRecentDocument(path);
-            this.recentShows.push(path);
+            this.recentShows = this.recentShows.filter((s) => s != path);
+            this.recentShows.unshift(path);
             this.save();
         }
     }
