@@ -1,14 +1,20 @@
 {
     "name": "agview",
+    "productName": "AGView",
     "version": "0.0.1",
     "main": "main.js",
-    "description": "ToDo",
+    "description": "The live on-the-fly event video player.",
     "homepage": "https://github.com/hrueger/AGView",
+    "bugs": "https://github.com/hrueger/AGView/issues",
     "author": {
         "name": "H. Rüger"
     },
     "keywords": [
-        "ToDo"
+        "video",
+        "player",
+        "live",
+        "on-the-fly",
+        "event"
     ],
     "private": true,
     "scripts": {
@@ -34,6 +40,7 @@
         "angular-split": "3.0.3",
         "bootstrap": "4.4.1",
         "custom-electron-titlebar": "3.2.2-hotfix62",
+        "electron-root-path": "1.0.16",
         "ngx-perfect-scrollbar": "^9.0.0",
         "obs-studio-node": "https://obsstudionodes3.streamlabs.com/obs-studio-node-0.5.137-iojs-v6.0.3-release.tar.gz",
         "reflect-metadata": "0.1.13",
