@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import * as customTitlebar from "custom-electron-titlebar";
 import { remote, shell } from "electron";
 import { ShowService } from "./show.service";
+import { RecentShowsService } from "./recent-shows.service";
 import { pkginfo } from "../_helpers/packageInfo";
 
 @Injectable({
@@ -11,7 +12,9 @@ export class TitlebarService {
     titlebar: customTitlebar.Titlebar;
     constructor(
         private showService: ShowService,
+        private recentShowsService: RecentShowsService,
     ) {
+        const recentShows = this.recentShowsService.get();
         const menuTemplate: any[] = [
             {
                 label: "File",
@@ -31,14 +34,13 @@ export class TitlebarService {
                     },
                     {
                         label: "Open recent",
-                        submenu: [
-                            {
-                                label: "1",
-                            },
-                            {
-                                label: "1",
-                            },
-                        ],
+                        submenu: recentShows && recentShows.length ? recentShows.map((s) => ({
+                            label: s,
+                            click: () => this.showService.open(s),
+                        })) : [{
+                            label: "No recent shows",
+                            enabled: false,
+                        }],
                     },
                     {
                         type: "separator",
@@ -95,6 +97,7 @@ export class TitlebarService {
                 ],
             },
         ];
+        console.log(menuTemplate);
         const menu = remote.Menu.buildFromTemplate(menuTemplate);
         this.titlebar = new customTitlebar.Titlebar({
             backgroundColor: customTitlebar.Color.fromHex("#444"),

@@ -5,6 +5,7 @@ import { BehaviorSubject } from "rxjs";
 import * as path from "path";
 import { hasDecorator } from "../_helpers/hasDecorator";
 import { filters } from "../_globals/globals";
+import { RecentShowsService } from "./recent-shows.service";
 
 @Injectable({
     providedIn: "root",
@@ -23,7 +24,7 @@ export class ShowService {
 
     public titleData: BehaviorSubject<{ title: string; hasUnsavedChanges: boolean }> = new BehaviorSubject({ title: "", hasUnsavedChanges: false });
 
-    constructor() {
+    constructor(private recentShowsService: RecentShowsService) {
         this.updateTitle();
     }
 
@@ -79,27 +80,19 @@ export class ShowService {
         this.data.next(this.pdata);
     }
 
-    public open() {
+    public open(file?) {
         this.ensureNoUnsavedChanges();
-        const file = remote.dialog.showOpenDialogSync({
-            filters,
-            title: "Open show",
-            properties: ["openFile"],
-        });
-        if (file && file[0] && fs.existsSync(file[0])) {
-            try {
-                this.pdata = JSON.parse(fs.readFileSync(file[0]).toString());
-            } catch (e) {
-                // eslint-disable-next-line no-alert
-                alert("The file couldn't be opened.");
-                // eslint-disable-next-line no-console
-                console.log(e);
-                return;
+        if (file) {
+            this.loadFile(file);
+        } else {
+            file = remote.dialog.showOpenDialogSync({
+                filters,
+                title: "Open show",
+                properties: ["openFile"],
+            });
+            if (file && file[0] && fs.existsSync(file[0])) {
+                this.loadFile(file[0]);
             }
-            [this.currentShowFile] = file;
-            this.data.next(this.pdata);
-            this.pshowTitle = path.basename(this.currentShowFile);
-            this.updateTitle();
         }
     }
 
@@ -123,6 +116,23 @@ export class ShowService {
         if (choice == 0) {
             this.save();
         }
+    }
+
+    private loadFile(file) {
+        try {
+            this.pdata = JSON.parse(fs.readFileSync(file).toString());
+        } catch (e) {
+            // eslint-disable-next-line no-alert
+            alert("The file couldn't be opened.");
+            // eslint-disable-next-line no-console
+            console.log(e);
+            return;
+        }
+        [this.currentShowFile] = file;
+        this.recentShowsService.add(this.currentShowFile);
+        this.data.next(this.pdata);
+        this.pshowTitle = path.basename(this.currentShowFile);
+        this.updateTitle();
     }
 
     private writeShowFile() {
