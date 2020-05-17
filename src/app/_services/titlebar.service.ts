@@ -14,6 +14,18 @@ export class TitlebarService {
         private showService: ShowService,
         private recentShowsService: RecentShowsService,
     ) {
+        const menu = this.getMenu();
+        this.titlebar = new customTitlebar.Titlebar({
+            backgroundColor: customTitlebar.Color.fromHex("#444"),
+            icon: "assets/icons/favicon.png",
+            enableMnemonics: true,
+            hideWhenClickingClose: true,
+            itemBackgroundColor: customTitlebar.Color.fromHex("#094771"),
+            menu,
+        });
+    }
+
+    private getMenu() {
         const recentShows = this.recentShowsService.get();
         const menuTemplate: any[] = [
             {
@@ -36,7 +48,10 @@ export class TitlebarService {
                         label: "Open recent",
                         submenu: recentShows && recentShows.length ? recentShows.map((s) => ({
                             label: s,
-                            click: () => this.showService.open(s),
+                            click: () => {
+                                this.showService.open(s);
+                                this.titlebar.updateMenu(this.getMenu());
+                            },
                         })) : [{
                             label: "No recent shows",
                             enabled: false,
@@ -98,14 +113,7 @@ export class TitlebarService {
             },
         ];
         const menu = remote.Menu.buildFromTemplate(menuTemplate);
-        this.titlebar = new customTitlebar.Titlebar({
-            backgroundColor: customTitlebar.Color.fromHex("#444"),
-            icon: "assets/icons/favicon.png",
-            enableMnemonics: true,
-            hideWhenClickingClose: true,
-            itemBackgroundColor: customTitlebar.Color.fromHex("#094771"),
-            menu,
-        });
+        return menu;
     }
 
     public setTitle(t: string) {
