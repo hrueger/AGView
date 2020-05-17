@@ -3,6 +3,7 @@ import { remote } from "electron";
 import * as fs from "fs";
 import { TitleService } from "./title.service";
 import { hasDecorator } from "../_helpers/hasDecorator";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable({
     providedIn: "root",
@@ -18,7 +19,9 @@ export class ShowService {
 
     private data: any = {};
 
-    constructor(private titleService: TitleService) {
+    public titleData: BehaviorSubject<{title: string, hasUnsavedChanges: boolean}> = new BehaviorSubject({title: "", hasUnsavedChanges: false});
+
+    constructor() {
         this.updateTitle();
     }
 
@@ -95,6 +98,10 @@ export class ShowService {
     }
 
     private updateTitle() {
-        this.titleService.setTitle(this.pshowTitle, this.hasUnsavedChanges);
+        console.log("title updated");
+        this.titleData.next({
+            title: this.pshowTitle,
+            hasUnsavedChanges: this.hasUnsavedChanges,
+        });
     }
 }
