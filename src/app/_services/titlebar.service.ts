@@ -97,7 +97,6 @@ export class TitlebarService {
                 ],
             },
         ];
-        console.log(menuTemplate);
         const menu = remote.Menu.buildFromTemplate(menuTemplate);
         this.titlebar = new customTitlebar.Titlebar({
             backgroundColor: customTitlebar.Color.fromHex("#444"),
