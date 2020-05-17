@@ -128,7 +128,7 @@ export class ShowService {
             console.log(e);
             return;
         }
-        [this.currentShowFile] = file;
+        this.currentShowFile = file;
         this.recentShowsService.add(this.currentShowFile);
         this.data.next(this.pdata);
         this.pshowTitle = path.basename(this.currentShowFile);
