@@ -1,4 +1,10 @@
-import { app, BrowserWindow, screen, ipcRenderer, ipcMain } from "electron";
+/* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable global-require */
+import {
+    app, BrowserWindow, screen, ipcMain,
+} from "electron";
 import * as path from "path";
 import * as url from "url";
 import { OBS } from "./src/worker/obs";
@@ -6,8 +12,8 @@ import { Store } from "./src/app/_helpers/store";
 
 let win: BrowserWindow = null;
 let obs: OBS = null;
-const args = process.argv.slice(1),
-    serve = args.some(val => val === "--serve");
+const args = process.argv.slice(1);
+const serve = args.some((val) => val === "--serve");
 
 function createWindow(): BrowserWindow {
     const size = screen.getPrimaryDisplay().workAreaSize;
@@ -20,10 +26,12 @@ function createWindow(): BrowserWindow {
                 x: undefined,
                 y: undefined,
                 isMaximized: false,
-            }
-        }
+            },
+        },
     });
-    let { width, height, x, y, isMaximized } = store.get("windowBounds");
+    const {
+        width, height, x, y, isMaximized,
+    } = store.get("windowBounds");
     win = new BrowserWindow({
         width,
         height,
@@ -33,7 +41,7 @@ function createWindow(): BrowserWindow {
         webPreferences: {
             nodeIntegration: true,
             webSecurity: false,
-            allowRunningInsecureContent: (serve) ? true : false,
+            allowRunningInsecureContent: !!(serve),
         },
         frame: false,
         backgroundColor: "#1E1E1E",
@@ -49,37 +57,35 @@ function createWindow(): BrowserWindow {
     });
 
     if (serve) {
-
         require("devtron").install();
         win.webContents.openDevTools();
 
         require("electron-reload")(__dirname, {
-            electron: require(`${__dirname}/node_modules/electron`)
+            electron: require(`${__dirname}/node_modules/electron`),
         });
         win.loadURL("http://localhost:4200");
-
     } else {
         win.loadURL(url.format({
             pathname: path.join(__dirname, "dist/index.html"),
             protocol: "file:",
-            slashes: true
+            slashes: true,
         }));
     }
 
     ipcMain.on("obs-action", (action: any, ...data) => {
         switch (action) {
-            case "initialize":
-                if (obs) {
-                    obs.shutdown();
-                    obs = undefined;
-                }
-                obs = new OBS(win);
-                break;
-            default:
-                console.log("unknown event:", action, data)
+        case "initialize":
+            if (obs) {
+                obs.shutdown();
+                obs = undefined;
+            }
+            obs = new OBS(win);
+            break;
+        default:
+            // eslint-disable-next-line no-console
+            console.log("unknown event:", action, data);
         }
     });
-    let projector;
     ipcMain.on("preview-init", (bounds) => {
         ipcMain.emit("preview-height", obs.setupPreview(win, bounds));
     });
@@ -109,7 +115,6 @@ function createWindow(): BrowserWindow {
 }
 
 try {
-
     app.allowRendererProcessReuse = false;
 
     // This method will be called when Electron has finished
@@ -134,15 +139,17 @@ try {
             createWindow();
         }
     });
-
 } catch (e) {
     // Catch Error
     // throw e;
 }
 
 function storeWindowState(store: Store) {
-    const { width, height, x, y } = win.getBounds();
+    const {
+        width, height, x, y,
+    } = win.getBounds();
     const isMaximized = win.isMaximized();
-    store.set("windowBounds", { width, height, x, y, isMaximized });
+    store.set("windowBounds", {
+        width, height, x, y, isMaximized,
+    });
 }
-
