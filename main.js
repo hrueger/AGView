@@ -99,7 +99,6 @@ function createWindow() {
     electron_1.ipcMain.on("add-slides", function (slides) {
         for (var _i = 0, _a = slides; _i < _a.length; _i++) {
             var slide = _a[_i];
-            console.log(slide);
             obs.addFile(slide);
         }
     });

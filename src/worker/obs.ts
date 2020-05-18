@@ -168,8 +168,10 @@ export class OBS {
     public addFile(slide: Slide) {
         const realpath = fs.realpathSync(slide.filePath);
         const SUPPORTED_EXT = {
-            imageSource: ["png", "jpg", "jpeg", "tga", "bmp"],
-            ffmpegSource: [
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            image_source: ["png", "jpg", "jpeg", "tga", "bmp"],
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            ffmpeg_source: [
                 "mp4",
                 "ts",
                 "mov",
@@ -183,47 +185,48 @@ export class OBS {
                 "gif",
                 "webm",
             ],
-            browserSource: ["html"],
-            textGDIplus: ["txt"],
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            browser_source: ["html"],
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            text_gdiplus: ["txt"],
         };
         let ext = realpath.split(".").splice(-1)[0];
         if (!ext) return null;
         ext = ext.toLowerCase();
-        const filename = realpath.split("\\").splice(-1)[0];
+        const filename = slide.filePath.split("\\").splice(-1)[0];
+
         const types = Object.keys(SUPPORTED_EXT);
         for (const type of types) {
             // eslint-disable-next-line no-continue
             if (!SUPPORTED_EXT[type].includes(ext)) continue;
-            let settings: any = null;
-            if (type === "imageSource") {
-                settings = { file: realpath };
-            } else if (type === "browserSource") {
+            let settings = null;
+            if (type === "image_source") {
+                settings = { file: slide.filePath };
+            } else if (type === "browser_source") {
                 settings = {
                     // eslint-disable-next-line @typescript-eslint/camelcase
                     is_local_file: true,
                     // eslint-disable-next-line @typescript-eslint/camelcase
-                    local_file: realpath,
+                    local_file: slide.filePath,
                 };
-            } else if (type === "ffmpegSource") {
+            } else if (type === "ffmpeg_source") {
                 settings = {
                     // eslint-disable-next-line @typescript-eslint/camelcase
                     is_local_file: true,
                     // eslint-disable-next-line @typescript-eslint/camelcase
-                    local_file: realpath,
+                    local_file: slide.filePath,
                     looping: true,
                 };
-            } else if (type === "textGDIplus") {
+            } else if (type === "text_gdiplus") {
                 settings = {
                     // eslint-disable-next-line @typescript-eslint/camelcase
                     read_from_file: true,
-                    file: realpath,
+                    file: slide.filePath,
                 };
             }
             if (settings) {
-                const s = this.createSource("filename", type, settings);
-                console.log("source", s);
+                const s = this.createSource(filename, type, settings);
                 const sceneItem = this.scenes[0].add(s);
-                console.log("sceneItem", sceneItem);
                 sceneItem.scale = {
                     x: 1.0 / this.videoScaleFactor,
                     y: 1.0 / this.videoScaleFactor,
