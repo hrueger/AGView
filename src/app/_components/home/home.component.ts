@@ -9,6 +9,7 @@ import { SettingsService } from "../../_services/settings.service";
 import { ShowService } from "../../_services/show.service";
 import { ThumbnailService } from "../../_services/thumbnail.service";
 import { Slide } from "../../_classes/slide";
+import { supportedFilesFilters } from "../../_globals/supportedFilesFilters";
 
 @Component({
     selector: "app-home",
@@ -68,11 +69,10 @@ export class HomeComponent {
     }
 
     public addVideos() {
+        console.log(supportedFilesFilters);
         const videos = remote.dialog.showOpenDialogSync({
             title: "Add video files",
-            filters: [
-                { name: "Movies", extensions: ["mkv", "avi", "mp4"] },
-            ],
+            filters: supportedFilesFilters,
             defaultPath: this.settingsService.store.get("openVideosDefaultPath"),
         });
         if (!videos || videos.length == 0) {

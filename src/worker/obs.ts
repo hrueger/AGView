@@ -7,6 +7,7 @@ import * as fs from "fs";
 import * as uuid from "uuid/v4";
 import { IInput, IScene } from "obs-studio-node";
 import { Slide } from "../app/_classes/slide";
+import { supportedFiles } from "../app/_globals/files";
 
 export class OBS {
     private obsInitialized = false;
@@ -167,49 +168,25 @@ export class OBS {
 
     public addFile(slide: Slide) {
         const realpath = fs.realpathSync(slide.filePath);
-        const SUPPORTED_EXT = {
-            // eslint-disable-next-line @typescript-eslint/camelcase
-            image_source: ["png", "jpg", "jpeg", "tga", "bmp"],
-            // eslint-disable-next-line @typescript-eslint/camelcase
-            ffmpeg_source: [
-                "mp4",
-                "ts",
-                "mov",
-                "flv",
-                "mkv",
-                "avi",
-                "mp3",
-                "ogg",
-                "aac",
-                "wav",
-                "gif",
-                "webm",
-            ],
-            // eslint-disable-next-line @typescript-eslint/camelcase
-            browser_source: ["html"],
-            // eslint-disable-next-line @typescript-eslint/camelcase
-            text_gdiplus: ["txt"],
-        };
         let ext = realpath.split(".").splice(-1)[0];
         if (!ext) return null;
         ext = ext.toLowerCase();
         const filename = slide.filePath.split("\\").splice(-1)[0];
 
-        const types = Object.keys(SUPPORTED_EXT);
-        for (const type of types) {
+        for (const type of supportedFiles) {
             // eslint-disable-next-line no-continue
-            if (!SUPPORTED_EXT[type].includes(ext)) continue;
+            if (!type.extensions.includes(ext)) continue;
             let settings = null;
-            if (type === "image_source") {
+            if (type.obsName === "image_source") {
                 settings = { file: slide.filePath };
-            } else if (type === "browser_source") {
+            } else if (type.obsName === "browser_source") {
                 settings = {
                     // eslint-disable-next-line @typescript-eslint/camelcase
                     is_local_file: true,
                     // eslint-disable-next-line @typescript-eslint/camelcase
                     local_file: slide.filePath,
                 };
-            } else if (type === "ffmpeg_source") {
+            } else if (type.obsName === "ffmpeg_source") {
                 settings = {
                     // eslint-disable-next-line @typescript-eslint/camelcase
                     is_local_file: true,
@@ -217,7 +194,7 @@ export class OBS {
                     local_file: slide.filePath,
                     looping: true,
                 };
-            } else if (type === "text_gdiplus") {
+            } else if (type.obsName === "text_gdiplus") {
                 settings = {
                     // eslint-disable-next-line @typescript-eslint/camelcase
                     read_from_file: true,
@@ -225,7 +202,7 @@ export class OBS {
                 };
             }
             if (settings) {
-                const s = this.createSource(filename, type, settings);
+                const s = this.createSource(filename, type.obsName, settings);
                 const sceneItem = this.scenes[0].add(s);
                 sceneItem.scale = {
                     x: 1.0 / this.videoScaleFactor,
@@ -239,7 +216,7 @@ export class OBS {
 
     private createSource(
         name: string,
-        type,
+        type: string,
         settings: any = {},
         options: any = {},
     ) {

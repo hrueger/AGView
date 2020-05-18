@@ -4,7 +4,7 @@ import * as fs from "fs";
 import { BehaviorSubject } from "rxjs";
 import * as path from "path";
 import { hasDecorator } from "../_helpers/hasDecorator";
-import { filters } from "../_globals/globals";
+import { filters } from "../_globals/agshowFileFilter";
 import { RecentShowsService } from "./recent-shows.service";
 
 @Injectable({
