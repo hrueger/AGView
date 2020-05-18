@@ -7,7 +7,7 @@ import * as fs from "fs";
 import * as uuid from "uuid/v4";
 import { IInput, IScene } from "obs-studio-node";
 import { Slide } from "../app/_classes/slide";
-import { supportedFiles } from "../app/_globals/files";
+import { supportedFiles } from "../app/_globals/supportedFilesFilters";
 
 export class OBS {
     private obsInitialized = false;
