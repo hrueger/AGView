@@ -69,7 +69,6 @@ export class HomeComponent {
     }
 
     public addVideos() {
-        console.log(supportedFilesFilters);
         const videos = remote.dialog.showOpenDialogSync({
             title: "Add video files",
             filters: supportedFilesFilters,
