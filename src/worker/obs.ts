@@ -6,6 +6,7 @@ import * as path from "path";
 import * as fs from "fs";
 import * as uuid from "uuid/v4";
 import { IInput, IScene } from "obs-studio-node";
+import { Slide } from "../app/_classes/slide";
 
 export class OBS {
     private obsInitialized = false;
@@ -160,9 +161,12 @@ export class OBS {
         this.previewWindow.close();
     }
 
-    public addFile(p: string) {
-        console.log("add", p);
-        const realpath = fs.realpathSync(p);
+    public clearSlides() {
+        // this.scenes[0].getItems().forEach((i) => i.remove());
+    }
+
+    public addFile(slide: Slide) {
+        const realpath = fs.realpathSync(slide.filePath);
         const SUPPORTED_EXT = {
             imageSource: ["png", "jpg", "jpeg", "tga", "bmp"],
             ffmpegSource: [
@@ -185,40 +189,41 @@ export class OBS {
         let ext = realpath.split(".").splice(-1)[0];
         if (!ext) return null;
         ext = ext.toLowerCase();
-        const filename = p.split("\\").splice(-1)[0];
-
+        const filename = realpath.split("\\").splice(-1)[0];
         const types = Object.keys(SUPPORTED_EXT);
         for (const type of types) {
             // eslint-disable-next-line no-continue
             if (!SUPPORTED_EXT[type].includes(ext)) continue;
-            let settings = null;
+            let settings: any = null;
             if (type === "imageSource") {
-                settings = { file: path };
+                settings = { file: realpath };
             } else if (type === "browserSource") {
                 settings = {
                     // eslint-disable-next-line @typescript-eslint/camelcase
                     is_local_file: true,
                     // eslint-disable-next-line @typescript-eslint/camelcase
-                    local_file: path,
+                    local_file: realpath,
                 };
             } else if (type === "ffmpegSource") {
                 settings = {
                     // eslint-disable-next-line @typescript-eslint/camelcase
                     is_local_file: true,
                     // eslint-disable-next-line @typescript-eslint/camelcase
-                    local_file: path,
+                    local_file: realpath,
                     looping: true,
                 };
             } else if (type === "textGDIplus") {
                 settings = {
                     // eslint-disable-next-line @typescript-eslint/camelcase
                     read_from_file: true,
-                    file: path,
+                    file: realpath,
                 };
             }
             if (settings) {
-                const s = this.createSource(filename, type, settings);
+                const s = this.createSource("filename", type, settings);
+                console.log("source", s);
                 const sceneItem = this.scenes[0].add(s);
+                console.log("sceneItem", sceneItem);
                 sceneItem.scale = {
                     x: 1.0 / this.videoScaleFactor,
                     y: 1.0 / this.videoScaleFactor,

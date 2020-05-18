@@ -1,5 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable global-require */
 var electron_1 = require("electron");
 var path = require("path");
 var url = require("url");
@@ -7,7 +11,8 @@ var obs_1 = require("./src/worker/obs");
 var store_1 = require("./src/app/_helpers/store");
 var win = null;
 var obs = null;
-var args = process.argv.slice(1), serve = args.some(function (val) { return val === "--serve"; });
+var args = process.argv.slice(1);
+var serve = args.some(function (val) { return val === "--serve"; });
 function createWindow() {
     var size = electron_1.screen.getPrimaryDisplay().workAreaSize;
     var store = new store_1.Store({
@@ -19,8 +24,8 @@ function createWindow() {
                 x: undefined,
                 y: undefined,
                 isMaximized: false,
-            }
-        }
+            },
+        },
     });
     var _a = store.get("windowBounds"), width = _a.width, height = _a.height, x = _a.x, y = _a.y, isMaximized = _a.isMaximized;
     win = new electron_1.BrowserWindow({
@@ -32,7 +37,7 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true,
             webSecurity: false,
-            allowRunningInsecureContent: (serve) ? true : false,
+            allowRunningInsecureContent: !!(serve),
         },
         frame: false,
         backgroundColor: "#1E1E1E",
@@ -50,7 +55,7 @@ function createWindow() {
         require("devtron").install();
         win.webContents.openDevTools();
         require("electron-reload")(__dirname, {
-            electron: require(__dirname + "/node_modules/electron")
+            electron: require(__dirname + "/node_modules/electron"),
         });
         win.loadURL("http://localhost:4200");
     }
@@ -58,7 +63,7 @@ function createWindow() {
         win.loadURL(url.format({
             pathname: path.join(__dirname, "dist/index.html"),
             protocol: "file:",
-            slashes: true
+            slashes: true,
         }));
     }
     electron_1.ipcMain.on("obs-action", function (action) {
@@ -75,10 +80,10 @@ function createWindow() {
                 obs = new obs_1.OBS(win);
                 break;
             default:
+                // eslint-disable-next-line no-console
                 console.log("unknown event:", action, data);
         }
     });
-    var projector;
     electron_1.ipcMain.on("preview-init", function (bounds) {
         electron_1.ipcMain.emit("preview-height", obs.setupPreview(win, bounds));
     });
@@ -91,8 +96,15 @@ function createWindow() {
     electron_1.ipcMain.on("projector-end", function () {
         obs.endProjector();
     });
-    electron_1.ipcMain.on("add-videos", function (videos) {
-        obs.addFile(videos[0]);
+    electron_1.ipcMain.on("add-slides", function (slides) {
+        for (var _i = 0, _a = slides; _i < _a.length; _i++) {
+            var slide = _a[_i];
+            console.log(slide);
+            obs.addFile(slide);
+        }
+    });
+    electron_1.ipcMain.on("clear-slides", function () {
+        obs.clearSlides();
     });
     // Emitted when the window is closed.
     win.on("closed", function () {
@@ -133,6 +145,8 @@ catch (e) {
 function storeWindowState(store) {
     var _a = win.getBounds(), width = _a.width, height = _a.height, x = _a.x, y = _a.y;
     var isMaximized = win.isMaximized();
-    store.set("windowBounds", { width: width, height: height, x: x, y: y, isMaximized: isMaximized });
+    store.set("windowBounds", {
+        width: width, height: height, x: x, y: y, isMaximized: isMaximized,
+    });
 }
 //# sourceMappingURL=main.js.map

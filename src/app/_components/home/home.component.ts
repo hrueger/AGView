@@ -36,11 +36,12 @@ export class HomeComponent {
     }
 
     ngOnInit() {
-        remote.ipcMain.emit("obs-action", "initialize", "test", "cool");
+        remote.ipcMain.emit("obs-action", "initialize");
         this.showService.data.subscribe((data) => {
             if (data && data.slides) {
                 this.slides = data.slides;
                 this.ensureThumbnails();
+                remote.ipcMain.emit("add-slides", this.slides);
             } else {
                 this.slides = [];
             }
@@ -81,12 +82,13 @@ export class HomeComponent {
         for (const video of videos) {
             const s = new Slide();
             s.filePath = path.normalize(video);
-            s.name = path.dirname(video);
+            s.name = path.basename(video);
             s.type = "video";
             this.slides.push(s);
         }
         this.ensureThumbnails();
         this.showService.setData("slides", this.slides);
+        remote.ipcMain.emit("add-slides", this.slides);
     }
 
     private ensureThumbnails() {

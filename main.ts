@@ -9,6 +9,7 @@ import * as path from "path";
 import * as url from "url";
 import { OBS } from "./src/worker/obs";
 import { Store } from "./src/app/_helpers/store";
+import { Slide } from "./src/app/_classes/slide";
 
 let win: BrowserWindow = null;
 let obs: OBS = null;
@@ -99,8 +100,13 @@ function createWindow(): BrowserWindow {
     ipcMain.on("projector-end", () => {
         obs.endProjector();
     });
-    ipcMain.on("add-videos", (videos) => {
-        obs.addFile(videos[0]);
+    ipcMain.on("add-slides", (slides) => {
+        for (const slide of slides as unknown as Slide[]) {
+            obs.addFile(slide);
+        }
+    });
+    ipcMain.on("clear-slides", () => {
+        obs.clearSlides();
     });
 
     // Emitted when the window is closed.
