@@ -105,6 +105,9 @@ function createWindow() {
     electron_1.ipcMain.on("clear-slides", function () {
         obs.clearSlides();
     });
+    electron_1.ipcMain.on("settings-changed", function () {
+        obs.updateSettings(win);
+    });
     // Emitted when the window is closed.
     win.on("closed", function () {
         // Dereference the window object, usually you would store window

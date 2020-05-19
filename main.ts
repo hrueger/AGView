@@ -108,6 +108,9 @@ function createWindow(): BrowserWindow {
     ipcMain.on("clear-slides", () => {
         obs.clearSlides();
     });
+    ipcMain.on("settings-changed", () => {
+        obs.updateSettings(win);
+    });
 
     // Emitted when the window is closed.
     win.on("closed", () => {

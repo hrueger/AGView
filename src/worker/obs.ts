@@ -100,16 +100,26 @@ export class OBS {
         videoSource.save();
 
         // Set output video size to 1920x1080
-        const outputWidth = this.settingsStore.get("width");
-        const outputHeight = this.settingsStore.get("height");
-        this.setSetting("Video", "Base", `${outputWidth}x${outputHeight}`);
-        this.setSetting("Video", "Output", `${outputWidth}x${outputHeight}`);
+        this.setVideoOutputResolution();
 
         // A scene is necessary here to properly scale captured screen size to output video size
         this.scenes[0] = osn.SceneFactory.create(sceneName);
         this.scenes[0].add(videoSource);
 
         osn.Global.setOutputSource(1, this.scenes[0]);
+    }
+
+    private setVideoOutputResolution() {
+        const outputWidth = this.settingsStore.get("width");
+        const outputHeight = this.settingsStore.get("height");
+        this.setSetting("Video", "Base", `${outputWidth}x${outputHeight}`);
+        this.setSetting("Video", "Output", `${outputWidth}x${outputHeight}`);
+    }
+
+    public updateSettings(parentWindow) {
+        this.settingsStore = new Store(settingsStoreOptions);
+        this.setupProjector(parentWindow);
+        this.setVideoOutputResolution();
     }
 
     public setupPreview(parentWindow: BrowserWindow, bounds) {
@@ -127,16 +137,24 @@ export class OBS {
         const displayId = "projector";
         const displayWidth = Math.round(this.settingsStore.get("width") / 2);
         const displayHeight = Math.round(this.settingsStore.get("height") / 2);
-        this.previewWindow = new BrowserWindow({
-            width: displayWidth,
-            height: displayHeight,
-            parent: parentWindow,
-            useContentSize: true,
-        });
-        this.previewWindow.on("resize", () => {
+        const resized = () => {
             const { width, height } = this.previewWindow.getContentBounds();
             osn.NodeObs.OBS_content_resizeDisplay(displayId, width, height + 39);
             osn.NodeObs.OBS_content_setPaddingSize(displayId, this.settingsStore.get("paddingSize"));
+        };
+        if (!this.previewWindow) {
+            this.previewWindow = new BrowserWindow({
+                width: displayWidth,
+                height: displayHeight,
+                parent: parentWindow,
+                useContentSize: true,
+            });
+        } else {
+            this.previewWindow.removeListener("resize", resized);
+        }
+        this.previewWindow.on("resize", resized);
+        setTimeout(() => {
+            resized();
         });
 
         osn.NodeObs.OBS_content_createSourcePreviewDisplay(

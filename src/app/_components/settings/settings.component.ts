@@ -50,6 +50,7 @@ export class SettingsComponent {
         this.settingsService.store.set("aspectRatioHeight", this.aspectRatioHeight);
         this.settingsService.store.set("paddingSize", this.paddingSize);
         this.settingsService.store.set("backgroundColor", this.backgroundColor);
+        remote.ipcMain.emit("settings-changed");
     }
 
     public toggleProjector() {
