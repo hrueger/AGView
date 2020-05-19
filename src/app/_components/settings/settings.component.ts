@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { remote } from "electron";
 import { SettingsService } from "../../_services/settings.service";
+import { reduceFraction } from "../../_helpers/reduceFraction";
 
 @Component({
     selector: "settings",
@@ -26,6 +27,13 @@ export class SettingsComponent {
         this.backgroundColor = this.settingsService.store.get("backgroundColor");
     }
 
+    private updateAspectRatio() {
+        console.log(reduceFraction(this.width, this.height));
+        const [w, h] = reduceFraction(this.width, this.height);
+        this.aspectRatioWidth = Math.round(w);
+        this.aspectRatioHeight = Math.round(h);
+    }
+
     public changed(f: "width" | "height" | "aspectRatioWidth" | "aspectRatioHeight") {
         if (this.linked) {
             if (f == "width") {
@@ -35,6 +43,8 @@ export class SettingsComponent {
                 this.width = Math.round(this.height
                     * (this.aspectRatioWidth / this.aspectRatioHeight));
             }
+        } else if (f == "height" || f == "width") {
+            this.updateAspectRatio();
         }
         if (f == "aspectRatioWidth") {
             this.width = Math.round(this.height
