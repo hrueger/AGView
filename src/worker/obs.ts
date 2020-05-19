@@ -139,7 +139,7 @@ export class OBS {
         const displayHeight = Math.round(this.settingsStore.get("height") / 2);
         const resized = () => {
             const { width, height } = this.previewWindow.getContentBounds();
-            osn.NodeObs.OBS_content_resizeDisplay(displayId, width, height + 39);
+            osn.NodeObs.OBS_content_resizeDisplay(displayId, width, height + 20);
             osn.NodeObs.OBS_content_setPaddingSize(displayId, this.settingsStore.get("paddingSize"));
         };
         if (!this.previewWindow) {
@@ -150,12 +150,9 @@ export class OBS {
                 useContentSize: true,
             });
         } else {
-            this.previewWindow.removeListener("resize", resized);
+            this.previewWindow.removeAllListeners("resize");
         }
         this.previewWindow.on("resize", resized);
-        setTimeout(() => {
-            resized();
-        });
 
         osn.NodeObs.OBS_content_createSourcePreviewDisplay(
             this.previewWindow.getNativeWindowHandle(),
@@ -163,13 +160,14 @@ export class OBS {
             displayId,
         );
         osn.NodeObs.OBS_content_setShouldDrawUI(displayId, true);
-        osn.NodeObs.OBS_content_resizeDisplay(displayId, displayWidth, displayHeight);
         osn.NodeObs.OBS_content_setPaddingColor(displayId, ...hexToRgb(this.settingsStore.get("backgroundColor")));
+        resized();
     }
 
     public endProjector() {
         osn.NodeObs.OBS_content_destroyDisplay("projector");
         this.previewWindow.close();
+        this.previewWindow = undefined;
     }
 
     public clearSlides() {
