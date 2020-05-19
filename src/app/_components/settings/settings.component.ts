@@ -28,13 +28,12 @@ export class SettingsComponent {
     }
 
     private updateAspectRatio() {
-        console.log(reduceFraction(this.width, this.height));
         const [w, h] = reduceFraction(this.width, this.height);
         this.aspectRatioWidth = Math.round(w);
         this.aspectRatioHeight = Math.round(h);
     }
 
-    public changed(f: "width" | "height" | "aspectRatioWidth" | "aspectRatioHeight") {
+    public changed(f: "width" | "height" | "aspectRatioWidth" | "aspectRatioHeight" | "paddingSize" | "backgroundColor") {
         if (this.linked) {
             if (f == "width") {
                 this.height = Math.round(this.width
