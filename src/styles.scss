@@ -1,13 +1,8 @@
 @import "~bootstrap/scss/bootstrap";
+@import "~@forevolve/bootstrap-dark/scss/bootstrap-dark.scss";
 .titlebar .window-appicon {
     background-size: 30px;
     margin-right: 1rem;
-}
-
-html,
-body {
-    background-color: #1E1E1E;
-    color: #fff;
 }
 
 as-split .as-split-gutter {

@@ -1,17 +1,11 @@
 import { Injectable } from "@angular/core";
-import { remote } from "electron";
+import { settingsStoreOptions } from "../_globals/settingsStoreOptions";
 import { Store } from "../_helpers/store";
+
 
 @Injectable({
     providedIn: "root",
 })
 export class SettingsService {
-    public store = new Store({
-        configName: "user-preferences",
-        defaults: {
-            openVideosDefaultPath: remote.app.getPath("home"),
-            previewSplitSize: undefined,
-            mainSplitSize: undefined,
-        },
-    });
+    public store = new Store(settingsStoreOptions);
 }

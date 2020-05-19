@@ -1,1 +1,9 @@
 <button class="btn btn-outline-primary" (click)="toggleProjector()">{{projector ? "Hide projector" : "Create projector" }}</button>
+
+<div class="mt-2">
+    <input type="number" [(ngModel)]="width" (change)="changed('width')" class=" form-control d-inline sizeField">
+    <button class="btn btn-outline-secondary sizeFieldButton" [class.active]="linked" (click)="linked=! linked"><i class="fa fa-link"></i></button>
+    <input type="number" [(ngModel)]="height" (change)="changed('height')" class="form-control d-inline sizeField mr-5">
+    <input type="number" [(ngModel)]="aspectRatioWidth" (change)="changed('aspectRatioWidth')" class="form-control d-inline sizeField"> x
+    <input type="number" [(ngModel)]="aspectRatioHeight" (change)="changed('aspectRatioHeight')" class="form-control d-inline sizeField">
+</div>

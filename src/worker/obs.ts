@@ -8,6 +8,8 @@ import * as uuid from "uuid/v4";
 import { IInput, IScene } from "obs-studio-node";
 import { Slide } from "../app/_classes/slide";
 import { supportedFiles } from "../app/_globals/supportedFilesFilters";
+import { Store } from "../app/_helpers/store";
+import { settingsStoreOptions } from "../app/_globals/settingsStoreOptions";
 
 export class OBS {
     private obsInitialized = false;
@@ -15,9 +17,10 @@ export class OBS {
     public previewWindow: BrowserWindow;
     private sources: IInput[] = [];
     private scenes: IScene[] = [];
-    videoScaleFactor: number;
+    private settingsStore: Store;
 
     constructor(parentWindow: BrowserWindow) {
+        this.settingsStore = new Store(settingsStoreOptions);
         this.initialize(parentWindow);
     }
 
@@ -90,32 +93,20 @@ export class OBS {
     private setupSources(sceneName: string) {
         const videoSource = osn.InputFactory.create("monitor_capture", "desktop-video");
 
-        // Get information about prinary display
-        // eslint-disable-next-line
-        const { screen } = require("electron");
-        const primaryDisplay = screen.getPrimaryDisplay();
-        const realDisplayWidth = primaryDisplay.size.width * primaryDisplay.scaleFactor;
-        const realDisplayHeight = primaryDisplay.size.height * primaryDisplay.scaleFactor;
-        const aspectRatio = realDisplayWidth / realDisplayHeight;
-
         // Update source settings:
         const { settings } = videoSource;
-        settings.width = realDisplayWidth;
-        settings.height = realDisplayHeight;
         videoSource.update(settings);
         videoSource.save();
 
         // Set output video size to 1920x1080
-        const outputWidth = 1920;
-        const outputHeight = Math.round(outputWidth / aspectRatio);
+        const outputWidth = this.settingsStore.get("width");
+        const outputHeight = this.settingsStore.get("height");
         this.setSetting("Video", "Base", `${outputWidth}x${outputHeight}`);
         this.setSetting("Video", "Output", `${outputWidth}x${outputHeight}`);
-        this.videoScaleFactor = realDisplayWidth / outputWidth;
 
         // A scene is necessary here to properly scale captured screen size to output video size
         this.scenes[0] = osn.SceneFactory.create(sceneName);
-        const sceneItem = this.scenes[0].add(videoSource);
-        sceneItem.scale = { x: 1.0 / this.videoScaleFactor, y: 1.0 / this.videoScaleFactor };
+        this.scenes[0].add(videoSource);
 
         osn.Global.setOutputSource(1, this.scenes[0]);
     }
@@ -133,9 +124,8 @@ export class OBS {
 
     public setupProjector(parentWindow) {
         const displayId = "projector";
-        const displayWidth = 960;
-        const displayHeight = 540;
-
+        const displayWidth = Math.round(this.settingsStore.get("width") / 2);
+        const displayHeight = Math.round(this.settingsStore.get("height") / 2);
         this.previewWindow = new BrowserWindow({
             width: displayWidth,
             height: displayHeight,
@@ -205,8 +195,8 @@ export class OBS {
                 const s = this.createSource(filename, type.obsName, settings);
                 const sceneItem = this.scenes[0].add(s);
                 sceneItem.scale = {
-                    x: 1.0 / this.videoScaleFactor,
-                    y: 1.0 / this.videoScaleFactor,
+                    x: 1.0 / 1,
+                    y: 1.0 / 1,
                 };
                 return s;
             }
