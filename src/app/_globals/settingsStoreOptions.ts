@@ -11,5 +11,6 @@ export const settingsStoreOptions = {
         aspectRatioWidth: 16,
         aspectRatioHeight: 9,
         paddingSize: 0,
+        backgroundColor: "#000",
     },
 };

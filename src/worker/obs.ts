@@ -10,6 +10,7 @@ import { Slide } from "../app/_classes/slide";
 import { supportedFiles } from "../app/_globals/supportedFilesFilters";
 import { Store } from "../app/_helpers/store";
 import { settingsStoreOptions } from "../app/_globals/settingsStoreOptions";
+import { hexToRgb } from "../app/_helpers/hexToRgb";
 
 export class OBS {
     private obsInitialized = false;
@@ -145,6 +146,7 @@ export class OBS {
         );
         osn.NodeObs.OBS_content_setShouldDrawUI(displayId, true);
         osn.NodeObs.OBS_content_resizeDisplay(displayId, displayWidth, displayHeight);
+        osn.NodeObs.OBS_content_setPaddingColor(displayId, ...hexToRgb(this.settingsStore.get("backgroundColor")));
     }
 
     public endProjector() {

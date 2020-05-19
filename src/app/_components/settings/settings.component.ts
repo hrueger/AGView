@@ -14,6 +14,7 @@ export class SettingsComponent {
     public aspectRatioWidth: number;
     public aspectRatioHeight: number;
     public paddingSize: number;
+    public backgroundColor: string;
     public linked = true;
 
     constructor(private settingsService: SettingsService) {
@@ -22,6 +23,7 @@ export class SettingsComponent {
         this.aspectRatioWidth = this.settingsService.store.get("aspectRatioWidth");
         this.aspectRatioHeight = this.settingsService.store.get("aspectRatioHeight");
         this.paddingSize = this.settingsService.store.get("paddingSize");
+        this.backgroundColor = this.settingsService.store.get("backgroundColor");
     }
 
     public changed(f: "width" | "height" | "aspectRatioWidth" | "aspectRatioHeight") {
@@ -47,6 +49,7 @@ export class SettingsComponent {
         this.settingsService.store.set("aspectRatioWidth", this.aspectRatioWidth);
         this.settingsService.store.set("aspectRatioHeight", this.aspectRatioHeight);
         this.settingsService.store.set("paddingSize", this.paddingSize);
+        this.settingsService.store.set("backgroundColor", this.backgroundColor);
     }
 
     public toggleProjector() {
