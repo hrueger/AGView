@@ -118,7 +118,9 @@ export class OBS {
 
     public updateSettings(parentWindow) {
         this.settingsStore = new Store(settingsStoreOptions);
-        this.setupProjector(parentWindow);
+        if (this.previewWindow) {
+            this.setupProjector(parentWindow);
+        }
         this.setVideoOutputResolution();
     }
 
