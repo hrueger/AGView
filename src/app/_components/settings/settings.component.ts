@@ -63,10 +63,14 @@ export class SettingsComponent {
     }
 
     public toggleProjector() {
-        if (this.projector) {
-            remote.ipcMain.emit("projector-end");
-        } else {
-            remote.ipcMain.emit("projector-init");
+        try {
+            if (this.projector) {
+                remote.ipcMain.emit("projector-end");
+            } else {
+                remote.ipcMain.emit("projector-init");
+            }
+        } catch {
+            //
         }
         this.projector = !this.projector;
     }

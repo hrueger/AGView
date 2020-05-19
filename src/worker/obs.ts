@@ -151,6 +151,10 @@ export class OBS {
                 parent: parentWindow,
                 useContentSize: true,
             });
+            this.previewWindow.on("close", () => {
+                osn.NodeObs.OBS_content_destroyDisplay("projector");
+                this.previewWindow = undefined;
+            });
         } else {
             this.previewWindow.removeAllListeners("resize");
         }
