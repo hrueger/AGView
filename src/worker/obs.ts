@@ -135,7 +135,7 @@ export class OBS {
         this.previewWindow.on("resize", () => {
             const { width, height } = this.previewWindow.getContentBounds();
             osn.NodeObs.OBS_content_resizeDisplay(displayId, width, height + 39);
-            osn.NodeObs.OBS_content_setPaddingSize(displayId, 0);
+            osn.NodeObs.OBS_content_setPaddingSize(displayId, this.settingsStore.get("paddingSize"));
         });
 
         osn.NodeObs.OBS_content_createSourcePreviewDisplay(

@@ -13,6 +13,7 @@ export class SettingsComponent {
     public height: number;
     public aspectRatioWidth: number;
     public aspectRatioHeight: number;
+    public paddingSize: number;
     public linked = true;
 
     constructor(private settingsService: SettingsService) {
@@ -20,6 +21,7 @@ export class SettingsComponent {
         this.height = this.settingsService.store.get("height");
         this.aspectRatioWidth = this.settingsService.store.get("aspectRatioWidth");
         this.aspectRatioHeight = this.settingsService.store.get("aspectRatioHeight");
+        this.paddingSize = this.settingsService.store.get("paddingSize");
     }
 
     public changed(f: "width" | "height" | "aspectRatioWidth" | "aspectRatioHeight") {
@@ -44,6 +46,7 @@ export class SettingsComponent {
         this.settingsService.store.set("height", this.height);
         this.settingsService.store.set("aspectRatioWidth", this.aspectRatioWidth);
         this.settingsService.store.set("aspectRatioHeight", this.aspectRatioHeight);
+        this.settingsService.store.set("paddingSize", this.paddingSize);
     }
 
     public toggleProjector() {

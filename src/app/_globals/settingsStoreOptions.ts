@@ -10,5 +10,6 @@ export const settingsStoreOptions = {
         height: 1080,
         aspectRatioWidth: 16,
         aspectRatioHeight: 9,
+        paddingSize: 0,
     },
 };
