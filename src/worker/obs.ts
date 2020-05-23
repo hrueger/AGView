@@ -5,7 +5,7 @@ import { Subject } from "rxjs";
 import * as path from "path";
 import * as fs from "fs";
 import * as uuid from "uuid/v4";
-import { IInput, IScene, ISceneItem } from "obs-studio-node";
+import { IScene, ISceneItem, ITransition } from "obs-studio-node";
 import { Slide } from "../app/_classes/slide";
 import { supportedFiles } from "../app/_globals/supportedFilesFilters";
 import { Store } from "../app/_helpers/store";
@@ -13,13 +13,18 @@ import { settingsStoreOptions } from "../app/_globals/settingsStoreOptions";
 import { hexToRgb } from "../app/_helpers/hexToRgb";
 import { AlignmentOptions } from "../app/_classes/alignmentOptions";
 
+const LOGO_SCENE_ID = "LOGOSCENE";
+
 export class OBS {
     private obsInitialized = false;
     private signals: Subject<any> = new Subject();
     public previewWindow: BrowserWindow;
-    private sources: IInput[] = [];
-    private scenes: IScene[] = [];
+    private scenes: {
+        id: string;
+        scene: IScene;
+    }[] = [];
     private settingsStore: Store;
+    private transition: ITransition;
 
     constructor(parentWindow: BrowserWindow) {
         this.settingsStore = new Store(settingsStoreOptions);
@@ -35,9 +40,8 @@ export class OBS {
 
         this.initOBS();
         this.configureOBS();
-        const sceneName = "test-scene";
-        this.setupSources(sceneName);
-        this.setupPreview(win, sceneName);
+        this.setupSources(LOGO_SCENE_ID);
+        this.setupPreview(win, LOGO_SCENE_ID);
         this.obsInitialized = true;
 
         setInterval(() => {
@@ -98,15 +102,17 @@ export class OBS {
         this.setVideoOutputResolution();
 
         // A scene is necessary here to properly scale captured screen size to output video size
-        this.scenes[0] = osn.SceneFactory.create(sceneName);
-        const si = this.scenes[0].add(logoSource);
+        const scene = osn.SceneFactory.create(sceneName);
+        const si = scene.add(logoSource);
         this.alignItem(si, {
             alignment: "center",
             padding: 50,
             scale: "fit",
         });
 
-        osn.Global.setOutputSource(1, this.scenes[0]);
+        this.transition = osn.TransitionFactory.create("fade_transition", "myTransition", {});
+        this.transition.set(scene);
+        osn.Global.setOutputSource(0, this.transition);
     }
 
     private setVideoOutputResolution() {
@@ -236,12 +242,22 @@ export class OBS {
                 };
             }
             if (settings) {
-                const s = this.createSource(filename, type.obsName, settings);
-                const sceneItem = this.scenes[0].add(s);
-                sceneItem.scale = {
-                    x: 1.0 / 1,
-                    y: 1.0 / 1,
-                };
+                const s = this.createSource("sourceId", type.obsName, settings);
+                // const sceneItem = this.scenes[0].scene.add(s);
+                const sceneId = Math.random().toString();
+                const scene = osn.SceneFactory.create(sceneId);
+                const si = scene.add(s);
+                console.log(si);
+                /* this.alignItem(si, {
+                    alignment: "center",
+                    padding: 50,
+                    scale: "fit",
+                }); */
+                setTimeout(() => {
+                    console.log("transition");
+                    this.transitionTo(sceneId);
+                    // ToDo, we need to wait for the video to load
+                }, 1000);
                 return s;
             }
         }
@@ -258,6 +274,11 @@ export class OBS {
         const obsInputSettings = settings;
         const obsInput = osn.InputFactory.create(type, id, obsInputSettings);
         return obsInput;
+    }
+
+    private transitionTo(sceneName: string) {
+        const scene = osn.SceneFactory.fromName(sceneName);
+        this.transition.start(300, scene);
     }
 
     public shutdown() {

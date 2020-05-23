@@ -10,5 +10,8 @@ export class Slide {
   @Save
   public name: string;
 
+  @Save
+  public id: string;
+
   public thumbnail?: string;
 }

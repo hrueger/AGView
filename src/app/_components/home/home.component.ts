@@ -4,6 +4,7 @@ import {
 import { remote } from "electron";
 import { SplitComponent } from "angular-split";
 import * as path from "path";
+import { v4 as uuid } from "uuid";
 import { PreviewComponent } from "../preview/preview.component";
 import { SettingsService } from "../../_services/settings.service";
 import { ShowService } from "../../_services/show.service";
@@ -80,6 +81,7 @@ export class HomeComponent {
         this.settingsService.store.set("openVideosDefaultPath", path.dirname(videos[0]));
         for (const video of videos) {
             const s = new Slide();
+            s.id = uuid();
             s.filePath = path.normalize(video);
             s.name = path.basename(video);
             s.type = "video";
