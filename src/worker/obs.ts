@@ -5,12 +5,13 @@ import { Subject } from "rxjs";
 import * as path from "path";
 import * as fs from "fs";
 import * as uuid from "uuid/v4";
-import { IInput, IScene } from "obs-studio-node";
+import { IInput, IScene, ISceneItem } from "obs-studio-node";
 import { Slide } from "../app/_classes/slide";
 import { supportedFiles } from "../app/_globals/supportedFilesFilters";
 import { Store } from "../app/_helpers/store";
 import { settingsStoreOptions } from "../app/_globals/settingsStoreOptions";
 import { hexToRgb } from "../app/_helpers/hexToRgb";
+import { AlignmentOptions } from "../app/_classes/alignmentOptions";
 
 export class OBS {
     private obsInitialized = false;
@@ -92,19 +93,18 @@ export class OBS {
     }
 
     private setupSources(sceneName: string) {
-        const videoSource = osn.InputFactory.create("monitor_capture", "desktop-video");
-
-        // Update source settings:
-        const { settings } = videoSource;
-        videoSource.update(settings);
-        videoSource.save();
-
+        const logoSource = osn.InputFactory.create("image_source", "logo", { file: path.join(__dirname, "../assets/icons/favicon.png") });
         // Set output video size to 1920x1080
         this.setVideoOutputResolution();
 
         // A scene is necessary here to properly scale captured screen size to output video size
         this.scenes[0] = osn.SceneFactory.create(sceneName);
-        this.scenes[0].add(videoSource);
+        const si = this.scenes[0].add(logoSource);
+        this.alignItem(si, {
+            alignment: "center",
+            padding: 50,
+            scale: "fit",
+        });
 
         osn.Global.setOutputSource(1, this.scenes[0]);
     }
@@ -122,6 +122,26 @@ export class OBS {
             this.setupProjector(parentWindow);
         }
         this.setVideoOutputResolution();
+    }
+
+    private alignItem(sceneItem: ISceneItem, options: AlignmentOptions) {
+        const width = this.settingsStore.get("width");
+        const height = this.settingsStore.get("height");
+        const smallestSide = width < height ? width : height;
+        const scale = Math.floor((smallestSide / sceneItem.source.width) * 100) / 100;
+        sceneItem.scale = { x: scale, y: scale };
+
+        if (width < height) {
+            sceneItem.position = {
+                x: 0,
+                y: (height - (sceneItem.source.height * scale)) / 2,
+            };
+        } else if (width > height) {
+            sceneItem.position = {
+                x: (width - (sceneItem.source.width * scale)) / 2,
+                y: 0,
+            };
+        }
     }
 
     public setupPreview(parentWindow: BrowserWindow, bounds) {
