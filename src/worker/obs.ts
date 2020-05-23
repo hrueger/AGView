@@ -12,6 +12,7 @@ import { Store } from "../app/_helpers/store";
 import { settingsStoreOptions } from "../app/_globals/settingsStoreOptions";
 import { hexToRgb } from "../app/_helpers/hexToRgb";
 import { AlignmentOptions } from "../app/_classes/alignmentOptions";
+import { TransitionTypes } from "../app/_globals/transitionTypes";
 
 const LOGO_SCENE_ID = "LOGOSCENE";
 
@@ -110,7 +111,7 @@ export class OBS {
             scale: "fit",
         });
 
-        this.transition = osn.TransitionFactory.create("fade_transition", "myTransition", {});
+        this.transition = osn.TransitionFactory.create(TransitionTypes.Fade, "myTransition", {});
         this.transition.set(scene);
         osn.Global.setOutputSource(0, this.transition);
     }
