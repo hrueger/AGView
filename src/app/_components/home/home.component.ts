@@ -104,12 +104,17 @@ export class HomeComponent {
 
     private addSlides(files: string[]) {
         for (const slide of files) {
+            const ext = path.extname(slide).replace(".", "");
+            const types = supportedFiles.filter((f) => f.extensions.includes(ext));
+            if (!(types && types[0])) {
+                // eslint-disable-next-line no-continue
+                continue;
+            }
             const s = new Slide();
+            s.type = types[0].slideType;
             s.id = uuid();
             s.filePath = path.normalize(slide);
             s.name = path.basename(slide);
-            const ext = path.extname(slide).replace(".", "");
-            s.type = supportedFiles.filter((f) => f.extensions.includes(ext))[0].slideType;
             this.slides.push(s);
         }
         this.ensureThumbnails();
