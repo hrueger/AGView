@@ -160,19 +160,21 @@ export class OBS {
     private pAlignItem(
         options: AlignmentOptions, sceneItem: osn.ISceneItem, w?: number, h?: number,
     ) {
-        console.log(sceneItem.source.width, w, h);
         const width = this.settingsStore.get("width");
         const height = this.settingsStore.get("height");
-        const smallestSide = width < height ? width : height;
         let scaleX = 1;
         let scaleY = 1;
+        const fullScaleX = width / (sceneItem.source.width ? sceneItem.source.width : w);
+        const fullScaleY = height / (sceneItem.source.height ? sceneItem.source.height : h);
         switch (options.scale) {
         case "fit":
-            scaleX = Math.floor(
-                (smallestSide / (sceneItem.source.width ? sceneItem.source.width : w)) * 100,
-            ) / 100;
-            scaleY = scaleX;
-            console.log(scaleX);
+            if (fullScaleX < fullScaleY) {
+                scaleY = fullScaleX;
+                scaleX = fullScaleX;
+            } else {
+                scaleX = fullScaleY;
+                scaleY = fullScaleY;
+            }
             break;
         default:
             break;
@@ -298,11 +300,9 @@ export class OBS {
                 this.alignItem(slide, si, {
                     alignment: "center",
                     padding: 50,
-                    scale: "fit",
+                    scale: "stretch",
                 });
                 setTimeout(() => {
-                    console.log("transition");
-                    console.log(osn.InputFactory.fromName(slide.name).height);
                     this.transitionTo(sceneId);
                     // ToDo, we need to wait for the video to load
                 }, 1000);
