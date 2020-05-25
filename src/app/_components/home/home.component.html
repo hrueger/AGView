@@ -1,10 +1,10 @@
 <as-split unit="pixel" #mainSplit="asSplit">
-    <as-split-area class="p-5">
+    <as-split-area class="">
 
-        <div class="w-100 h-90 dropZone" (dragover)="onDragOver()" (dragleave)="onDragLeave()" (drop)="onDrop($event)" [class.activeDrag]="activeDrag">
+        <div class="w-100 dropZone overflow-auto p-3" (dragover)="onDragOver()" (dragleave)="onDragLeave()" (drop)="onDrop($event)" [class.activeDrag]="activeDrag">
             <div class="slides grid">
-                <div class="slide" *ngFor="let slide of slides">
-                    <img [src]="slide.thumbnail ? 'file:///' + slide.thumbnail : 'assets/images/thumbnail.png'" alt="Video thumbnail" class="thumbnail">
+                <div class="slide m-1" *ngFor="let slide of slides">
+                    <img [src]="slide.thumbnail ? 'file:///' + slide.thumbnail : 'assets/images/thumbnail.png'" alt="Video thumbnail" class="thumbnail" [style.width]="thumbnailSize + 'rem'" [style.height]="(thumbnailSize / 16 * 9) + 'rem'">
                     <p>{{slide.path}}</p>
                     <p>{{slide.name}}</p>
 
@@ -12,7 +12,13 @@
             </div>
             <p class="m-3">Add slides by dropping files here, selecting <code>Slide -> Import slides...</code> in the menu or by clicking <a routerLink="" (click)="importSlides()">here</a>.</p>
         </div>
-
+        <div class="iconBar p-3 border-top border-primary">
+            <input class="custom-range w-10 mr-5" type="range" min="5" max="50" step="0.1" [(ngModel)]="thumbnailSize">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-primary"><i class="fas fa-th"></i></button>
+                <button type="button" class="btn btn-outline-primary"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
 
     </as-split-area>
     <as-split-area [size]="mainSplitSize">

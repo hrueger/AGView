@@ -1,5 +1,4 @@
 .slides.grid .slide {
-    width: 15rem;
     display: inline-block;
     border: 2px solid #555;
     img.thumbnail {
@@ -18,4 +17,8 @@
         font-size: 3rem;
         width: 100%;
     }
+}
+
+.dropZone {
+    height: calc(100% - 5rem);
 }

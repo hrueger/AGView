@@ -26,6 +26,7 @@ export class HomeComponent {
     @ViewChild("mainSplit") public mainSplit: SplitComponent;
     @ViewChild("rightSplit") public rightSplit: SplitComponent;
     public activeDrag = false;
+    public thumbnailSize = 5;
 
 
     constructor(
