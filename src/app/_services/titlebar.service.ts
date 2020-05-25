@@ -81,6 +81,37 @@ export class TitlebarService {
                 ],
             },
             {
+                label: "Slide",
+                submenu: [
+                    {
+                        label: "Import slides...",
+                        accelerator: "Ctrl+I",
+                        click: () => undefined,
+                    },
+                    {
+                        type: "separator",
+                    },
+                    {
+                        label: "Rename slide",
+                        accelerator: "F2",
+                        click: () => undefined,
+                    },
+                    {
+                        label: "Remove slide",
+                        accelerator: "Del",
+                        click: () => undefined,
+                    },
+                    {
+                        type: "separator",
+                    },
+                    {
+                        label: "Slide Properties",
+                        accelerator: "Strg+W",
+                        click: () => undefined,
+                    },
+                ],
+            },
+            {
                 label: "Window",
                 submenu: [
                     { role: "minimize" },
