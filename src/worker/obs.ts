@@ -135,7 +135,10 @@ export class OBS {
         this.setVideoOutputResolution();
     }
 
-    private alignItem(slide: Slide, sceneItem: ISceneItem, options: AlignmentOptions) {
+    private alignItem(slide: Slide, sceneItem: ISceneItem, options?: AlignmentOptions) {
+        if (!options) {
+            options = slide.alignment;
+        }
         // needed because sometimes the width and height reported by obs are 0
         if (slide && slide.type && slide.type == "video") {
             new Promise<{ width: number; height: number}>((resolve, reject) => {
@@ -310,11 +313,7 @@ export class OBS {
                 const sceneId = Math.random().toString();
                 const scene = osn.SceneFactory.create(sceneId);
                 const si = scene.add(s);
-                this.alignItem(slide, si, {
-                    alignment: "center",
-                    padding: 50,
-                    scale: "cover",
-                });
+                this.alignItem(slide, si);
                 setTimeout(() => {
                     this.transitionTo(sceneId);
                     // ToDo, we need to wait for the video to load
