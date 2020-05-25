@@ -3,7 +3,7 @@ import { AlignmentOptions } from "./alignmentOptions";
 
 export class Slide {
     @Save
-    public type: "browser" | "video" | "image";
+    public type: "browser" | "video" | "image" | "text";
 
     @Save
     public filePath: string;

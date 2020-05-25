@@ -4,8 +4,9 @@ import { BrowserWindow } from "electron";
 import { Subject } from "rxjs";
 import * as path from "path";
 import * as fs from "fs";
-import * as uuid from "uuid/v4";
 import { IScene, ISceneItem, ITransition } from "obs-studio-node";
+import * as ffmpeg from "fluent-ffmpeg";
+import * as os from "os";
 import { Slide } from "../app/_classes/slide";
 import { supportedFiles } from "../app/_globals/supportedFilesFilters";
 import { Store } from "../app/_helpers/store";
@@ -15,6 +16,9 @@ import { AlignmentOptions } from "../app/_classes/alignmentOptions";
 import { TransitionTypes } from "../app/_globals/transitionTypes";
 
 const LOGO_SCENE_ID = "LOGOSCENE";
+
+
+ffmpeg.setFfprobePath(path.join(__dirname, "../../bin", os.platform(), os.arch(), os.platform() == "win32" ? "ffprobe.exe" : "ffprobe"));
 
 export class OBS {
     private obsInitialized = false;
@@ -105,7 +109,7 @@ export class OBS {
         // A scene is necessary here to properly scale captured screen size to output video size
         const scene = osn.SceneFactory.create(sceneName);
         const si = scene.add(logoSource);
-        this.alignItem(si, {
+        this.alignItem(undefined, si, {
             alignment: "center",
             padding: 50,
             scale: "fit",
@@ -131,23 +135,67 @@ export class OBS {
         this.setVideoOutputResolution();
     }
 
-    private alignItem(sceneItem: ISceneItem, options: AlignmentOptions) {
+    private alignItem(slide: Slide, sceneItem: ISceneItem, options: AlignmentOptions) {
+        // needed because sometimes the width and height reported by obs are 0
+        if (slide && slide.type && slide.type == "video") {
+            new Promise<{ width: number; height: number}>((resolve, reject) => {
+                ffmpeg.ffprobe(slide.filePath, (err, metadata) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve({
+                            width: metadata.streams[0].width,
+                            height: metadata.streams[0].height,
+                        });
+                    }
+                });
+            }).then((size) => {
+                this.pAlignItem(options, sceneItem, size.width, size.height);
+            });
+        } else {
+            this.pAlignItem(options, sceneItem);
+        }
+    }
+
+    private pAlignItem(
+        options: AlignmentOptions, sceneItem: osn.ISceneItem, w?: number, h?: number,
+    ) {
+        console.log(sceneItem.source.width, w, h);
         const width = this.settingsStore.get("width");
         const height = this.settingsStore.get("height");
         const smallestSide = width < height ? width : height;
-        const scale = Math.floor((smallestSide / sceneItem.source.width) * 100) / 100;
-        sceneItem.scale = { x: scale, y: scale };
-
-        if (width < height) {
-            sceneItem.position = {
-                x: 0,
-                y: (height - (sceneItem.source.height * scale)) / 2,
-            };
-        } else if (width > height) {
-            sceneItem.position = {
-                x: (width - (sceneItem.source.width * scale)) / 2,
-                y: 0,
-            };
+        let scaleX = 1;
+        let scaleY = 1;
+        switch (options.scale) {
+        case "fit":
+            scaleX = Math.floor(
+                (smallestSide / (sceneItem.source.width ? sceneItem.source.width : w)) * 100,
+            ) / 100;
+            scaleY = scaleX;
+            console.log(scaleX);
+            break;
+        default:
+            break;
+        }
+        sceneItem.scale = { x: scaleX, y: scaleY };
+        switch (options.alignment) {
+        case "center":
+            if (width < height) {
+                sceneItem.position = {
+                    x: 0,
+                    y: (height - (
+                        (sceneItem.source.height ? sceneItem.source.height : h) * scaleY)) / 2,
+                };
+            } else if (width > height) {
+                sceneItem.position = {
+                    x: (width - (
+                        (sceneItem.source.width ? sceneItem.source.width : w) * scaleX)) / 2,
+                    y: 0,
+                };
+            }
+            break;
+        default:
+            break;
         }
     }
 
@@ -212,7 +260,6 @@ export class OBS {
         let ext = realpath.split(".").splice(-1)[0];
         if (!ext) return null;
         ext = ext.toLowerCase();
-        const filename = slide.filePath.split("\\").splice(-1)[0];
 
         for (const type of supportedFiles) {
             // eslint-disable-next-line no-continue
@@ -243,19 +290,19 @@ export class OBS {
                 };
             }
             if (settings) {
-                const s = this.createSource("sourceId", type.obsName, settings);
+                const s = this.createSource(slide.name, type.obsName, settings);
                 // const sceneItem = this.scenes[0].scene.add(s);
                 const sceneId = Math.random().toString();
                 const scene = osn.SceneFactory.create(sceneId);
                 const si = scene.add(s);
-                console.log(si);
-                /* this.alignItem(si, {
+                this.alignItem(slide, si, {
                     alignment: "center",
                     padding: 50,
                     scale: "fit",
-                }); */
+                });
                 setTimeout(() => {
                     console.log("transition");
+                    console.log(osn.InputFactory.fromName(slide.name).height);
                     this.transitionTo(sceneId);
                     // ToDo, we need to wait for the video to load
                 }, 1000);
@@ -269,11 +316,9 @@ export class OBS {
         name: string,
         type: string,
         settings: any = {},
-        options: any = {},
     ) {
-        const id: string = options.sourceId || `${type}_${uuid()}`;
         const obsInputSettings = settings;
-        const obsInput = osn.InputFactory.create(type, id, obsInputSettings);
+        const obsInput = osn.InputFactory.create(type, name, obsInputSettings);
         return obsInput;
     }
 

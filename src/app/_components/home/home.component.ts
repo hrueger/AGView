@@ -10,7 +10,7 @@ import { SettingsService } from "../../_services/settings.service";
 import { ShowService } from "../../_services/show.service";
 import { ThumbnailService } from "../../_services/thumbnail.service";
 import { Slide } from "../../_classes/slide";
-import { supportedFilesFilters } from "../../_globals/supportedFilesFilters";
+import { supportedFilesFilters, supportedFiles } from "../../_globals/supportedFilesFilters";
 
 @Component({
     selector: "app-home",
@@ -108,7 +108,8 @@ export class HomeComponent {
             s.id = uuid();
             s.filePath = path.normalize(slide);
             s.name = path.basename(slide);
-            s.type = "video";
+            const ext = path.extname(slide).replace(".", "");
+            s.type = supportedFiles.filter((f) => f.extensions.includes(ext))[0].slideType;
             this.slides.push(s);
         }
         this.ensureThumbnails();
