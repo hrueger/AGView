@@ -218,6 +218,9 @@ export class OBS {
                 y: 0,
             };
             break;
+        case "left":
+            sceneItem.position = { x: 0, y: 0 };
+            break;
         default:
             break;
         }
