@@ -18,7 +18,7 @@ export class RecentShowsService {
     constructor() {
         this.recentShows = this.store.get("recentShows");
         const origLength = this.recentShows.length;
-        this.recentShows.filter((path) => fs.existsSync(path));
+        this.recentShows = this.recentShows.filter((path) => fs.existsSync(path));
         if (this.recentShows.length != origLength) {
             this.save();
         }
