@@ -180,6 +180,15 @@ export class OBS {
             scaleX = fullScaleX;
             scaleY = fullScaleY;
             break;
+        case "cover":
+            if (fullScaleX > fullScaleY) {
+                scaleY = fullScaleX;
+                scaleX = fullScaleX;
+            } else {
+                scaleX = fullScaleY;
+                scaleY = fullScaleY;
+            }
+            break;
         default:
             break;
         }
@@ -304,7 +313,7 @@ export class OBS {
                 this.alignItem(slide, si, {
                     alignment: "center",
                     padding: 50,
-                    scale: "stretch",
+                    scale: "cover",
                 });
                 setTimeout(() => {
                     this.transitionTo(sceneId);
