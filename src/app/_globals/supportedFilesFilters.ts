@@ -2,7 +2,7 @@ export const supportedFiles: {
     extensions: string[];
     obsName: string;
     prettyName: string;
-    slideType: "browser" | "video" | "image" | "text";
+    slideType: SlideType;
 }[] = [
     {
         extensions: ["png", "jpg", "jpeg", "tga", "bmp"],
@@ -29,6 +29,8 @@ export const supportedFiles: {
         slideType: "browser",
     },
 ];
+
+export type SlideType = "browser" | "video" | "image" | "text"
 
 export const supportedFilesFilters = supportedFiles.map(
     (f) => ({ name: f.prettyName, extensions: f.extensions }),

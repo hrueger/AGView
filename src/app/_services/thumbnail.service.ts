@@ -5,6 +5,7 @@ import * as fs from "fs";
 import * as os from "os";
 import * as crypto from "crypto";
 import * as thumbnail from "simple-thumbnail";
+import { supportedFiles, SlideType } from "../_globals/supportedFilesFilters";
 
 @Injectable({
     providedIn: "root",
@@ -19,12 +20,39 @@ export class ThumbnailService {
         }
     }
 
-    public ensureThumbnail(videoPath): Promise<string> {
+    public ensureThumbnail(file: string): Promise<string> {
+        const hash = crypto.createHash("md5").update(file).digest("hex");
+        const thumbnailPath = path.join(this.thumbnailPath, `${hash}.png`);
+        if (this.ofType(file, "browser")) {
+            return new Promise<string>((resolve, reject) => {
+                let win = new remote.BrowserWindow({
+                    show: false,
+                });
+                win.loadFile(file);
+                win.webContents.on("did-stop-loading", () => {
+                    win.capturePage((image) => {
+                        fs.writeFile(thumbnailPath, image.toPNG(), (err) => {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve(thumbnailPath);
+                            }
+                            win.close();
+                            win = undefined;
+                        });
+                    });
+                });
+            });
+        }
+        if (this.ofType(file, "image")) {
+            return new Promise((resolve) => {
+                resolve(file);
+            });
+        }
+
         return new Promise<string>((resolve) => {
-            const hash = crypto.createHash("md5").update(videoPath).digest("hex");
-            const thumbnailPath = path.join(this.thumbnailPath, `${hash}.png`);
             if (!fs.existsSync(thumbnailPath)) {
-                thumbnail(videoPath, thumbnailPath, "250x?", {
+                thumbnail(file, thumbnailPath, "250x?", {
                     path: this.ffmpegPath,
                 }).then(() => {
                     resolve(thumbnailPath);
@@ -33,5 +61,9 @@ export class ThumbnailService {
                 resolve(thumbnailPath);
             }
         });
+    }
+
+    private ofType(file: any, type: SlideType) {
+        return supportedFiles.find((f) => f.slideType == type).extensions.includes(path.extname(file).replace(".", ""));
     }
 }

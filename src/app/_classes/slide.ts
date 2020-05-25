@@ -1,9 +1,10 @@
 import { Save } from "../_decorators/save.decorator";
 import { AlignmentOptions } from "./alignmentOptions";
+import { SlideType } from "../_globals/supportedFilesFilters";
 
 export class Slide {
     @Save
-    public type: "browser" | "video" | "image" | "text";
+    public type: SlideType;
 
     @Save
     public filePath: string;
