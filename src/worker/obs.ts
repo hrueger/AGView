@@ -212,6 +212,12 @@ export class OBS {
                 };
             }
             break;
+        case "right":
+            sceneItem.position = {
+                x: (width - (sceneItem.source.width ? sceneItem.source.width : w) * scaleX),
+                y: 0,
+            };
+            break;
         default:
             break;
         }
