@@ -17,6 +17,7 @@ export class SettingsComponent {
     public paddingSize: number;
     public backgroundColor: string;
     public linked = true;
+    public viewingGlobalSettings = false;
 
     constructor(private settingsService: SettingsService) {
         this.width = this.settingsService.store.get("width");
