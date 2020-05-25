@@ -25,6 +25,7 @@ export class HomeComponent {
     @ViewChild("preview") private preview: PreviewComponent;
     @ViewChild("mainSplit") public mainSplit: SplitComponent;
     @ViewChild("rightSplit") public rightSplit: SplitComponent;
+    public activeDrag = false;
 
 
     constructor(
@@ -37,7 +38,7 @@ export class HomeComponent {
         this.previewSplitSize = this.settingsService.store.get("previewSplitSize");
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         remote.ipcMain.emit("obs-action", "initialize");
         this.showService.data.subscribe((data) => {
             if (data && data.slides) {
@@ -50,7 +51,7 @@ export class HomeComponent {
             this.cdr.detectChanges();
         });
     }
-    ngAfterViewInit(): void {
+    public ngAfterViewInit(): void {
         this.mainSplit.dragProgress$.subscribe(() => {
             this.storeSplitSizes();
             this.preview.onResized();
@@ -64,26 +65,49 @@ export class HomeComponent {
         }) */
     }
 
+    public onDragOver() {
+        this.activeDrag = true;
+        return false;
+    }
+    public onDragLeave() {
+        this.activeDrag = false;
+        return false;
+    }
+    public onDrop(e) {
+        this.activeDrag = false;
+        const files = [];
+        for (const f of e.dataTransfer.files) {
+            files.push(f.path);
+        }
+        this.addSlides(files);
+        e.preventDefault();
+        return false;
+    }
+
     private storeSplitSizes() {
         this.settingsService.store.set("mainSplitSize", this.mainSplit.displayedAreas[1].size);
         this.settingsService.store.set("previewSplitSize", this.rightSplit.displayedAreas[1].size);
     }
 
-    public addVideos() {
-        const videos = remote.dialog.showOpenDialogSync({
-            title: "Add video files",
+    public importSlides() {
+        const files = remote.dialog.showOpenDialogSync({
+            title: "Import slides",
             filters: supportedFilesFilters,
-            defaultPath: this.settingsService.store.get("openVideosDefaultPath"),
+            defaultPath: this.settingsService.store.get("importSlideDefaultPath"),
         });
-        if (!videos || videos.length == 0) {
+        if (!files || files.length == 0) {
             return;
         }
-        this.settingsService.store.set("openVideosDefaultPath", path.dirname(videos[0]));
-        for (const video of videos) {
+        this.settingsService.store.set("importSlideDefaultPath", path.dirname(files[0]));
+        this.addSlides(files);
+    }
+
+    private addSlides(files: string[]) {
+        for (const slide of files) {
             const s = new Slide();
             s.id = uuid();
-            s.filePath = path.normalize(video);
-            s.name = path.basename(video);
+            s.filePath = path.normalize(slide);
+            s.name = path.basename(slide);
             s.type = "video";
             this.slides.push(s);
         }

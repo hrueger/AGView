@@ -1,19 +1,19 @@
 <as-split unit="pixel" #mainSplit="asSplit">
     <as-split-area class="p-5">
 
-        <div class="slides grid">
+        <div class="w-100 h-90 dropZone" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" [class.activeDrag]="activeDrag">
+            <div class="slides grid">
+                <div class="slide" *ngFor="let slide of slides">
+                    <img [src]="slide.thumbnail ? 'file:///' + slide.thumbnail : 'assets/images/thumbnail.png'" alt="Video thumbnail" class="thumbnail">
+                    <p>{{slide.path}}</p>
+                    <p>{{slide.name}}</p>
 
-            <div class="slide" *ngFor="let slide of slides">
-                <img [src]="slide.thumbnail ? 'file:///' + slide.thumbnail : 'assets/images/thumbnail.png'" alt="Video thumbnail" class="thumbnail">
-                <p>{{slide.path}}</p>
-                <p>{{slide.name}}</p>
-
+                </div>
             </div>
-
+            <p class="m-3">Add slides by dropping files here, selecting <code>Slides -> Import slides...</code> in the menu or by clicking <a routerLink="" (click)="importSlides()">here</a>.</p>
         </div>
 
 
-        <button class="btn btn-outline-primary btn-block" (click)="addVideos()">Add videos</button>
     </as-split-area>
     <as-split-area [size]="mainSplitSize">
         <as-split unit="pixel" direction="vertical" #rightSplit="asSplit">

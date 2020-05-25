@@ -3,7 +3,7 @@ import { remote, app } from "electron";
 export const settingsStoreOptions = {
     configName: "user-preferences",
     defaults: {
-        openVideosDefaultPath: (app || remote.app).getPath("home"),
+        importSlideDefaultPath: (app || remote.app).getPath("home"),
         previewSplitSize: undefined,
         mainSplitSize: undefined,
         width: 1920,

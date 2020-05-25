@@ -6,3 +6,16 @@
         width: 100%;
     }
 }
+
+.dropZone.activeDrag {
+    background-color: #555;
+    &:before {
+        content: "Drop your file(s) here";
+        position: relative;
+        float: right;
+        top: 45%;
+        text-align: center;
+        font-size: 3rem;
+        width: 100%;
+    }
+}
