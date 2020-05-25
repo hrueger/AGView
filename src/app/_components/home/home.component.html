@@ -1,7 +1,7 @@
 <as-split unit="pixel" #mainSplit="asSplit">
     <as-split-area class="p-5">
 
-        <div class="w-100 h-90 dropZone" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" [class.activeDrag]="activeDrag">
+        <div class="w-100 h-90 dropZone" (dragover)="onDragOver()" (dragleave)="onDragLeave()" (drop)="onDrop($event)" [class.activeDrag]="activeDrag">
             <div class="slides grid">
                 <div class="slide" *ngFor="let slide of slides">
                     <img [src]="slide.thumbnail ? 'file:///' + slide.thumbnail : 'assets/images/thumbnail.png'" alt="Video thumbnail" class="thumbnail">
