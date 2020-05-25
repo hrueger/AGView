@@ -176,6 +176,10 @@ export class OBS {
                 scaleY = fullScaleY;
             }
             break;
+        case "stretch":
+            scaleX = fullScaleX;
+            scaleY = fullScaleY;
+            break;
         default:
             break;
         }
