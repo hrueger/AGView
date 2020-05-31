@@ -119,8 +119,12 @@ export class HomeComponent {
             this.slides.push(s);
         }
         this.ensureThumbnails();
-        this.showService.setData("slides", this.slides);
+        this.saveSlides();
         remote.ipcMain.emit("add-slides", this.slides);
+    }
+
+    private saveSlides() {
+        this.showService.setData("slides", this.slides);
     }
 
     private ensureThumbnails() {

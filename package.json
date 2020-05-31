@@ -43,6 +43,7 @@
         "custom-electron-titlebar": "3.2.2-hotfix62",
         "electron-root-path": "1.0.16",
         "fluent-ffmpeg": "2.1.2",
+        "ng2-dragula": "1.5.0",
         "ngx-perfect-scrollbar": "^9.0.0",
         "obs-studio-node": "https://obsstudionodes3.streamlabs.com/obs-studio-node-0.5.137-iojs-v6.0.3-release.tar.gz",
         "reflect-metadata": "0.1.13",

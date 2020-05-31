@@ -2,7 +2,7 @@
     <as-split-area class="">
 
         <div class="w-100 dropZone overflow-auto p-3" (dragover)="onDragOver()" (dragleave)="onDragLeave()" (drop)="onDrop($event)" [class.activeDrag]="activeDrag">
-            <div class="slides grid">
+            <div class="slides grid" dragula="slides" [(dragulaModel)]="slides">
                 <div class="slide m-1" *ngFor="let slide of slides">
                     <img [src]="slide.thumbnail ? 'file:///' + slide.thumbnail : 'assets/images/thumbnail.png'" alt="Video thumbnail" class="thumbnail" [style.width]="thumbnailSize + 'rem'" [style.height]="(thumbnailSize / 16 * 9) + 'rem'">
                     <p>{{slide.path}}</p>
