@@ -68,6 +68,7 @@ export class ShowService {
             }
         }
         this.writeShowFile();
+        this.recentShowsService.add(this.currentShowFile);
         return true;
     }
 
@@ -101,6 +102,7 @@ export class ShowService {
         this.showSaveAsDialog();
         if (origShowFile != this.currentShowFile) {
             this.writeShowFile();
+            this.recentShowsService.add(this.currentShowFile);
         }
     }
 
