@@ -249,6 +249,10 @@ export class OBS {
                 parent: parentWindow,
                 useContentSize: true,
             });
+            this.previewWindow.webContents.on("dom-ready", () => {
+                this.previewWindow.webContents.insertCSS("* { cursor: none !important; }");
+            });
+            this.previewWindow.loadURL("data:text/html;charset=utf-8,");
             this.previewWindow.on("close", () => {
                 osn.NodeObs.OBS_content_destroyDisplay("projector");
                 this.previewWindow = undefined;
