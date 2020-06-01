@@ -65,8 +65,11 @@ export class HomeComponent {
             this.detectChanges();
         });
     }
-    public detectChanges() {
+    public detectChanges(propertiesChanged = false) {
         this.cdr.detectChanges();
+        if (propertiesChanged && this.currentSlideIdx != undefined && this.slides[this.currentSlideIdx]) {
+            remote.ipcMain.emit("update-properties", this.slides[this.currentSlideIdx]);
+        }
     }
     public ngAfterViewInit(): void {
         this.mainSplit.dragProgress$.subscribe(() => {

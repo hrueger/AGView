@@ -4,7 +4,7 @@ import { BrowserWindow } from "electron";
 import { Subject } from "rxjs";
 import * as path from "path";
 import * as fs from "fs";
-import { IScene, ISceneItem, ITransition } from "obs-studio-node";
+import { ISceneItem, ITransition } from "obs-studio-node";
 import * as ffmpeg from "fluent-ffmpeg";
 import * as os from "os";
 import { Slide } from "../app/_classes/slide";
@@ -276,6 +276,10 @@ export class OBS {
 
     public clearSlides() {
         // this.scenes[0].getItems().forEach((i) => i.remove());
+    }
+
+    public updateProperties(slide: Slide) {
+        this.alignItem(slide, osn.SceneFactory.fromName(slide.id).getItems()[0]);
     }
 
     public addFile(slide: Slide) {
