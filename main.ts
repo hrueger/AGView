@@ -105,6 +105,9 @@ function createWindow(): BrowserWindow {
             obs.addFile(slide);
         }
     });
+    ipcMain.on("transition-to", (slide) => {
+        obs.transitionTo((slide as unknown as Slide).id);
+    });
     ipcMain.on("clear-slides", () => {
         obs.clearSlides();
     });

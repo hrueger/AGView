@@ -49,6 +49,7 @@ export class HomeComponent {
         setTimeout(() => {
             this.detectChanges();
         }, 50);
+        remote.ipcMain.emit("transition-to", this.slides[idx]);
     }
 
     public ngOnInit() {

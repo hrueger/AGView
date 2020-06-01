@@ -24,10 +24,6 @@ export class OBS {
     private obsInitialized = false;
     private signals: Subject<any> = new Subject();
     public previewWindow: BrowserWindow;
-    private scenes: {
-        id: string;
-        scene: IScene;
-    }[] = [];
     private settingsStore: Store;
     private transition: ITransition;
 
@@ -317,14 +313,13 @@ export class OBS {
                 };
             }
             if (settings) {
-                const s = this.createSource(slide.name, type.obsName, settings);
+                const s = this.createSource(slide.id, type.obsName, settings);
                 // const sceneItem = this.scenes[0].scene.add(s);
-                const sceneId = Math.random().toString();
-                const scene = osn.SceneFactory.create(sceneId);
+                const scene = osn.SceneFactory.create(slide.id);
                 const si = scene.add(s);
                 this.alignItem(slide, si);
                 setTimeout(() => {
-                    this.transitionTo(sceneId);
+                    this.transitionTo(slide.id);
                     // ToDo, we need to wait for the video to load
                 }, 1000);
                 return s;
@@ -343,7 +338,7 @@ export class OBS {
         return obsInput;
     }
 
-    private transitionTo(sceneName: string) {
+    public transitionTo(sceneName: string) {
         const scene = osn.SceneFactory.fromName(sceneName);
         this.transition.start(300, scene);
     }
