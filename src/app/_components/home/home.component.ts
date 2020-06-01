@@ -67,7 +67,8 @@ export class HomeComponent {
     }
     public detectChanges(propertiesChanged = false) {
         this.cdr.detectChanges();
-        if (propertiesChanged && this.currentSlideIdx != undefined && this.slides[this.currentSlideIdx]) {
+        if (propertiesChanged && this.currentSlideIdx != undefined
+            && this.slides[this.currentSlideIdx]) {
             remote.ipcMain.emit("update-properties", this.slides[this.currentSlideIdx]);
         }
     }
