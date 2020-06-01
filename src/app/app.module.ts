@@ -6,7 +6,7 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpClientModule, HttpClient } from "@angular/common/http";
 import { DragulaModule } from "ng2-dragula";
-
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 // NG Translate
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
@@ -34,6 +34,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         AppRoutingModule,
         AngularSplitModule.forRoot(),
         DragulaModule,
+        NgbModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

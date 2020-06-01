@@ -35,8 +35,10 @@
         "lint": "ng lint"
     },
     "dependencies": {
+        "@angular/localize": "9.1.9",
         "@forevolve/bootstrap-dark": "1.0.0-alpha.981",
         "@fortawesome/fontawesome-free": "5.13.0",
+        "@ng-bootstrap/ng-bootstrap": "6.1.0",
         "angular-resize-event": "1.2.1",
         "angular-split": "3.0.3",
         "bootstrap": "4.4.1",
