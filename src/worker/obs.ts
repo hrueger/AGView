@@ -318,10 +318,6 @@ export class OBS {
                 const scene = osn.SceneFactory.create(slide.id);
                 const si = scene.add(s);
                 this.alignItem(slide, si);
-                setTimeout(() => {
-                    this.transitionTo(slide.id);
-                    // ToDo, we need to wait for the video to load
-                }, 1000);
                 return s;
             }
         }
