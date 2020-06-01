@@ -4,6 +4,9 @@
     img.thumbnail {
         width: 100%;
     }
+    &.active {
+        border-color: rgb(10, 124, 218);
+    }
 }
 
 .dropZone.activeDrag {

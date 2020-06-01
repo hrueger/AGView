@@ -27,6 +27,8 @@ export class HomeComponent {
     @ViewChild("rightSplit") public rightSplit: SplitComponent;
     public activeDrag = false;
     public thumbnailSize = 5;
+    public currentSlideIdx: number;
+    public viewingGlobalSettings = false;
 
 
     constructor(
@@ -39,6 +41,16 @@ export class HomeComponent {
         this.previewSplitSize = this.settingsService.store.get("previewSplitSize");
     }
 
+    public selectSlide(event, idx) {
+        this.currentSlideIdx = idx;
+        this.detectChanges();
+        event.preventDefault();
+        event.stopPropagation();
+        setTimeout(() => {
+            this.detectChanges();
+        }, 50);
+    }
+
     public ngOnInit() {
         remote.ipcMain.emit("obs-action", "initialize");
         this.showService.data.subscribe((data) => {
@@ -49,8 +61,11 @@ export class HomeComponent {
             } else {
                 this.slides = [];
             }
-            this.cdr.detectChanges();
+            this.detectChanges();
         });
+    }
+    public detectChanges() {
+        this.cdr.detectChanges();
     }
     public ngAfterViewInit(): void {
         this.mainSplit.dragProgress$.subscribe(() => {
@@ -115,7 +130,7 @@ export class HomeComponent {
             s.type = types[0].slideType;
             s.id = uuid();
             s.filePath = path.normalize(slide);
-            s.name = path.basename(slide);
+            [s.name] = path.basename(slide).split(".");
             this.slides.push(s);
         }
         this.ensureThumbnails();
