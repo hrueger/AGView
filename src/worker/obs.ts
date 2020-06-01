@@ -239,7 +239,7 @@ export class OBS {
         const displayHeight = Math.round(this.settingsStore.get("height") / 2);
         const resized = () => {
             const { width, height } = this.previewWindow.getContentBounds();
-            osn.NodeObs.OBS_content_resizeDisplay(displayId, width, height + 20);
+            osn.NodeObs.OBS_content_resizeDisplay(displayId, width, height);
             osn.NodeObs.OBS_content_setPaddingSize(displayId, this.settingsStore.get("paddingSize"));
         };
         if (!this.previewWindow) {
@@ -248,6 +248,7 @@ export class OBS {
                 height: displayHeight,
                 parent: parentWindow,
                 useContentSize: true,
+                autoHideMenuBar: true,
             });
             this.previewWindow.webContents.on("dom-ready", () => {
                 this.previewWindow.webContents.insertCSS("* { cursor: none !important; }");
