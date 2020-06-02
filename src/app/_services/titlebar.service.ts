@@ -89,7 +89,7 @@ export class TitlebarService {
                     {
                         label: "Import slides...",
                         accelerator: "Ctrl+I",
-                        click: () => undefined,
+                        click: () => this.showService.messages.next("importSlides"),
                     },
                     {
                         type: "separator",
@@ -97,12 +97,12 @@ export class TitlebarService {
                     {
                         label: "Rename slide",
                         accelerator: "F2",
-                        click: () => undefined,
+                        click: () => this.showService.messages.next("renameSlide"),
                     },
                     {
                         label: "Remove slide",
                         accelerator: "Del",
-                        click: () => undefined,
+                        click: () => this.showService.messages.next("removeSlide"),
                     },
                     {
                         type: "separator",

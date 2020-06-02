@@ -1,5 +1,5 @@
 import {
-    Component, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef,
+    Component, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef,
 } from "@angular/core";
 import { remote } from "electron";
 import { SplitComponent } from "angular-split";
@@ -25,6 +25,7 @@ export class HomeComponent {
     @ViewChild("preview") private preview: PreviewComponent;
     @ViewChild("mainSplit") public mainSplit: SplitComponent;
     @ViewChild("rightSplit") public rightSplit: SplitComponent;
+    @ViewChild("nameInput") public nameInput: ElementRef;
     public activeDrag = false;
     public thumbnailSize = 5;
     public currentSlideIdx: number;
@@ -53,6 +54,34 @@ export class HomeComponent {
     }
 
     public ngOnInit() {
+        this.showService.messages.subscribe((message) => {
+            switch (message) {
+            case "importSlides":
+                this.importSlides();
+                break;
+            case "renameSlide":
+                if (this.currentSlideIdx === undefined) {
+                    break;
+                }
+                this.viewingGlobalSettings = false;
+                this.cdr.detectChanges();
+                setTimeout(() => {
+                    this.nameInput.nativeElement.focus();
+                });
+                break;
+            case "removeSlide":
+                if (this.currentSlideIdx === undefined) {
+                    break;
+                }
+                this.slides = this.slides.filter((s, idx) => idx != this.currentSlideIdx);
+                this.currentSlideIdx = undefined;
+                this.cdr.detectChanges();
+                break;
+            default:
+                break;
+            }
+        });
+
         remote.ipcMain.emit("obs-action", "initialize");
         this.showService.data.subscribe((data) => {
             if (data && data.slides) {

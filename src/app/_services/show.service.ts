@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { remote } from "electron";
 import * as fs from "fs";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import * as path from "path";
 import { hasDecorator } from "../_helpers/hasDecorator";
 import { filters } from "../_globals/agshowFileFilter";
@@ -12,6 +12,7 @@ import { RecentShowsService } from "./recent-shows.service";
 })
 export class ShowService {
     private unsavedChanges = false;
+    public messages: Subject<"importSlides" | "removeSlide" | "renameSlide"> = new Subject();
     public data: BehaviorSubject<any> = new BehaviorSubject<any>({});
     public addVideos(videos: string[]) {
         remote.ipcMain.emit("add-videos", videos);
