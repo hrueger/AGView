@@ -118,6 +118,17 @@ export class TitlebarService {
                 label: "View",
                 submenu: [
                     {
+                        label: "Next slide",
+                        click: () => this.showService.messages.next("viewNextSlide"),
+                    },
+                    {
+                        label: "Previous slide",
+                        click: () => this.showService.messages.next("viewPreviousSlide"),
+                    },
+                    {
+                        type: "separator",
+                    },
+                    {
                         label: "First slide",
                         click: () => this.showService.messages.next("viewFirstSlide"),
                     },

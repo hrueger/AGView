@@ -12,7 +12,7 @@ import { RecentShowsService } from "./recent-shows.service";
 })
 export class ShowService {
     private unsavedChanges = false;
-    public messages: Subject<"importSlides" | "removeSlide" | "renameSlide" | "slideProperties" | "viewFirstSlide" | "viewLastSlide"> = new Subject();
+    public messages: Subject<"importSlides" | "removeSlide" | "renameSlide" | "slideProperties" | "viewFirstSlide" | "viewLastSlide" | "viewNextSlide" | "viewPreviousSlide"> = new Subject();
     public data: BehaviorSubject<any> = new BehaviorSubject<any>({});
     public addVideos(videos: string[]) {
         remote.ipcMain.emit("add-videos", videos);

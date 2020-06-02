@@ -92,6 +92,19 @@ export class HomeComponent {
             case "viewLastSlide":
                 this.selectSlide(null, this.slides.length - 1);
                 break;
+            case "viewNextSlide":
+                if (this.currentSlideIdx === undefined
+                || this.currentSlideIdx + 1 >= this.slides.length) {
+                    break;
+                }
+                this.selectSlide(null, this.currentSlideIdx + 1);
+                break;
+            case "viewPreviousSlide":
+                if (this.currentSlideIdx === undefined || this.currentSlideIdx < 1) {
+                    break;
+                }
+                this.selectSlide(null, this.currentSlideIdx - 1);
+                break;
             default:
                 break;
             }
