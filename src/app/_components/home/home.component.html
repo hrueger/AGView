@@ -1,5 +1,5 @@
 <as-split unit="pixel" #mainSplit="asSplit">
-    <as-split-area class="">
+    <as-split-area class="pr-1">
         <div class="w-100 dropZone overflow-auto p-3" (dragover)="onDragOver()" (dragleave)="onDragLeave()" (drop)="onDrop($event)" [class.activeDrag]="activeDrag" (click)="currentSlideIdx = undefined">
             <div class="slides grid" dragula="slides" [(dragulaModel)]="slides">
                 <div class="slide m-1" *ngFor="let slide of slides; let idx = index" (click)="selectSlide($event, idx)" [class.active]="idx == currentSlideIdx">
