@@ -12,6 +12,8 @@ import { pkginfo } from "../_helpers/packageInfo";
 })
 export class TitlebarService {
     titlebar: customTitlebar.Titlebar;
+    currentSlideIdx: number;
+    slidesLength: number;
     constructor(
         private showService: ShowService,
         private recentShowsService: RecentShowsService,
@@ -25,6 +27,11 @@ export class TitlebarService {
             hideWhenClickingClose: true,
             itemBackgroundColor: customTitlebar.Color.fromHex("#094771"),
             menu,
+        });
+        this.showService.slideIdxChanged.subscribe(({ idx, length }) => {
+            this.currentSlideIdx = idx;
+            this.slidesLength = length;
+            this.titlebar.updateMenu(this.getMenu());
         });
     }
 
@@ -97,11 +104,13 @@ export class TitlebarService {
                     {
                         label: "Rename slide",
                         accelerator: "F2",
+                        enabled: this.currentSlideIdx !== undefined,
                         click: () => this.showService.messages.next("renameSlide"),
                     },
                     {
                         label: "Remove slide",
                         accelerator: "Del",
+                        enabled: this.currentSlideIdx !== undefined,
                         click: () => this.showService.messages.next("removeSlide"),
                     },
                     {
@@ -110,6 +119,7 @@ export class TitlebarService {
                     {
                         label: "Slide Properties",
                         accelerator: "Strg+W",
+                        enabled: this.currentSlideIdx !== undefined,
                         click: () => this.showService.messages.next("slideProperties"),
                     },
                 ],
@@ -120,11 +130,17 @@ export class TitlebarService {
                     {
                         label: "Next slide",
                         accelerator: "Right",
+                        enabled: this.currentSlideIdx !== undefined
+                            && this.currentSlideIdx + 1 < this.slidesLength
+                            && this.slidesLength > 1,
                         click: () => this.showService.messages.next("viewNextSlide"),
                     },
                     {
                         label: "Previous slide",
                         accelerator: "Left",
+                        enabled: this.currentSlideIdx !== undefined
+                            && this.currentSlideIdx - 1 >= 0
+                            && this.slidesLength > 1,
                         click: () => this.showService.messages.next("viewPreviousSlide"),
                     },
                     {
@@ -133,11 +149,15 @@ export class TitlebarService {
                     {
                         label: "First slide",
                         accelerator: "F",
+                        enabled: this.slidesLength > 0
+                            && this.currentSlideIdx != 0,
                         click: () => this.showService.messages.next("viewFirstSlide"),
                     },
                     {
                         label: "Last slide",
                         accelerator: "L",
+                        enabled: this.slidesLength > 0
+                            && this.currentSlideIdx != this.slidesLength - 1,
                         click: () => this.showService.messages.next("viewLastSlide"),
                     },
                     {

@@ -53,6 +53,17 @@ export class HomeComponent {
             this.detectChanges();
         }, 50);
         remote.ipcMain.emit("transition-to", this.slides[idx]);
+        this.showService.slideIdxChanged.next(
+            { idx: this.currentSlideIdx, length: this.slides.length },
+        );
+    }
+
+    public deselectSlide() {
+        this.currentSlideIdx = undefined;
+        this.showService.slideIdxChanged.next(
+            { idx: this.currentSlideIdx, length: this.slides.length },
+        );
+        this.detectChanges();
     }
 
     public ngOnInit() {
