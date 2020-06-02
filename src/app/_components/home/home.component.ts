@@ -131,6 +131,9 @@ export class HomeComponent {
                 this.slides = [];
             }
             this.detectChanges();
+            this.showService.slideIdxChanged.next(
+                { idx: this.currentSlideIdx, length: this.slides.length },
+            );
         });
     }
     public detectChanges(propertiesChanged = false) {
@@ -209,6 +212,9 @@ export class HomeComponent {
         this.ensureThumbnails();
         this.saveSlides();
         remote.ipcMain.emit("add-slides", this.slides);
+        this.showService.slideIdxChanged.next(
+            { idx: this.currentSlideIdx, length: this.slides.length },
+        );
     }
 
     private saveSlides() {
