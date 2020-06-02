@@ -18,6 +18,7 @@ import { TransitionTypes } from "../app/_globals/transitionTypes";
 const LOGO_SCENE_ID = "LOGOSCENE";
 const CUSTOM_LOGO_SCENE_ID = "CUSTOMLOGOSCENE";
 const BLACK_SCENE_ID = "BLACKSCENE";
+const ALIGNMENT_CENTER: any = { alignment: "center", padding: 50, scale: "fit" };
 
 
 ffmpeg.setFfprobePath(path.join(__dirname, "../../bin", os.platform(), os.arch(), os.platform() == "win32" ? "ffprobe.exe" : "ffprobe"));
@@ -103,17 +104,15 @@ export class OBS {
         this.setVideoOutputResolution();
         const logoSource = osn.InputFactory.create("image_source", LOGO_SCENE_ID, { file: path.join(__dirname, "../assets/icons/favicon.png") });
         const customLogoSource = osn.InputFactory.create("image_source", CUSTOM_LOGO_SCENE_ID, { file: this.settingsStore.get("customLogoPath") });
-        console.log({ file: this.settingsStore.get("customLogo") });
 
-        const baseAlignment: any = { alignment: "center", padding: 50, scale: "fit" };
 
         const logoScene = osn.SceneFactory.create(LOGO_SCENE_ID);
         const lsi = logoScene.add(logoSource);
-        this.alignItem(undefined, lsi, baseAlignment);
+        this.alignItem(undefined, lsi, ALIGNMENT_CENTER);
 
         const customLogoScene = osn.SceneFactory.create(CUSTOM_LOGO_SCENE_ID);
         const clsi = customLogoScene.add(customLogoSource);
-        this.alignItem(undefined, clsi, baseAlignment);
+        this.alignItem(undefined, clsi, ALIGNMENT_CENTER);
 
         osn.SceneFactory.create(BLACK_SCENE_ID);
 
@@ -134,6 +133,12 @@ export class OBS {
         if (this.previewWindow) {
             this.setupProjector(parentWindow);
         }
+        const si = osn.SceneFactory.fromName(CUSTOM_LOGO_SCENE_ID).getItems()[0];
+        si.source.update({ file: this.settingsStore.get("customLogoPath") });
+        setTimeout(() => {
+            this.alignItem(undefined, si, ALIGNMENT_CENTER);
+        }, 200);
+        this.alignItem(undefined, si, ALIGNMENT_CENTER);
         this.setVideoOutputResolution();
     }
 
