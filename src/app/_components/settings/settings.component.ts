@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { remote } from "electron";
 import { SettingsService } from "../../_services/settings.service";
 import { reduceFraction } from "../../_helpers/reduceFraction";
+import { supportedFiles } from "../../_globals/supportedFilesFilters";
 
 @Component({
     selector: "settings",
@@ -17,6 +18,7 @@ export class SettingsComponent {
     public paddingSize: number;
     public backgroundColor: string;
     public linked = true;
+    public customLogoPath: string;
 
     constructor(private settingsService: SettingsService) {
         this.width = this.settingsService.store.get("width");
@@ -25,6 +27,7 @@ export class SettingsComponent {
         this.aspectRatioHeight = this.settingsService.store.get("aspectRatioHeight");
         this.paddingSize = this.settingsService.store.get("paddingSize");
         this.backgroundColor = this.settingsService.store.get("backgroundColor");
+        this.customLogoPath = this.settingsService.store.get("customLogoPath");
     }
 
     private updateAspectRatio() {
@@ -73,5 +76,19 @@ export class SettingsComponent {
             //
         }
         this.projector = !this.projector;
+    }
+
+    public browse() {
+        const files = remote.dialog.showOpenDialogSync({
+            title: "Import slides",
+            properties: ["openFile"],
+            filters: [supportedFiles.map((f) => ({extensions: f.extensions, name: "Image files" }))[0]],
+            defaultPath: this.settingsService.store.get("importSlideDefaultPath"),
+        });
+        if (files && files[0]) {
+            [this.customLogoPath] = files;
+            this.settingsService.store.set("customLogoPath", this.customLogoPath);
+            remote.ipcMain.emit("settings-changed");
+        }
     }
 }

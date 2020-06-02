@@ -13,3 +13,9 @@
 <div class="mt-2">
     <input type="color" [(ngModel)]="backgroundColor" (change)="changed('backgroundColor')" class="form-control d-inline sizeField">
 </div>
+<div class="input-group mt-2">
+    <input type="text" class="form-control" readonly placeholder="Custom logo path" [(ngModel)]="customLogoPath">
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" (click)="browse()">...</button>
+    </div>
+</div>

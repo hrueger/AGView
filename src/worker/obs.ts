@@ -102,8 +102,8 @@ export class OBS {
     private setupSources() {
         this.setVideoOutputResolution();
         const logoSource = osn.InputFactory.create("image_source", LOGO_SCENE_ID, { file: path.join(__dirname, "../assets/icons/favicon.png") });
-        const customLogoSource = osn.InputFactory.create("image_source", CUSTOM_LOGO_SCENE_ID, { file: this.settingsStore.get("customLogo") });
-
+        const customLogoSource = osn.InputFactory.create("image_source", CUSTOM_LOGO_SCENE_ID, { file: this.settingsStore.get("customLogoPath") });
+        console.log({ file: this.settingsStore.get("customLogo") });
 
         const baseAlignment: any = { alignment: "center", padding: 50, scale: "fit" };
 
