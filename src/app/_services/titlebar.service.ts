@@ -119,10 +119,12 @@ export class TitlebarService {
                 submenu: [
                     {
                         label: "Next slide",
+                        accelerator: "Right",
                         click: () => this.showService.messages.next("viewNextSlide"),
                     },
                     {
                         label: "Previous slide",
+                        accelerator: "Left",
                         click: () => this.showService.messages.next("viewPreviousSlide"),
                     },
                     {
@@ -130,10 +132,12 @@ export class TitlebarService {
                     },
                     {
                         label: "First slide",
+                        accelerator: "F",
                         click: () => this.showService.messages.next("viewFirstSlide"),
                     },
                     {
                         label: "Last slide",
+                        accelerator: "L",
                         click: () => this.showService.messages.next("viewLastSlide"),
                     },
                     {
