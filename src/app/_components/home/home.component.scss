@@ -1,8 +1,18 @@
 .slides.grid .slide {
     display: inline-block;
     border: 2px solid #555;
+    padding: 5px;
     img.thumbnail {
         width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    span {
+        display: block;
+        font-size: smaller;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
     }
     &.active {
         border-color: rgb(10, 124, 218);
