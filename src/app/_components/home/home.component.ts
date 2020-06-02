@@ -45,8 +45,10 @@ export class HomeComponent {
     public selectSlide(event, idx) {
         this.currentSlideIdx = idx;
         this.detectChanges();
-        event.preventDefault();
-        event.stopPropagation();
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
         setTimeout(() => {
             this.detectChanges();
         }, 50);
@@ -83,6 +85,12 @@ export class HomeComponent {
                 this.slides = this.slides.filter((s, idx) => idx != this.currentSlideIdx);
                 this.currentSlideIdx = undefined;
                 this.cdr.detectChanges();
+                break;
+            case "viewFirstSlide":
+                this.selectSlide(null, 0);
+                break;
+            case "viewLastSlide":
+                this.selectSlide(null, this.slides.length - 1);
                 break;
             default:
                 break;

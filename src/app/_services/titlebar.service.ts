@@ -119,11 +119,11 @@ export class TitlebarService {
                 submenu: [
                     {
                         label: "First slide",
-                        click: () => undefined,
+                        click: () => this.showService.messages.next("viewFirstSlide"),
                     },
                     {
                         label: "Last slide",
-                        click: () => undefined,
+                        click: () => this.showService.messages.next("viewLastSlide"),
                     },
                     {
                         type: "separator",
