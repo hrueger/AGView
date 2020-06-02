@@ -1,21 +1,50 @@
-<button class="btn btn-outline-primary" (click)="toggleProjector()">{{projector ? "Hide projector" : "Create projector" }}</button>
+<div class="form-group row">
+    <label class="col-sm-2 col-form-label">Projector</label>
+    <div class="col-sm-10">
+        <button class="btn btn-outline-primary" (click)="toggleProjector()">{{projector ? "Hide projector" : "Create projector" }}</button>
+    </div>
+</div>
 
-<div class="mt-2">
-    <input type="number" min="10" [(ngModel)]="width" (change)="changed('width')" class=" form-control d-inline sizeField">
-    <button class="btn btn-outline-secondary sizeFieldButton" [class.active]="linked" (click)="linked=! linked"><i class="fa fa-link"></i></button>
-    <input type="number" min="10" [(ngModel)]="height" (change)="changed('height')" class="form-control d-inline sizeField mr-5">
-    <input type="number" min="10" [(ngModel)]="aspectRatioWidth" (change)="changed('aspectRatioWidth')" class="form-control d-inline sizeField"> x
-    <input type="number" min="10" [(ngModel)]="aspectRatioHeight" (change)="changed('aspectRatioHeight')" class="form-control d-inline sizeField">
+<div class="form-group row">
+    <label class="col-sm-2 col-form-label">Output Resolution</label>
+    <div class="col-sm-10">
+        <input type="number" min="10" [(ngModel)]="width" (change)="changed('width')" class=" form-control d-inline sizeField">
+        <button class="btn btn-outline-secondary sizeFieldButton" [class.active]="linked" (click)="linked=! linked"><i class="fa fa-link"></i></button>
+        <input type="number" min="10" [(ngModel)]="height" (change)="changed('height')" class="form-control d-inline sizeField mr-5">
+    </div>
 </div>
-<div class="mt-2">
-    <input type="number" min="0" [max]="((height < width ? height : width) / 2)" [(ngModel)]="paddingSize" (change)="changed('paddingSize')" class="form-control d-inline sizeField">
+
+<div class="form-group row">
+    <label class="col-sm-2 col-form-label">Aspect Ratio</label>
+    <div class="col-sm-10">
+        <input type="number" min="10" [(ngModel)]="aspectRatioWidth" (change)="changed('aspectRatioWidth')" class="form-control d-inline sizeField">
+        <span class="px-3 py-1 d-inline-block">x</span>
+        <input type="number" min="10" [(ngModel)]="aspectRatioHeight" (change)="changed('aspectRatioHeight')" class="form-control d-inline sizeField">
+    </div>
 </div>
-<div class="mt-2">
-    <input type="color" [(ngModel)]="backgroundColor" (change)="changed('backgroundColor')" class="form-control d-inline sizeField">
+
+<div class="form-group row">
+    <label for="padding" class="col-sm-2 col-form-label">Padding</label>
+    <div class="col-sm-10">
+        <input type="number" min="0" id="padding" [max]="((height < width ? height : width) / 2)" [(ngModel)]="paddingSize" (change)="changed('paddingSize')" class="form-control d-inline sizeField">
+    </div>
 </div>
-<div class="input-group mt-2">
-    <input type="text" class="form-control" readonly placeholder="Custom logo path" [(ngModel)]="customLogoPath">
-    <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="button" (click)="browse()">...</button>
+
+<div class="form-group row">
+    <label for="color" class="col-sm-2 col-form-label">Background color</label>
+    <div class="col-sm-10">
+        <input type="color" id="color" [(ngModel)]="backgroundColor" (change)="changed('backgroundColor')" class="form-control d-inline sizeField">
+    </div>
+</div>
+
+<div class="form-group row">
+    <label for="path" class="col-sm-2 col-form-label">Custom logo path</label>
+    <div class="col-sm-10">
+        <div class="input-group mt-2">
+            <input type="text" id="path" class="form-control" readonly placeholder="Custom logo path" [(ngModel)]="customLogoPath">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" (click)="browse()">...</button>
+            </div>
+        </div>
     </div>
 </div>
