@@ -82,7 +82,7 @@ export class SettingsComponent {
         const files = remote.dialog.showOpenDialogSync({
             title: "Import slides",
             properties: ["openFile"],
-            filters: [supportedFiles.map((f) => ({extensions: f.extensions, name: "Image files" }))[0]],
+            filters: [supportedFiles.map((f) => ({ extensions: f.extensions, name: "Image files" }))[0]],
             defaultPath: this.settingsService.store.get("importSlideDefaultPath"),
         });
         if (files && files[0]) {
