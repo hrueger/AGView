@@ -59,11 +59,9 @@ export class OBS {
 
     private initOBS() {
         console.debug("Initializing OBS...");
-        osn.NodeObs.IPC.host("obs-studio-node-example"); // Usually some UUIDs go there
-        osn.NodeObs.SetWorkingDirectory(path.join(__dirname, "../../node_modules/obs-studio-node"));
-
-        const obsDataPath = path.join(__dirname, "../../osn-data"); // OBS Studio configs and logs
-        const initResult = osn.NodeObs.OBS_API_initAPI("en-US", obsDataPath, "1.0.0");
+        osn.NodeObs.IPC.host("obs-studio-node-example"); // Usually some UUIDs go there;
+        osn.NodeObs.SetWorkingDirectory(path.join(__dirname, "../../node_modules/obs-studio-node").replace("app.asar", "app.asar.unpacked"));
+        const initResult = osn.NodeObs.OBS_API_initAPI("en-US", path.join(__dirname, "../../osn-data").replace("app.asar", "app.asar.unpacked"), "1.0.0");
 
         if (initResult !== 0) {
             const errorReasons = {

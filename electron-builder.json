@@ -10,7 +10,6 @@
         "!LICENSE.md",
         "!package.json",
         "!package-lock.json",
-        "!src/",
         "!e2e/",
         "!hooks/",
         "!angular.json",
