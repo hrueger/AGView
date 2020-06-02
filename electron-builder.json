@@ -18,6 +18,10 @@
         "!tsconfig.json",
         "!tslint.json"
     ],
+    "extraResources": [
+        "src/assets/icons/favicon.png",
+        "bin"
+    ],
     "win": {
         "icon": "dist/assets/icons",
         "target": [

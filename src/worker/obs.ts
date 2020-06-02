@@ -6,7 +6,6 @@ import * as path from "path";
 import * as fs from "fs";
 import { ISceneItem, ITransition } from "obs-studio-node";
 import * as ffmpeg from "fluent-ffmpeg";
-import * as os from "os";
 import { Slide } from "../app/_classes/slide";
 import { supportedFiles } from "../app/_globals/supportedFilesFilters";
 import { Store } from "../app/_helpers/store";
@@ -21,7 +20,7 @@ const BLACK_SCENE_ID = "BLACKSCENE";
 const ALIGNMENT_CENTER: any = { alignment: "center", padding: 50, scale: "fit" };
 
 
-ffmpeg.setFfprobePath(path.join(__dirname, "../../bin", os.platform(), os.arch(), os.platform() == "win32" ? "ffprobe.exe" : "ffprobe"));
+ffmpeg.setFfprobePath(path.join(__dirname, "../../bin/ffprobe.exe").replace("app.asar", ""));
 
 export class OBS {
     private obsInitialized = false;
@@ -100,7 +99,9 @@ export class OBS {
 
     private setupSources() {
         this.setVideoOutputResolution();
-        const logoSource = osn.InputFactory.create("image_source", LOGO_SCENE_ID, { file: path.join(__dirname, "../assets/icons/favicon.png") });
+        const devPath = path.join(__dirname, "../assets/icons/favicon.png").replace("app.asar", "");
+        console.log(devPath);
+        const logoSource = osn.InputFactory.create("image_source", LOGO_SCENE_ID, { file: devPath });
         const customLogoSource = osn.InputFactory.create("image_source", CUSTOM_LOGO_SCENE_ID, { file: this.settingsStore.get("customLogoPath") });
 
 
