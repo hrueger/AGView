@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as customTitlebar from "custom-electron-titlebar";
 import { remote, shell } from "electron";
+import * as mousetrap from "mousetrap";
 import { ShowService } from "./show.service";
 import { RecentShowsService } from "./recent-shows.service";
 import { DefaultScenesService } from "./default-scenes.service";
@@ -180,6 +181,17 @@ export class TitlebarService {
             },
         ];
         const menu = remote.Menu.buildFromTemplate(menuTemplate);
+
+        // set shortcuts
+        for (const m of menuTemplate) {
+            for (const entry of m.submenu) {
+                if (entry.accelerator) {
+                    // remote.globalShortcut.register(entry.accelerator, () => entry.click());
+                    mousetrap.bind(entry.accelerator.toLowerCase(), () => entry.click());
+                }
+            }
+        }
+
         return menu;
     }
 
