@@ -160,13 +160,6 @@ export class TitlebarService {
                 ],
             },
             {
-                label: "Window",
-                submenu: [
-                    { role: "minimize" },
-                    { role: "close" },
-                ],
-            },
-            {
                 role: "help",
                 submenu: [
                     {
