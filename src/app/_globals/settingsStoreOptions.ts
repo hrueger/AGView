@@ -1,4 +1,5 @@
 import { remote, app } from "electron";
+import * as path from "path";
 
 export const settingsStoreOptions = {
     configName: "user-preferences",
@@ -12,5 +13,6 @@ export const settingsStoreOptions = {
         aspectRatioHeight: 9,
         paddingSize: 0,
         backgroundColor: "#000",
+        customLogo: path.join(__dirname, "../../assets/icons/favicon.png"),
     },
 };

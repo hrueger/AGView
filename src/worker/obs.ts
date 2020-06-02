@@ -16,6 +16,8 @@ import { AlignmentOptions } from "../app/_classes/alignmentOptions";
 import { TransitionTypes } from "../app/_globals/transitionTypes";
 
 const LOGO_SCENE_ID = "LOGOSCENE";
+const CUSTOM_LOGO_SCENE_ID = "CUSTOMLOGOSCENE";
+const BLACK_SCENE_ID = "BLACKSCENE";
 
 
 ffmpeg.setFfprobePath(path.join(__dirname, "../../bin", os.platform(), os.arch(), os.platform() == "win32" ? "ffprobe.exe" : "ffprobe"));
@@ -41,8 +43,8 @@ export class OBS {
 
         this.initOBS();
         this.configureOBS();
-        this.setupSources(LOGO_SCENE_ID);
-        this.setupPreview(win, LOGO_SCENE_ID);
+        this.setupSources();
+        this.setupPreview(win, {});
         this.obsInitialized = true;
 
         setInterval(() => {
@@ -97,22 +99,26 @@ export class OBS {
         console.debug("OBS Configured");
     }
 
-    private setupSources(sceneName: string) {
-        const logoSource = osn.InputFactory.create("image_source", "logo", { file: path.join(__dirname, "../assets/icons/favicon.png") });
-        // Set output video size to 1920x1080
+    private setupSources() {
         this.setVideoOutputResolution();
+        const logoSource = osn.InputFactory.create("image_source", LOGO_SCENE_ID, { file: path.join(__dirname, "../assets/icons/favicon.png") });
+        const customLogoSource = osn.InputFactory.create("image_source", CUSTOM_LOGO_SCENE_ID, { file: this.settingsStore.get("customLogo") });
 
-        // A scene is necessary here to properly scale captured screen size to output video size
-        const scene = osn.SceneFactory.create(sceneName);
-        const si = scene.add(logoSource);
-        this.alignItem(undefined, si, {
-            alignment: "center",
-            padding: 50,
-            scale: "fit",
-        });
+
+        const baseAlignment: any = { alignment: "center", padding: 50, scale: "fit" };
+
+        const logoScene = osn.SceneFactory.create(LOGO_SCENE_ID);
+        const lsi = logoScene.add(logoSource);
+        this.alignItem(undefined, lsi, baseAlignment);
+
+        const customLogoScene = osn.SceneFactory.create(CUSTOM_LOGO_SCENE_ID);
+        const clsi = customLogoScene.add(customLogoSource);
+        this.alignItem(undefined, clsi, baseAlignment);
+
+        osn.SceneFactory.create(BLACK_SCENE_ID);
 
         this.transition = osn.TransitionFactory.create(TransitionTypes.Fade, "myTransition", {});
-        this.transition.set(scene);
+        this.transition.set(logoScene);
         osn.Global.setOutputSource(0, this.transition);
     }
 
@@ -345,6 +351,10 @@ export class OBS {
 
     public transitionTo(sceneName: string) {
         const scene = osn.SceneFactory.fromName(sceneName);
+        this.transition.start(300, scene);
+    }
+    public transitionToDefaultSlide(slide: "black" | "logo" | "customLogo") {
+        const scene = osn.SceneFactory.fromName(slide == "black" ? BLACK_SCENE_ID : slide == "logo" ? LOGO_SCENE_ID : CUSTOM_LOGO_SCENE_ID);
         this.transition.start(300, scene);
     }
 

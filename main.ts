@@ -108,6 +108,9 @@ function createWindow(): BrowserWindow {
     ipcMain.on("transition-to", (slide) => {
         obs.transitionTo((slide as unknown as Slide).id);
     });
+    ipcMain.on("transition-to-default-slide", (slide) => {
+        obs.transitionToDefaultSlide(slide as unknown as "black" | "logo" | "customLogo");
+    });
     ipcMain.on("update-properties", (slide) => {
         obs.updateProperties(slide as unknown as Slide);
     });

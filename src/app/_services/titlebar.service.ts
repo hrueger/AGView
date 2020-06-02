@@ -3,6 +3,7 @@ import * as customTitlebar from "custom-electron-titlebar";
 import { remote, shell } from "electron";
 import { ShowService } from "./show.service";
 import { RecentShowsService } from "./recent-shows.service";
+import { DefaultScenesService } from "./default-scenes.service";
 import { pkginfo } from "../_helpers/packageInfo";
 
 @Injectable({
@@ -13,6 +14,7 @@ export class TitlebarService {
     constructor(
         private showService: ShowService,
         private recentShowsService: RecentShowsService,
+        private defaultScenesService: DefaultScenesService,
     ) {
         const menu = this.getMenu();
         this.titlebar = new customTitlebar.Titlebar({
@@ -108,6 +110,40 @@ export class TitlebarService {
                         label: "Slide Properties",
                         accelerator: "Strg+W",
                         click: () => undefined,
+                    },
+                ],
+            },
+            {
+                label: "View",
+                submenu: [
+                    {
+                        label: "First slide",
+                        click: () => undefined,
+                    },
+                    {
+                        label: "Last slide",
+                        click: () => undefined,
+                    },
+                    {
+                        type: "separator",
+                    },
+                    {
+                        label: "Custom Logo",
+                        accelerator: "F2",
+                        click: () => this.defaultScenesService.transitionTo("customLogo"),
+                    },
+                    {
+                        label: "Blackout",
+                        accelerator: "F1",
+                        click: () => this.defaultScenesService.transitionTo("black"),
+                    },
+                    {
+                        type: "separator",
+                    },
+                    {
+                        label: "AGView logo",
+                        accelerator: "F4",
+                        click: () => this.defaultScenesService.transitionTo("logo"),
                     },
                 ],
             },

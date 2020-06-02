@@ -105,6 +105,9 @@ function createWindow() {
     electron_1.ipcMain.on("transition-to", function (slide) {
         obs.transitionTo(slide.id);
     });
+    electron_1.ipcMain.on("transition-to-default-slide", function (slide) {
+        obs.transitionToDefaultSlide(slide);
+    });
     electron_1.ipcMain.on("update-properties", function (slide) {
         obs.updateProperties(slide);
     });
