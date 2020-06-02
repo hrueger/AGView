@@ -110,7 +110,7 @@ export class TitlebarService {
                     {
                         label: "Slide Properties",
                         accelerator: "Strg+W",
-                        click: () => undefined,
+                        click: () => this.showService.messages.next("slideProperties"),
                     },
                 ],
             },

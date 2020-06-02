@@ -69,6 +69,13 @@ export class HomeComponent {
                     this.nameInput.nativeElement.focus();
                 });
                 break;
+            case "slideProperties":
+                if (this.currentSlideIdx === undefined) {
+                    break;
+                }
+                this.viewingGlobalSettings = false;
+                this.cdr.detectChanges();
+                break;
             case "removeSlide":
                 if (this.currentSlideIdx === undefined) {
                     break;
