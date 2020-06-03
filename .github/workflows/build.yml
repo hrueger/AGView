@@ -3,9 +3,8 @@ name: Production build
 on:
   push:
     branches:
-      - '**'
-  tags:
-    - 'v*'
+      - master
+  create
 
 jobs:
   build_on_win:
