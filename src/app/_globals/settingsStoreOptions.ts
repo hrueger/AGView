@@ -12,7 +12,7 @@ export const settingsStoreOptions = {
         aspectRatioWidth: 16,
         aspectRatioHeight: 9,
         paddingSize: 0,
-        backgroundColor: "#000",
+        backgroundColor: "#000000",
         customLogoPath: path.join(__dirname, "../../assets/icons/favicon.png"),
     },
 };
