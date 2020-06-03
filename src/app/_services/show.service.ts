@@ -6,6 +6,7 @@ import * as path from "path";
 import { hasDecorator } from "../_helpers/hasDecorator";
 import { filters } from "../_globals/agshowFileFilter";
 import { RecentShowsService } from "./recent-shows.service";
+import { Slide } from "../_classes/slide";
 
 @Injectable({
     providedIn: "root",
@@ -125,6 +126,11 @@ export class ShowService {
     private loadFile(file) {
         try {
             this.pdata = JSON.parse(fs.readFileSync(file).toString());
+            const slides: Slide[] = [];
+            for (const slide of this.pdata.slides) {
+                slides.push(Object.assign(new Slide(), slide));
+            }
+            this.pdata.slides = slides;
         } catch (e) {
             // eslint-disable-next-line no-alert
             alert("The file couldn't be opened.");
