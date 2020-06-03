@@ -117,7 +117,7 @@ export class TitlebarService {
                         type: "separator",
                     },
                     {
-                        label: "Slide Properties",
+                        label: "Slide properties",
                         accelerator: "Strg+W",
                         enabled: this.currentSlideIdx !== undefined,
                         click: () => this.showService.messages.next("slideProperties"),
@@ -164,7 +164,7 @@ export class TitlebarService {
                         type: "separator",
                     },
                     {
-                        label: "Custom Logo",
+                        label: "Custom logo",
                         accelerator: "F2",
                         click: () => this.defaultScenesService.transitionTo("customLogo"),
                     },
@@ -187,7 +187,7 @@ export class TitlebarService {
                 role: "help",
                 submenu: [
                     {
-                        label: "Learn More",
+                        label: "Learn more",
                         click: async () => {
                             await shell.openExternal("https://github.com/hrueger/AGView");
                         },
