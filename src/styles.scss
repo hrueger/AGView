@@ -55,3 +55,11 @@ as-split .as-split-gutter {
 ::-webkit-scrollbar-corner {
     background: transparent;
 }
+
+.pointer-events-none {
+    pointer-events: none;
+}
+
+.pointer-events {
+    pointer-events: all;
+}

@@ -21,6 +21,9 @@
 
 .dropZone.activeDrag {
     background-color: #555;
+    .info {
+        display: none;
+    }
     &:before {
         content: "Drop your file(s) here";
         position: relative;

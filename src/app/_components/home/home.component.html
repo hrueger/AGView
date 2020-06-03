@@ -9,7 +9,9 @@
                     <span [style.width]="thumbnailSize + 'rem'">{{slide.name}}</span>
                 </div>
             </div>
-            <p class="m-3">Add slides by dropping files here, selecting <code>Slide -> Import slides...</code> in the menu or by clicking <a routerLink="" (click)="importSlides()">here</a>.</p>
+            <div class="m-3 info">
+                <p class="pointer-events-none">Add slides by dropping files here, selecting <code>Slide -> Import slides...</code> in the menu or by clicking <a routerLink="" (click)="importSlides()" class="pointer-events">here</a>.</p>
+            </div>
         </div>
         <div class="iconBar p-3 border-top border-primary">
             <input class="custom-range w-10 mr-5" type="range" min="5" max="50" step="0.1" [(ngModel)]="thumbnailSize">
