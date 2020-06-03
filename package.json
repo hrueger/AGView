@@ -29,9 +29,7 @@
         "electron:serve-tsc": "tsc -p tsconfig-serve.json",
         "electron:serve": "wait-on http-get://localhost:4200/ && npm run electron:serve-tsc && electron . --serve",
         "electron:local": "npm run build:prod && electron .",
-        "electron:linux": "npm run build:prod && electron-builder build --linux --publish=never",
-        "electron:windows": "npm run build:prod && electron-builder build --windows --publish=never",
-        "electron:mac": "npm run build:prod && electron-builder build --mac --publish=never",
+        "electron:windows": "npm run build:prod && electron-builder build --windows --publish=onTag",
         "lint": "ng lint"
     },
     "dependencies": {
@@ -44,14 +42,15 @@
         "bootstrap": "4.4.1",
         "custom-electron-titlebar": "3.2.2-hotfix62",
         "electron-root-path": "1.0.16",
+        "electron-updater": "4.3.1",
         "fluent-ffmpeg": "2.1.2",
         "mousetrap": "1.6.5",
         "ng2-dragula": "1.5.0",
         "ngx-perfect-scrollbar": "^9.0.0",
         "obs-studio-node": "https://obsstudionodes3.streamlabs.com/obs-studio-node-0.5.137-iojs-v6.0.3-release.tar.gz",
         "reflect-metadata": "0.1.13",
-        "simple-thumbnail": "1.6.5",
-        "rxjs": "6.5.5"
+        "rxjs": "6.5.5",
+        "simple-thumbnail": "1.6.5"
     },
     "devDependencies": {
         "@angular-builders/custom-webpack": "9.1.0",

@@ -7,6 +7,7 @@ import {
 } from "electron";
 import * as path from "path";
 import * as url from "url";
+import { autoUpdater } from "electron-updater";
 import { OBS } from "./src/worker/obs";
 import { Store } from "./src/app/_helpers/store";
 import { Slide } from "./src/app/_classes/slide";
@@ -134,6 +135,8 @@ function createWindow(): BrowserWindow {
         app.quit();
     });
 
+    autoUpdater.checkForUpdatesAndNotify();
+
     return win;
 }
 
@@ -145,7 +148,6 @@ try {
     // Some APIs can only be used after this event occurs.
     // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
     app.on("ready", () => setTimeout(createWindow, 400));
-
 } catch (e) {
     // Catch Error
     // throw e;

@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var electron_1 = require("electron");
 var path = require("path");
 var url = require("url");
+var electron_updater_1 = require("electron-updater");
 var obs_1 = require("./src/worker/obs");
 var store_1 = require("./src/app/_helpers/store");
 var win = null;
@@ -129,6 +130,7 @@ function createWindow() {
         console.log("shut down");
         electron_1.app.quit();
     });
+    electron_updater_1.autoUpdater.checkForUpdatesAndNotify();
     return win;
 }
 try {
