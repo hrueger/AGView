@@ -1,11 +1,13 @@
 name: Production build
 
-on: [push]
+on: [push, tag]
 
 jobs:
   build_on_win:
     name: Build on Windows
     runs-on: windows-2016
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - uses: actions/checkout@master  
     - uses: actions/setup-node@master
