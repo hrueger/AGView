@@ -24,7 +24,6 @@ export class TitlebarService {
             backgroundColor: customTitlebar.Color.fromHex("#444"),
             icon: "assets/icons/favicon.png",
             enableMnemonics: true,
-            hideWhenClickingClose: true,
             itemBackgroundColor: customTitlebar.Color.fromHex("#094771"),
             menu,
         });
@@ -86,7 +85,7 @@ export class TitlebarService {
                     {
                         label: "Quit",
                         accelerator: "Ctrl+Q",
-                        click: () => remote.app.quit(),
+                        click: () => remote.getCurrentWindow().close(),
                     },
                 ],
             },
