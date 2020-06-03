@@ -1,11 +1,6 @@
 name: Production build
 
-on:
-  push:
-    branches:
-      - master
-    tags:
-      - '*'
+on: push
 
 jobs:
   build_on_win:
