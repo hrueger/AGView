@@ -5,8 +5,8 @@ export const settingsStoreOptions = {
     configName: "user-preferences",
     defaults: {
         importSlideDefaultPath: (app || remote.app).getPath("home"),
-        previewSplitSize: undefined,
-        mainSplitSize: undefined,
+        previewSplitSize: 500,
+        mainSplitSize: 500,
         width: 1920,
         height: 1080,
         aspectRatioWidth: 16,
