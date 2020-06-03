@@ -12,7 +12,7 @@ export const supportedFiles: {
     },
     {
         extensions: ["mp4", "ts", "mov", "flv", "mkv", "avi", "mp3", "ogg", "aac", "wav", "gif", "webm"],
-        prettyName: "Video files",
+        prettyName: "Video and Audio files",
         obsName: "ffmpeg_source",
         slideType: "video",
     },
