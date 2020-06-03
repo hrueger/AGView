@@ -11,8 +11,6 @@ jobs:
   build_on_win:
     name: Build on Windows
     runs-on: windows-2016
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - uses: actions/checkout@master  
     - uses: actions/setup-node@master
@@ -31,4 +29,14 @@ jobs:
     - name: Install dependencies
       run: npm install
     - name: Build on Windows
-      run: npm run electron:windows
+      run: npm run build:prod
+    - name: Build/release Electron app
+      uses: samuelmeuli/action-electron-builder@v1
+      with:
+        # GitHub token, automatically provided to the action
+        # (No need to define this secret in the repo settings)
+        github_token: ${{ secrets.github_token }}
+
+        # If the commit is tagged with a version (e.g. "v1.0.0"),
+        # release the app after building
+        release: ${{ startsWith(github.ref, 'refs/tags/v') }}
