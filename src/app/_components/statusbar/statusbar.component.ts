@@ -8,7 +8,7 @@ import { pkginfo } from "../../_helpers/packageInfo";
     styleUrls: ["./statusbar.component.scss"],
 })
 export class StatusbarComponent {
-    public statistics = {};
+    public statistics: any = {};
     public version = pkginfo.version;
     constructor(private cdr: ChangeDetectorRef) {}
     public ngOnInit() {
@@ -16,7 +16,6 @@ export class StatusbarComponent {
             s.frameRate = s.frameRate ? Math.round(s.frameRate) : "  ";
             Object.assign(this.statistics, s);
             this.cdr.detectChanges();
-            console.log(s);
         });
     }
 }
