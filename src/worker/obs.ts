@@ -376,12 +376,16 @@ export class OBS {
         } catch (e) {
             throw Error(`Exception when shutting down OBS process${e}`);
         }
+        try {
+            if (this.previewWindow) {
+                this.previewWindow.close();
+            }
+        } catch {
+            //
+        }
 
         console.debug("OBS shutdown successfully");
 
-        if (this.previewWindow) {
-            this.previewWindow.close();
-        }
         return true;
     }
 
