@@ -1,7 +1,7 @@
 {
     "name": "agview",
     "productName": "AGView",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "main": "main.js",
     "description": "The live on-the-fly event video player.",
     "homepage": "https://github.com/hrueger/AGView",
