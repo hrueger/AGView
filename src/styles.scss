@@ -63,3 +63,8 @@ as-split .as-split-gutter {
 .pointer-events {
     pointer-events: all;
 }
+
+.user-select-none {
+    -webkit-user-select: none;
+    user-select: none;
+}

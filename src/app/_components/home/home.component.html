@@ -1,4 +1,4 @@
-<as-split unit="pixel" #mainSplit="asSplit">
+<as-split unit="pixel" #mainSplit="asSplit" class="content">
     <as-split-area class="pr-1">
         <div class="w-100 dropZone overflow-auto p-3" (dragover)="onDragOver()" (dragleave)="onDragLeave()" (drop)="onDrop($event)" [class.activeDrag]="activeDrag" (click)="deselectSlide()">
             <div class="slides grid hideOnDrag" dragula="slides" [(dragulaModel)]="slides">
@@ -127,3 +127,4 @@
         </as-split>
     </as-split-area>
 </as-split>
+<statusbar></statusbar>

@@ -152,9 +152,6 @@ export class HomeComponent {
             this.storeSplitSizes();
             this.preview.onResized();
         });
-        /* .on("performanceStatistics", (d) => {
-          console.log(d);
-        }) */
     }
 
     public onDragOver() {

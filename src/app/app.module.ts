@@ -19,6 +19,7 @@ import { AppComponent } from "./app.component";
 import { HomeComponent } from "./_components/home/home.component";
 import { PreviewComponent } from "./_components/preview/preview.component";
 import { SettingsComponent } from "./_components/settings/settings.component";
+import { StatusbarComponent } from "./_components/statusbar/statusbar.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -26,7 +27,13 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 @NgModule({
-    declarations: [AppComponent, HomeComponent, PreviewComponent, SettingsComponent],
+    declarations: [
+        AppComponent,
+        HomeComponent,
+        PreviewComponent,
+        SettingsComponent,
+        StatusbarComponent,
+    ],
     imports: [
         BrowserModule,
         FormsModule,
