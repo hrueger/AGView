@@ -197,7 +197,7 @@ export class HomeComponent {
     private addSlides(files: string[]) {
         for (const slide of files) {
             const ext = path.extname(slide).replace(".", "");
-            const types = supportedFiles.filter((f) => f.extensions.includes(ext));
+            const types = supportedFiles.filter((f) => f.extensions.includes(ext.toLowerCase()));
             if (!(types && types[0])) {
                 // eslint-disable-next-line no-continue
                 continue;
