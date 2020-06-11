@@ -21,7 +21,7 @@
 
 .dropZone.activeDrag {
     background-color: #555;
-    .info {
+    .hideOnDrag {
         display: none;
     }
     &:before {
