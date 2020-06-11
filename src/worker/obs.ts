@@ -100,7 +100,6 @@ export class OBS {
     private setupSources() {
         this.setVideoOutputResolution();
         const devPath = path.join(__dirname, "../assets/icons/favicon.png").replace("app.asar", "");
-        console.log(devPath);
         const logoSource = osn.InputFactory.create("image_source", LOGO_SCENE_ID, { file: devPath });
         const customLogoSource = osn.InputFactory.create("image_source", CUSTOM_LOGO_SCENE_ID, { file: this.settingsStore.get("customLogoPath") });
 
