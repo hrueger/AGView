@@ -11,7 +11,7 @@ export class ConnectionService {
     private apiUrl: string;
     public async connect(ip: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            this.apiUrl = `http://${ip}:4573/`;
+            this.apiUrl = `http://${ip}:4574/`;
             this.httpClient.post(`${this.apiUrl}connect`, {
                 device: {
                     model: Device.model,
