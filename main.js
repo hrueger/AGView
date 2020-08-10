@@ -127,7 +127,6 @@ function createWindow() {
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         obs.shutdown();
-        console.log("shut down");
         electron_1.app.quit();
     });
     electron_updater_1.autoUpdater.checkForUpdatesAndNotify();

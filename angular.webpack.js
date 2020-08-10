@@ -39,5 +39,8 @@ module.exports = (config, options) => {
             bugs: JSON.stringify(pkg.bugs),
         }
     }));
+    config.externals = {
+        express: "require('express')",
+    }
     return config;
 }

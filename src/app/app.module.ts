@@ -6,6 +6,7 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpClientModule, HttpClient } from "@angular/common/http";
 import { DragulaModule } from "ng2-dragula";
+import { QRCodeModule } from "angularx-qrcode";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 // NG Translate
@@ -41,6 +42,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         AngularSplitModule.forRoot(),
         DragulaModule,
         NgbModule,
+        QRCodeModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
