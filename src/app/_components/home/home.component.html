@@ -134,7 +134,7 @@
                             <div>
                                 <h6>Currently connected mobiles:</h6>
                                 <ul *ngIf="mobileService.connectedMobiles.length > 0">
-                                    <li *ngFor="let mobile of mobileService.connectedMobiles">{{mobile.manufacturer[0].toUpperCase()}}{{mobile.manufacturer.slice(1)}} {{mobile.model}}</li>
+                                    <li *ngFor="let mobile of mobileService.connectedMobiles">{{mobile.device.manufacturer[0].toUpperCase()}}{{mobile.device.manufacturer.slice(1)}} {{mobile.device.model}}</li>
                                 </ul>
                                 <i *ngIf="mobileService.connectedMobiles.length == 0">None</i>
                             </div>
