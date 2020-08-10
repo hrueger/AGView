@@ -110,6 +110,11 @@ export class HomeComponent {
     }
 
     public ngOnInit() {
+        this.mobileService.slideChanged.subscribe((idx) => {
+            if (idx !== undefined && idx > -1) {
+                this.selectSlide(undefined, idx);
+            }
+        });
         this.showService.messages.subscribe((message) => {
             switch (message) {
             case "importSlides":

@@ -1,5 +1,6 @@
 import { Injectable, NgZone } from "@angular/core";
 import * as express from "express";
+import { BehaviorSubject } from "rxjs";
 import { ShowService } from "./show.service";
 import { RecentShowsService } from "./recent-shows.service";
 
@@ -21,6 +22,7 @@ export class MobileService {
             region: string;
         };
     }[] = [];
+    public slideChanged: BehaviorSubject<number> = new BehaviorSubject<number>(undefined);
     private expressRunning = false;
     constructor(
         private showService: ShowService,
@@ -64,6 +66,13 @@ export class MobileService {
                     this.connectedMobiles = this.connectedMobiles.filter(
                         (d) => d.device.uuid !== req.jsonBody.deviceId,
                     );
+                });
+                res.send({ success: true });
+            });
+            r.post("/show", (req: any, res) => {
+                this.zone.run(() => {
+                    this.slideChanged.next(((this.showService.data.value?.slides || []) as any[])
+                        .findIndex((s) => s.id == req.jsonBody.slideId));
                 });
                 res.send({ success: true });
             });
