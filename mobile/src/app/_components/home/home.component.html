@@ -2,9 +2,9 @@
 
 <StackLayout class="page__content">
     <GridLayout columns="auto, *" rows="auto, auto" class="m-20 p-10" [backgroundColor]="connectionService.isConnected ? '#5acc7a' : '#5ab0cc'">
-        <Label [text]="(connectionService.isConnected ? '&#xf1e6;' : '&#xf05a;')+ ' '" class="fas h1 m-10" row="0" col="0" rowspan="2"></Label>
-        <Label [text]="(connectionService.isConnected ? 'C' : 'Not c') + 'onnected'" class="h3" row="0" col="1"></Label>
-        <Label row="1" col="1" textWrap="true" *ngIf="!connectionService.isConnected">
+        <Label class="text-white fas h1 m-10" [text]="(connectionService.isConnected ? '&#xf1e6;' : '&#xf05a;')+ ' '" row="0" col="0" rowspan="2"></Label>
+        <Label class="text-white h3" [text]="(connectionService.isConnected ? 'C' : 'Not c') + 'onnected'" row="0" col="1"></Label>
+        <Label class="text-white" row="1" col="1" textWrap="true" *ngIf="!connectionService.isConnected">
             <FormattedString>
                 <Span text="This mobile is not connected to a Computer running "></Span>
                 <Span class="i" text="AGView Desktop"></Span>
@@ -15,7 +15,7 @@
                 <Span text=" and follow the instructions. The, either scan the QR-Code or manaully input the IP address."></Span>
             </FormattedString>
         </Label>
-        <Label row="1" col="1" textWrap="true" *ngIf="connectionService.isConnected">
+        <Label class="text-white" row="1" col="1" textWrap="true" *ngIf="connectionService.isConnected">
             <FormattedString>
                 <Span text="This mobile is successfully connected to a Computer running "></Span>
                 <Span class="i" text="AGView Desktop"></Span>
