@@ -1,0 +1,9 @@
+node_modules
+*/**.map
+osn-data
+release
+hooks
+platforms
+dist
+bin
+**/*.js
