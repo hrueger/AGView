@@ -31,14 +31,19 @@
                 <div class="p-1">
                     <ul class="nav nav-tabs">
                         <li class="nav-item">
-                            <a class="nav-link" (click)="currentView = 'slideSettings'" [class.active]="currentView == 'slideSettings'" routerLink="">Current Slide</a>
+                            <a class="nav-link" (click)="currentView = 'slideSettings'" [class.active]="currentView == 'slideSettings'" routerLink="">
+                                <i class="far fa-file-video"></i> Current Slide
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" (click)="currentView = 'globalSettings'" [class.active]="currentView == 'globalSettings'" routerLink="">Global Settings</a>
+                            <a class="nav-link" (click)="currentView = 'globalSettings'" [class.active]="currentView == 'globalSettings'" routerLink="">
+                                <i class="fas fa-cogs"></i> Global Settings
+                            </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" (click)="currentView = 'mobiles'" [class.active]="currentView == 'mobiles'" routerLink="">
-                                {{mobileService.connectedMobiles.length}} mobile{{mobileService.connectedMobiles.length !== 1 ? "s" : ""}} connected</a>
+                                <i class="fas fa-mobile-alt"></i> {{mobileService.connectedMobiles.length}} mobile{{mobileService.connectedMobiles.length !== 1 ? "s" : ""}} connected
+                            </a>
                         </li>
                     </ul>
 
