@@ -2,7 +2,7 @@
 
 <GridLayout class="page__content">
     <ActivityIndicator busy="true" *ngIf="slides.length == 0"></ActivityIndicator>
-    <RadListView [items]="slides" *ngIf="slides.length > 0">
+    <RadListView [items]="slides" #listview *ngIf="slides.length > 0" pullToRefresh="true" (pullToRefreshInitiated)="refreshSlides($event)">
         <ng-template tkListItemTemplate let-slide="item">
             <StackLayout orientation="vertical">
                 <Label class="nameLabel" [text]="slide.name"></Label>

@@ -1,6 +1,8 @@
-import { Component } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { Router } from "@angular/router";
+import { ListViewEventData } from "nativescript-ui-listview";
+import { RadListViewComponent } from "nativescript-ui-listview/angular";
 import { ConnectionService } from "../../_services/connection.service";
 
 @Component({
@@ -9,6 +11,7 @@ import { ConnectionService } from "../../_services/connection.service";
 })
 export class ShowComponent {
     public slides: any[] = [];
+    @ViewChild("listview") private listview: RadListViewComponent;
     constructor(private connectionService: ConnectionService, private router: Router) { }
 
     public ngOnInit(): void {
@@ -31,6 +34,17 @@ export class ShowComponent {
                 dialogs.alert("Unknown error occured");
             }
         });
+    }
+
+    public refreshSlides(args: ListViewEventData) {
+        this.connectionService.get("slides").subscribe((data) => {
+            if (data && data.slides) {
+                this.slides = data.slides;
+                const listView = args.object;
+                listView.notifyPullToRefreshFinished();
+                this.listview.nativeElement.refresh();
+            }
+        }, () => undefined);
     }
 
     public getSlideThumbnailImageSource(slide: Record<string, string>): string {
