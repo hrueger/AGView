@@ -1,16 +1,18 @@
 import { Component, ViewChild } from "@angular/core";
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { Router } from "@angular/router";
-import { ListViewEventData } from "nativescript-ui-listview";
+import { ListViewEventData, ListViewGridLayout, ListViewLinearLayout } from "nativescript-ui-listview";
 import { RadListViewComponent } from "nativescript-ui-listview/angular";
 import { ConnectionService } from "../../_services/connection.service";
 
 @Component({
     selector: "app-show",
     templateUrl: "./show.component.html",
+    styleUrls: ["./show.component.scss"],
 })
 export class ShowComponent {
     public slides: any[] = [];
+    public gridLayout = false;
     @ViewChild("listview") private listview: RadListViewComponent;
     constructor(private connectionService: ConnectionService, private router: Router) { }
 
@@ -45,6 +47,11 @@ export class ShowComponent {
                 this.listview.nativeElement.refresh();
             }
         }, () => undefined);
+    }
+
+    public layoutChanged(layout: "grid" | "list"): void {
+        this.gridLayout = layout == "grid";
+        this.listview.setLayout(layout == "grid" ? new ListViewGridLayout() : new ListViewLinearLayout());
     }
 
     public getSlideThumbnailImageSource(slide: Record<string, string>): string {

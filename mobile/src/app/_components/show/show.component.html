@@ -1,13 +1,22 @@
-<app-navbar title="Show"></app-navbar>
+<app-navbar title="Show" isShow="true" (layoutChanged)="layoutChanged($event)"></app-navbar>
 
 <GridLayout class="page__content">
     <ActivityIndicator busy="true" *ngIf="slides.length == 0"></ActivityIndicator>
     <RadListView [items]="slides" #listview *ngIf="slides.length > 0" pullToRefresh="true" (pullToRefreshInitiated)="refreshSlides($event)">
         <ng-template tkListItemTemplate let-slide="item">
-            <StackLayout orientation="vertical">
-                <Label class="nameLabel" [text]="slide.name"></Label>
-                <Image [src]="getSlideThumbnailImageSource(slide)"></Image>
-            </StackLayout>
+            <GridLayout rows="auto, 1" class="text-black">
+                <!-- Grid Layout -->
+                <StackLayout row="0" orientation="vertical" [visibility]="gridLayout ? 'visible' : 'collapsed'">
+                    <Label class="nameLabel" [text]="slide.name"></Label>
+                    <Image class="thumbnail" [src]="getSlideThumbnailImageSource(slide)"></Image>
+                </StackLayout>
+                <!-- List Layout (Default) -->
+                <StackLayout row="0" orientation="horizontal" [visibility]="gridLayout ? 'collapsed' : 'visible'">
+                    <Image class="thumbnail" [src]="getSlideThumbnailImageSource(slide)"></Image>
+                    <Label class="nameLabel" [text]="slide.name"></Label>
+                </StackLayout>
+                <StackLayout row="1" class="bg-grey"></StackLayout>
+            </GridLayout>
         </ng-template>
     </RadListView>
 </GridLayout>

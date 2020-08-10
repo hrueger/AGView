@@ -1,4 +1,6 @@
-import { Component, Input } from "@angular/core";
+import {
+    Component, Input, Output, EventEmitter,
+} from "@angular/core";
 import { RadSideDrawer } from "nativescript-ui-sidedrawer";
 import { Application } from "@nativescript/core";
 
@@ -9,8 +11,16 @@ import { Application } from "@nativescript/core";
 })
 export class NavbarComponent {
     @Input() public title = "AGView";
+    @Input() public isShow = false;
+    @Output() public layoutChanged: EventEmitter<"grid" | "list"> = new EventEmitter<"grid"|"list">();
+    public gridLayout = false;
     onDrawerButtonTap(): void {
         const sideDrawer = Application.getRootView() as RadSideDrawer;
         sideDrawer.showDrawer();
+    }
+
+    public toggleLayout() {
+        this.gridLayout = !this.gridLayout;
+        this.layoutChanged.emit(this.gridLayout ? "grid" : "list");
     }
 }
