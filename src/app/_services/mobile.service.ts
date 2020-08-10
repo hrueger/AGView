@@ -68,7 +68,10 @@ export class MobileService {
                 res.send({ success: true });
             });
             r.get("/slides", async (req, res) => {
-                res.send({ slides: [] });
+                res.send({
+                    slides: this.showService.data.value?.slides || [],
+                });
+            });
             });
             this.server.use(r);
             this.server.listen(4574, () => {
