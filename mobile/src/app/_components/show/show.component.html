@@ -1,0 +1,6 @@
+<app-navbar title="Show"></app-navbar>
+
+<GridLayout class="page__content">
+    <ActivityIndicator busy="true" *ngIf="slides.length == 0"></ActivityIndicator>
+    <Label text="Slides loaded" *ngIf="slides.length > 0"></Label>
+</GridLayout>
