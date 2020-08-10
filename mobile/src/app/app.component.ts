@@ -54,6 +54,6 @@ export class AppComponent implements OnInit {
     }
 
     public goToGitHub(): void {
-        Utils.openUrl("https://github.com/hrueger/AHView");
+        Utils.openUrl("https://github.com/hrueger/AGView");
     }
 }
