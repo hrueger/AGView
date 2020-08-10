@@ -1,7 +1,5 @@
 import { Injectable, NgZone } from "@angular/core";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as express from "express";
-import { Router } from "@angular/router";
 import { ShowService } from "./show.service";
 import { RecentShowsService } from "./recent-shows.service";
 
@@ -9,7 +7,6 @@ import { RecentShowsService } from "./recent-shows.service";
     providedIn: "root",
 })
 export class MobileService {
-    public modal: NgbModalRef;
     private server: express.Express;
     public connectedMobiles: {
         device: {
@@ -26,10 +23,8 @@ export class MobileService {
     }[] = [];
     private expressRunning = false;
     constructor(
-        private modalService: NgbModal,
         private showService: ShowService,
         private recentShowsService: RecentShowsService,
-        private router: Router,
         private zone: NgZone,
     ) { }
 
@@ -50,18 +45,12 @@ export class MobileService {
             });
             const r = express.Router();
             r.post("/connect", (req: any, res) => {
-                this.connectedMobiles.push({
-                    device: req.jsonBody.device,
+                this.zone.run(() => {
+                    this.connectedMobiles.push({
+                        device: req.jsonBody.device,
+                    });
                 });
                 res.send({ success: true });
-                if (this.modal) {
-                    try {
-                        this.modal.dismiss();
-                        this.modal = undefined;
-                    } catch {
-                        //
-                    }
-                }
             });
             r.get("/recentShows", (req: any, res) => {
                 res.send(this.recentShowsService.get());
@@ -71,9 +60,11 @@ export class MobileService {
                 res.send({ success: true });
             });
             r.post("/disconnect", (req: any, res) => {
-                this.connectedMobiles = this.connectedMobiles.filter(
-                    (d) => d.device.uuid !== req.jsonBody.deviceId,
-                );
+                this.zone.run(() => {
+                    this.connectedMobiles = this.connectedMobiles.filter(
+                        (d) => d.device.uuid !== req.jsonBody.deviceId,
+                    );
+                });
                 res.send({ success: true });
             });
             r.get("/slides", async (req, res) => {
