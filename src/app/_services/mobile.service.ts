@@ -72,6 +72,10 @@ export class MobileService {
                     slides: this.showService.data.value?.slides || [],
                 });
             });
+            r.get("/thumbnails/:id", async (req, res) => {
+                const slide = this.showService.data.value?.slides
+                    .find((s) => s.id == req.params.id) || {};
+                res.sendFile(slide.thumbnail ? slide.thumbnail : "assets/images/thumbnail.png");
             });
             this.server.use(r);
             this.server.listen(4574, () => {
