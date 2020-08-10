@@ -179,6 +179,7 @@ export class HomeComponent {
             );
         });
         this.mobileService.init();
+        this.checkForFirewallRule();
     }
     public detectChanges(propertiesChanged = false) {
         this.cdr.detectChanges();
@@ -269,14 +270,6 @@ export class HomeComponent {
                 this.cdr.detectChanges();
             });
         }
-    }
-
-    public async openMobilesModal(modal: any): Promise<void> {
-        this.mobileService.modal = this.modalService.open(modal);
-        this.checkForFirewallRule();
-        this.mobileService.modal.result.then(() => {
-            this.mobileService.modal = undefined;
-        }, () => undefined);
     }
 
     public async configWinFirewall(): Promise<void> {
