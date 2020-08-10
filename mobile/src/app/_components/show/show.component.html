@@ -4,7 +4,7 @@
     <ActivityIndicator busy="true" *ngIf="slides.length == 0"></ActivityIndicator>
     <RadListView [items]="slides" #listview *ngIf="slides.length > 0" pullToRefresh="true" (pullToRefreshInitiated)="refreshSlides($event)">
         <ng-template tkListItemTemplate let-slide="item">
-            <GridLayout rows="auto, 1" class="text-black">
+            <GridLayout rows="auto, 1" class="text-black" (tap)="showSlide(slide)">
                 <!-- Grid Layout -->
                 <StackLayout row="0" orientation="vertical" [visibility]="gridLayout ? 'visible' : 'collapsed'">
                     <Label class="nameLabel" [text]="slide.name"></Label>

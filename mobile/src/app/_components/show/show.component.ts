@@ -38,6 +38,10 @@ export class ShowComponent {
         });
     }
 
+    public showSlide(slide: Record<string, string>): void {
+        this.connectionService.post("show", { slideId: slide.id }).subscribe();
+    }
+
     public refreshSlides(args: ListViewEventData) {
         this.connectionService.get("slides").subscribe((data) => {
             if (data && data.slides) {
