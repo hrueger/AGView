@@ -6,9 +6,9 @@ import { Device } from "@nativescript/core";
 @Injectable({ providedIn: "root" })
 export class ConnectionService {
     public socketConnection: any;
+    public apiUrl: string;
     constructor(private httpClient: HttpClient) {}
     private _isConnected = false;
-    private apiUrl: string;
     public async connect(ip: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this.apiUrl = `http://${ip}:4574/`;

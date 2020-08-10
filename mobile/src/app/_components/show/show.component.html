@@ -2,5 +2,12 @@
 
 <GridLayout class="page__content">
     <ActivityIndicator busy="true" *ngIf="slides.length == 0"></ActivityIndicator>
-    <Label text="Slides loaded" *ngIf="slides.length > 0"></Label>
+    <RadListView [items]="slides" *ngIf="slides.length > 0">
+        <ng-template tkListItemTemplate let-slide="item">
+            <StackLayout orientation="vertical">
+                <Label class="nameLabel" [text]="slide.name"></Label>
+                <Image [src]="getSlideThumbnailImageSource(slide)"></Image>
+            </StackLayout>
+        </ng-template>
+    </RadListView>
 </GridLayout>

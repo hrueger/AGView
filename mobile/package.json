@@ -22,7 +22,6 @@
         "android:prod": "tns build android --env.aot"
     },
     "dependencies": {
-        "nativescript-barcodescanner": "^3.4.2",
         "@angular/animations": "^9.1.11",
         "@angular/cdk": "~8.2.3",
         "@angular/common": "^9.1.11",
@@ -44,9 +43,11 @@
         "core-js": "^3.6.5",
         "events": "^3.2.0",
         "nativescript-appversion": "^1.4.4",
+        "nativescript-barcodescanner": "^3.4.2",
         "nativescript-feedback": "^1.5.0",
         "nativescript-sse": "^4.0.2",
         "nativescript-theme-core": "~2.0.24",
+        "nativescript-ui-listview": "^8.2.0",
         "nativescript-ui-sidedrawer": "^8.0.1",
         "ngx-toastr": "^13.0.0",
         "node-sass": "^4.14.1",
