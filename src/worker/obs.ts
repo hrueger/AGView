@@ -19,7 +19,6 @@ const CUSTOM_LOGO_SCENE_ID = "CUSTOMLOGOSCENE";
 const BLACK_SCENE_ID = "BLACKSCENE";
 const ALIGNMENT_CENTER: any = { alignment: "center", padding: 50, scale: "fit" };
 
-
 ffmpeg.setFfprobePath(path.join(__dirname, "../../bin/ffprobe.exe").replace("app.asar", ""));
 
 export class OBS {
@@ -102,7 +101,6 @@ export class OBS {
         const devPath = path.join(__dirname, "../assets/icons/favicon.png").replace("app.asar", "");
         const logoSource = osn.InputFactory.create("image_source", LOGO_SCENE_ID, { file: devPath });
         const customLogoSource = osn.InputFactory.create("image_source", CUSTOM_LOGO_SCENE_ID, { file: this.settingsStore.get("customLogoPath") });
-
 
         const logoScene = osn.SceneFactory.create(LOGO_SCENE_ID);
         const lsi = logoScene.add(logoSource);

@@ -14,7 +14,6 @@ import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { AngularSplitModule } from "angular-split";
 import { AppRoutingModule } from "./app-routing.module";
 
-
 import { AppComponent } from "./app.component";
 import { HomeComponent } from "./_components/home/home.component";
 import { PreviewComponent } from "./_components/preview/preview.component";

@@ -31,7 +31,6 @@ export class HomeComponent {
     public currentSlideIdx: number;
     public viewingGlobalSettings = false;
 
-
     constructor(
         private settingsService: SettingsService,
         private showService: ShowService,
