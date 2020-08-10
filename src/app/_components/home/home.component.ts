@@ -5,12 +5,17 @@ import { remote } from "electron";
 import { SplitComponent } from "angular-split";
 import * as path from "path";
 import { v4 as uuid } from "uuid";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import * as os from "os";
+import { execSync } from "child_process";
+import * as sudo from "sudo-prompt";
 import { PreviewComponent } from "../preview/preview.component";
 import { SettingsService } from "../../_services/settings.service";
 import { ShowService } from "../../_services/show.service";
 import { ThumbnailService } from "../../_services/thumbnail.service";
 import { Slide } from "../../_classes/slide";
 import { supportedFilesFilters, supportedFiles } from "../../_globals/supportedFilesFilters";
+import { MobileService } from "../../_services/mobile.service";
 
 @Component({
     selector: "app-home",
@@ -29,16 +34,55 @@ export class HomeComponent {
     public activeDrag = false;
     public thumbnailSize = 5;
     public currentSlideIdx: number;
-    public viewingGlobalSettings = false;
+    public currentView: "slideSettings" | "globalSettings" | "mobiles" = "slideSettings";
+
+    public interfaces: { name: string; ip: string }[] = [];
+    public currentInterfaceIndex: number;
+    public readonly isWindows = process.platform === "win32";
+    private checkForFirewallRule() {
+        let ruleExists = false;
+        try {
+            if (execSync("netsh advfirewall firewall show rule name=AGView").toString().trim().endsWith("OK.")) {
+                ruleExists = true;
+            }
+        } catch {
+            //
+        }
+        if (this.isWindows && !ruleExists) {
+            remote.dialog.showMessageBox({
+                message: "The Windows Firewall rule required to be able to have mobiles connect to AGView Desktop is missing. Do you want to add it now? Administrator rights are necessary.",
+                title: "Windows Firewall Rule missing",
+                defaultId: 5,
+                cancelId: 7,
+                buttons: ["Yes", "No"],
+            }).then((val) => {
+                if (val.response === 0) {
+                    this.configWinFirewall();
+                }
+            });
+        }
+    }
 
     constructor(
+        public mobileService: MobileService,
         private settingsService: SettingsService,
         private showService: ShowService,
         private thumbnailService: ThumbnailService,
         private cdr: ChangeDetectorRef,
+        private modalService: NgbModal,
     ) {
         this.mainSplitSize = this.settingsService.store.get("mainSplitSize");
         this.previewSplitSize = this.settingsService.store.get("previewSplitSize");
+        const ifaces = os.networkInterfaces();
+
+        for (const ifname of Object.keys(ifaces)) {
+            ifaces[ifname].forEach((iface) => {
+                if (iface.family !== "IPv4" || iface.internal !== false) {
+                    return;
+                }
+                this.interfaces.push({ name: ifname, ip: iface.address });
+            });
+        }
     }
 
     public selectSlide(event, idx) {
@@ -75,7 +119,7 @@ export class HomeComponent {
                 if (this.currentSlideIdx === undefined) {
                     break;
                 }
-                this.viewingGlobalSettings = false;
+                this.currentView = "slideSettings";
                 this.cdr.detectChanges();
                 setTimeout(() => {
                     this.nameInput.nativeElement.focus();
@@ -85,7 +129,7 @@ export class HomeComponent {
                 if (this.currentSlideIdx === undefined) {
                     break;
                 }
-                this.viewingGlobalSettings = false;
+                this.currentView = "slideSettings";
                 this.cdr.detectChanges();
                 break;
             case "removeSlide":
@@ -134,6 +178,7 @@ export class HomeComponent {
                 { idx: this.currentSlideIdx, length: this.slides.length },
             );
         });
+        this.mobileService.init();
     }
     public detectChanges(propertiesChanged = false) {
         this.cdr.detectChanges();
@@ -224,5 +269,33 @@ export class HomeComponent {
                 this.cdr.detectChanges();
             });
         }
+    }
+
+    public async openMobilesModal(modal: any): Promise<void> {
+        this.mobileService.modal = this.modalService.open(modal);
+        this.checkForFirewallRule();
+        this.mobileService.modal.result.then(() => {
+            this.mobileService.modal = undefined;
+        }, () => undefined);
+    }
+
+    public async configWinFirewall(): Promise<void> {
+        if (!this.isWindows) {
+            return;
+        }
+        const electronExe = remote.app.getPath("exe");
+        sudo.exec(`netsh advfirewall firewall add rule name="AGView" dir=in action=allow program="${electronExe}" enable=yes`,
+            {},
+            (error) => {
+                if (error) {
+                    remote.dialog.showErrorBox("Error while configuring Windows Firewall", `The following error occured:\n\n${error}`);
+                } else {
+                    remote.dialog.showMessageBox({
+                        message: "The Windows Firewall was configured successfully.",
+                        title: "Windows Firewall configured successfully",
+                        buttons: ["OK"],
+                    });
+                }
+            });
     }
 }

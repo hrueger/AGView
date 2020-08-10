@@ -31,15 +31,19 @@
                 <div class="p-1">
                     <ul class="nav nav-tabs">
                         <li class="nav-item">
-                            <a class="nav-link" (click)="viewingGlobalSettings = false" [class.active]="!viewingGlobalSettings" routerLink="">Current Slide</a>
+                            <a class="nav-link" (click)="currentView = 'slideSettings'" [class.active]="currentView == 'slideSettings'" routerLink="">Current Slide</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" (click)="viewingGlobalSettings = true" [class.active]="viewingGlobalSettings" routerLink="">Global Settings</a>
+                            <a class="nav-link" (click)="currentView = 'globalSettings'" [class.active]="currentView == 'globalSettings'" routerLink="">Global Settings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" (click)="currentView = 'mobiles'" [class.active]="currentView == 'mobiles'" routerLink="">
+                                {{mobileService.connectedMobiles.length}} mobile{{mobileService.connectedMobiles.length !== 1 ? "s" : ""}} connected</a>
                         </li>
                     </ul>
 
                     <div class="pt-2">
-                        <div [class.d-none]="viewingGlobalSettings">
+                        <div *ngIf="currentView == 'slideSettings'">
                             <p *ngIf="currentSlideIdx === undefined">No slide selected</p>
                             <div *ngIf="currentSlideIdx !== undefined">
                                 <!--
@@ -118,8 +122,35 @@
                                 </div>
                             </div>
                         </div>
-                        <div [class.d-none]="!viewingGlobalSettings">
+                        <div *ngIf="currentView == 'globalSettings'">
                             <settings></settings>
+                        </div>
+                        <div *ngIf="currentView == 'mobiles'">
+                            <div>
+                                <h6>Currently connected mobiles:</h6>
+                                <ul *ngIf="mobileService.connectedMobiles.length > 0">
+                                    <li *ngFor="let mobile of mobileService.connectedMobiles">{{mobile.manufacturer[0].toUpperCase()}}{{mobile.manufacturer.slice(1)}} {{mobile.model}}</li>
+                                </ul>
+                                <i *ngIf="mobileService.connectedMobiles.length == 0">None</i>
+                            </div>
+                            <hr>
+                            <div>
+                                <h6>Connect a mobile:</h6>
+                                <label for="interface">Choose the correct interface / IP address of <b>this</b> device:</label>
+                                <select class="form-control" id="interface" [(ngModel)]="currentInterfaceIndex">
+                                    <option [value]="undefined" disabled>-- Please choose --</option>
+                                    <option *ngFor="let interface of interfaces; let index = index" [value]="index">{{interface.name}} ({{interface.ip}})</option>
+                                </select>
+                                <div *ngIf="currentInterfaceIndex !== undefined" class="mt-3">
+                                    <qrcode class="mx-auto" [qrdata]="'agview://' + interfaces[currentInterfaceIndex].ip" [width]="256" errorCorrectionLevel="M" margin="2" colorDark="#1E1E1E"></qrcode>
+                                    <p>
+                                        Scan this QR Code with the mobile app.
+                                    </p>
+                                </div>
+                                <div class="mt-3" *ngIf="isWindows">
+                                    <button class="btn btn-outline-primary" (click)="configWinFirewall()">Reconfigure Windows Firewall</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
