@@ -330,6 +330,10 @@ export class OBS {
             }
             if (settings) {
                 const s = this.createSource(slide.id, type.obsName, settings);
+                if (type.obsName === "ffmpeg_source") {
+                    // Set monitoringType to Monitor and Output
+                    s["monitoringType"] = 2
+                }
                 // const sceneItem = this.scenes[0].scene.add(s);
                 const scene = osn.SceneFactory.create(slide.id);
                 const si = scene.add(s);
