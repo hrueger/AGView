@@ -29,7 +29,7 @@ export class ThumbnailService {
                 });
                 win.loadFile(file);
                 win.webContents.on("did-stop-loading", () => {
-                    win.capturePage((image) => {
+                    win.capturePage().then((image) => {
                         fs.writeFile(thumbnailPath, image.toPNG(), (err) => {
                             if (err) {
                                 reject(err);
