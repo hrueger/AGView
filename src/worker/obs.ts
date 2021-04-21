@@ -4,7 +4,6 @@ import { BrowserWindow } from "electron";
 import { Subject } from "rxjs";
 import * as path from "path";
 import * as fs from "fs";
-import { ISceneItem, ITransition } from "obs-studio-node";
 import * as ffmpeg from "fluent-ffmpeg";
 import { v4 } from "uuid";
 import { Slide } from "../app/_classes/slide";
@@ -27,7 +26,7 @@ export class OBS {
     private signals: Subject<any> = new Subject();
     public previewWindow: BrowserWindow;
     private settingsStore: Store;
-    private transition: ITransition;
+    private transition: osn.ITransition;
 
     constructor(parentWindow: BrowserWindow) {
         this.settingsStore = new Store(settingsStoreOptions);
@@ -139,7 +138,7 @@ export class OBS {
         this.setVideoOutputResolution();
     }
 
-    private alignItem(slide: Slide, sceneItem: ISceneItem, options?: AlignmentOptions) {
+    private alignItem(slide: Slide, sceneItem: osn.ISceneItem, options?: AlignmentOptions) {
         if (!options) {
             options = slide.alignment;
         }
@@ -370,6 +369,9 @@ export class OBS {
             }
             if (settings) {
                 const s = this.createSource(slide.id, type.obsName, settings);
+                if (type.obsName === "ffmpeg_source") {
+                    s.monitoringType = osn.EMonitoringType.MonitoringAndOutput;
+                }
                 const scene = osn.SceneFactory.create(slide.id);
                 const si = scene.add(s);
                 this.alignItem(slide, si);
