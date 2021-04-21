@@ -28,6 +28,14 @@
                 <preview #preview></preview>
             </as-split-area>
             <as-split-area [size]="previewSplitSize">
+                <div class="p-1" *ngIf="slides[currentSlideIdx] && slides[currentSlideIdx].type == 'video'">
+                    <div class="d-flex">
+                        <button class="btn btn-outline-primary" (click)="togglePlayPause()"><i class="fas" [class.fa-play]="slides[currentSlideIdx].paused" [class.fa-pause]="!slides[currentSlideIdx].paused"></i></button>
+                        <span>{{slides[currentSlideIdx].position | date:'mm:ss'}}</span>
+                        <input class="custom-range mx-3 mt-1" type="range" min="0" [max]="slides[currentSlideIdx].length" [ngModel]="slides[currentSlideIdx].position" (ngModelChange)="seek($event)">
+                        <span>{{slides[currentSlideIdx].length - slides[currentSlideIdx].position | date:'mm:ss'}} / {{slides[currentSlideIdx].length | date:'mm:ss'}}</span>
+                    </div>
+                </div>
                 <div class="p-1">
                     <ul class="nav nav-tabs">
                         <li class="nav-item">

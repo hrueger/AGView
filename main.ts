@@ -116,6 +116,31 @@ function createWindow(): BrowserWindow {
     ipcMain.on("update-properties", (slide) => {
         obs.updateProperties(slide as unknown as Slide);
     });
+    ipcMain.handle("getVideoFileLength", (_, filePath) => {
+        if (!obs) return;
+        // eslint-disable-next-line consistent-return
+        return obs.getVideoFileLength(filePath as unknown as string);
+    });
+    ipcMain.handle("playSource", (_, slideId) => {
+        if (!obs) return;
+        // eslint-disable-next-line consistent-return
+        return obs.playSource(slideId as unknown as string);
+    });
+    ipcMain.handle("pauseSource", (_, slideId) => {
+        if (!obs) return;
+        // eslint-disable-next-line consistent-return
+        return obs.pauseSource(slideId as unknown as string);
+    });
+    ipcMain.handle("seek", (_, slideId, position) => {
+        if (!obs) return;
+        // eslint-disable-next-line consistent-return
+        return obs.seek(slideId as unknown as string, position as unknown as number);
+    });
+    ipcMain.handle("getMediaPosition", (_, slideId) => {
+        if (!obs) return;
+        // eslint-disable-next-line consistent-return
+        return obs.getMediaPosition(slideId as unknown as string);
+    });
     ipcMain.on("clear-slides", () => {
         obs.clearSlides();
     });

@@ -113,6 +113,36 @@ function createWindow() {
     electron_1.ipcMain.on("update-properties", function (slide) {
         obs.updateProperties(slide);
     });
+    electron_1.ipcMain.handle("getVideoFileLength", function (_, filePath) {
+        if (!obs)
+            return;
+        // eslint-disable-next-line consistent-return
+        return obs.getVideoFileLength(filePath);
+    });
+    electron_1.ipcMain.handle("playSource", function (_, slideId) {
+        if (!obs)
+            return;
+        // eslint-disable-next-line consistent-return
+        return obs.playSource(slideId);
+    });
+    electron_1.ipcMain.handle("pauseSource", function (_, slideId) {
+        if (!obs)
+            return;
+        // eslint-disable-next-line consistent-return
+        return obs.pauseSource(slideId);
+    });
+    electron_1.ipcMain.handle("seek", function (_, slideId, position) {
+        if (!obs)
+            return;
+        // eslint-disable-next-line consistent-return
+        return obs.seek(slideId, position);
+    });
+    electron_1.ipcMain.handle("getMediaPosition", function (_, slideId) {
+        if (!obs)
+            return;
+        // eslint-disable-next-line consistent-return
+        return obs.getMediaPosition(slideId);
+    });
     electron_1.ipcMain.on("clear-slides", function () {
         obs.clearSlides();
     });

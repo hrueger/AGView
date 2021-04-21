@@ -18,6 +18,13 @@ export class Slide {
     @Save
     public alignment: AlignmentOptions;
 
+    // for videos
+    public paused = false;
+
+    public position = 0;
+    @Save
+    public length = 0;
+
     public thumbnail?: string;
 
     constructor() {

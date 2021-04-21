@@ -1,7 +1,7 @@
 import {
-    Component, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef,
+    Component, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef, NgZone,
 } from "@angular/core";
-import { remote } from "electron";
+import { ipcRenderer, remote } from "electron";
 import { SplitComponent } from "angular-split";
 import * as path from "path";
 import { v4 as uuid } from "uuid";
@@ -39,6 +39,7 @@ export class HomeComponent {
     public interfaces: { name: string; ip: string }[] = [];
     public currentInterfaceIndex: number;
     public readonly isWindows = process.platform === "win32";
+    positionInterval: NodeJS.Timeout;
     private checkForFirewallRule() {
         let ruleExists = false;
         try {
@@ -185,6 +186,13 @@ export class HomeComponent {
         });
         this.mobileService.init();
         this.checkForFirewallRule();
+
+        this.positionInterval = setInterval(async () => {
+            if (this.slides[this.currentSlideIdx]) {
+                this.slides[this.currentSlideIdx].position = await ipcRenderer.invoke("getMediaPosition", this.slides[this.currentSlideIdx].id);
+                this.cdr.detectChanges();
+            }
+        }, 50);
     }
     public detectChanges(propertiesChanged = false) {
         this.cdr.detectChanges();
@@ -193,6 +201,11 @@ export class HomeComponent {
             remote.ipcMain.emit("update-properties", this.slides[this.currentSlideIdx]);
         }
     }
+
+    public ngOnDestroy() {
+        clearInterval(this.positionInterval);
+    }
+
     public ngAfterViewInit(): void {
         this.mainSplit.dragProgress$.subscribe(() => {
             this.storeSplitSizes();
@@ -241,7 +254,7 @@ export class HomeComponent {
         this.addSlides(files);
     }
 
-    private addSlides(files: string[]) {
+    private async addSlides(files: string[]) {
         for (const slide of files) {
             const ext = path.extname(slide).replace(".", "");
             const types = supportedFiles.filter((f) => f.extensions.includes(ext.toLowerCase()));
@@ -255,6 +268,12 @@ export class HomeComponent {
             s.filePath = path.normalize(slide);
             [s.name] = path.basename(slide).split(".");
             this.slides.push(s);
+            if (s.type == "video") {
+                const length = await ipcRenderer.invoke("getVideoFileLength", s.filePath);
+                s.length = length;
+                console.log(length);
+                s.paused = false;
+            }
         }
         this.ensureThumbnails();
         this.saveSlides();
@@ -262,6 +281,18 @@ export class HomeComponent {
         this.showService.slideIdxChanged.next(
             { idx: this.currentSlideIdx, length: this.slides.length },
         );
+    }
+
+    public async togglePlayPause() {
+        if (this.slides[this.currentSlideIdx].paused) {
+            this.slides[this.currentSlideIdx].paused = !(await ipcRenderer.invoke("playSource", this.slides[this.currentSlideIdx].id));
+        } else {
+            this.slides[this.currentSlideIdx].paused = await ipcRenderer.invoke("pauseSource", this.slides[this.currentSlideIdx].id);
+        }
+    }
+
+    public async seek(position: number) {
+        await ipcRenderer.invoke("seek", this.slides[this.currentSlideIdx].id, position);
     }
 
     private saveSlides() {

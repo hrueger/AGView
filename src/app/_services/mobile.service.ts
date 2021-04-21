@@ -82,8 +82,8 @@ export class MobileService {
                 });
             });
             r.get("/thumbnails/:id", async (req, res) => {
-                const slide = this.showService.data.value?.slides
-                    .find((s) => s.id == req.params.id) || {};
+                const slide = this.showService.data.value
+                    ?.slides?.find((s) => s.id == req.params.id) || {};
                 res.sendFile(slide.thumbnail ? slide.thumbnail : "assets/images/thumbnail.png");
             });
             this.server.use(r);

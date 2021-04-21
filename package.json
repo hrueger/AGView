@@ -30,6 +30,7 @@
         "electron:serve": "wait-on http-get://localhost:4200/ && npm run electron:serve-tsc && electron . --serve",
         "electron:local": "npm run build:prod && electron .",
         "electron:windows": "npm run build:prod && electron-builder build --windows --publish=onTag",
+        "dev": "npm run electron:serve-tsc && electron . --serve",
         "lint": "ng lint"
     },
     "dependencies": {
@@ -49,7 +50,7 @@
         "mousetrap": "1.6.5",
         "ng2-dragula": "1.5.0",
         "ngx-perfect-scrollbar": "^9.0.0",
-        "obs-studio-node": "https://obsstudionodes3.streamlabs.com/osn-0.10.10-release-win64.tar.gz",
+        "obs-studio-node": "https://s3-us-west-2.amazonaws.com/obsstudionodes3.streamlabs.com/osn-0.15.6-release-win64.tar.gz",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.5.5",
         "simple-thumbnail": "1.6.5",

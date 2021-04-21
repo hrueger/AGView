@@ -6,6 +6,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { ISceneItem, ITransition } from "obs-studio-node";
 import * as ffmpeg from "fluent-ffmpeg";
+import { v4 } from "uuid";
 import { Slide } from "../app/_classes/slide";
 import { supportedFiles } from "../app/_globals/supportedFilesFilters";
 import { Store } from "../app/_helpers/store";
@@ -163,6 +164,45 @@ export class OBS {
         }
     }
 
+    async getVideoFileLength(filePath: string): Promise<number> {
+        const source = osn.InputFactory.create("ffmpeg_source", v4(), {
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            is_local_file: true,
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            local_file: filePath,
+        });
+        await new Promise<void>((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, 200);
+        });
+        return (source as any).getDuration();
+    }
+
+    playSource(slideId: string): boolean {
+        // eslint-disable-next-line no-unused-expressions
+        (osn.SceneFactory.fromName(slideId).getItems()[0].source as any)?.play();
+        return true;
+    }
+
+    pauseSource(slideId: string): boolean {
+        // eslint-disable-next-line no-unused-expressions
+        (osn.SceneFactory.fromName(slideId).getItems()[0].source as any)?.pause();
+        return true;
+    }
+
+    seek(slideId: string, position: number): boolean {
+        const source = (osn.SceneFactory.fromName(slideId).getItems()[0].source as any);
+        if (source) source.seek = position;
+        return true;
+    }
+
+    getMediaPosition(slideId: string): boolean {
+        const source = (osn.SceneFactory.fromName(slideId).getItems()[0].source as any);
+        if (source) return source.seek;
+        return null;
+    }
+
     private pAlignItem(
         options: AlignmentOptions, sceneItem: osn.ISceneItem, w?: number, h?: number,
     ) {
@@ -294,7 +334,7 @@ export class OBS {
         this.alignItem(slide, osn.SceneFactory.fromName(slide.id).getItems()[0]);
     }
 
-    public addFile(slide: Slide) {
+    public async addFile(slide: Slide) {
         const realpath = fs.realpathSync(slide.filePath);
         let ext = realpath.split(".").splice(-1)[0];
         if (!ext) return null;
@@ -330,7 +370,6 @@ export class OBS {
             }
             if (settings) {
                 const s = this.createSource(slide.id, type.obsName, settings);
-                // const sceneItem = this.scenes[0].scene.add(s);
                 const scene = osn.SceneFactory.create(slide.id);
                 const si = scene.add(s);
                 this.alignItem(slide, si);
