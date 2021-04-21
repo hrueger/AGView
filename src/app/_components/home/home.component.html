@@ -4,7 +4,7 @@
             <div class="slides grid hideOnDrag" dragula="slides" [(dragulaModel)]="slides">
                 <div class="slide m-1 user-select-none" *ngFor="let slide of slides; let idx = index" (click)="selectSlide($event, idx)" [class.active]="idx == currentSlideIdx">
                     <div class="image-holder" [style.width]="thumbnailSize + 'rem'" [style.height]="(thumbnailSize / 16 * 9) + 'rem'">
-                        <img [src]="slide.thumbnail ? 'file:///' + slide.thumbnail : 'assets/images/thumbnail.png'" alt="Video thumbnail" class="thumbnail">
+                        <img [src]="slide.thumbnail ? 'http://localhost:4574/thumbnails/' + slide.id : 'assets/images/thumbnail.png'" alt="Video thumbnail" class="thumbnail">
                     </div>
                     <span [style.width]="thumbnailSize + 'rem'">{{slide.name}}</span>
                 </div>
