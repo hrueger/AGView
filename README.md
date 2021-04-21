@@ -18,9 +18,6 @@ Go to the [Releases](https://github.com/hrueger/AGView/releases), download the l
 
 ![Screenshot](./screenshots/01.png)
 
-## Known limitations
-- Audio output is not working ([#34](https://github.com/hrueger/AGView/issues/34))
-
 ## Development
 1. Clone the reporitory using `git clone https://github.com/hrueger/AGView`
 2. Install dependencies with `npm i`
